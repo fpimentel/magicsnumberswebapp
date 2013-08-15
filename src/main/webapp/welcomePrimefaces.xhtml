@@ -7,7 +7,10 @@
 
     <f:view contentType="text/html">
         <h:head>
+            <h:outputStylesheet library="css/libraries" name="default.css"></h:outputStylesheet>
+            
             <f:facet name="first">
+
                 <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
                 <title>PrimeFaces</title>
             </f:facet>
@@ -25,17 +28,55 @@
                     Footer
                 </p:layoutUnit>
 
-                <p:layoutUnit position="west" size="175" header="Left" collapsible="true">
-                    <p:menu>
-                        <p:submenu label="Resources">
-                            <p:menuitem value="Demo" url="http://www.primefaces.org/showcase-labs/ui/home.jsf" />
-                            <p:menuitem value="Documentation" url="http://www.primefaces.org/documentation.html" />
-                            <p:menuitem value="Forum" url="http://forum.primefaces.org/" />
-                            <p:menuitem value="Themes" url="http://www.primefaces.org/themes.html" />
+                <p:layoutUnit position="west" size="205" header="Ocultar" collapsible="true" effect="drop">
+                    <h:form>  
 
-                        </p:submenu>
+                        <p:growl id="messages" autoUpdate="true"/>  
 
-                    </p:menu>
+                        <p:panelMenu style="width:198px "  >  
+                                <p:submenu label="Loteria">  
+                                <p:menuitem value="Jugada5" actionListener="#{buttonBean.save}" icon="ui-icon-disk" />  
+                                <p:menuitem value="Update" actionListener="#{buttonBean.update}"  icon="ui-icon-arrowrefresh-1-w" />  
+                            </p:submenu> 
+                            <p:submenu label="Venta de Ticket">  
+                                <p:menuitem value="Nacional" actionListener="#{buttonBean.save}" icon="ui-icon-disk" />  
+                                <p:menuitem value="Quiniela y pale" actionListener="#{buttonBean.update}"  icon="ui-icon-arrowrefresh-1-w" />  
+                            </p:submenu>  
+                            <p:submenu label="Configuracion Jugada">  
+                                <p:menuitem value="Jugada2" actionListener="#{buttonBean.delete}"  ajax="false" icon="ui-icon-close"/>  
+                            </p:submenu>  
+                            <p:submenu label="Administracion">  
+                                <p:menuitem value="Jugada3" actionListener="#{buttonBean.save}" icon="ui-icon-disk" />  
+                                <p:menuitem value="Update" actionListener="#{buttonBean.update}"  icon="ui-icon-arrowrefresh-1-w" />  
+                            </p:submenu>  
+                            <p:submenu label="Loteria4">  
+                                <p:menuitem value="Jugada4" actionListener="#{buttonBean.save}" icon="ui-icon-disk" />  
+                                <p:menuitem value="Update" actionListener="#{buttonBean.update}"  icon="ui-icon-arrowrefresh-1-w" />  
+                            </p:submenu>  
+                         
+                            <p:submenu label="Loteria6">  
+                                <p:menuitem value="Jugada6" actionListener="#{buttonBean.save}" icon="ui-icon-disk" />  
+                                <p:menuitem value="Update" actionListener="#{buttonBean.update}"  icon="ui-icon-arrowrefresh-1-w" />  
+                            </p:submenu>  
+                            <p:submenu label="Loteria7">  
+                                <p:menuitem value="Jugada7" actionListener="#{buttonBean.save}" icon="ui-icon-disk" />  
+                                <p:menuitem value="Update" actionListener="#{buttonBean.update}"  icon="ui-icon-arrowrefresh-1-w" />  
+                            </p:submenu>  
+                            <p:submenu label="Seguridad" >  
+                                <p:submenu label="Interfaces" icon="ui-icon-extlink">  
+                                    <p:submenu label="BancaCristian" icon="ui-icon-heart">  
+                                        <p:menuitem value="Home" url="http://www.primefaces.org" icon="ui-icon-home" />  
+                                        <p:menuitem value="Docs" url="http://www.primefaces.org/documentation.html" icon="ui-icon-document" />  
+                                        <p:menuitem value="Download" url="http://www.primefaces.org/downloads.html" icon="ui-icon-arrowthick-1-s" />  
+                                        <p:menuitem value="Support" url="http://www.primefaces.org/support.html" icon="ui-icon-wrench" />  
+                                    </p:submenu>  
+                                </p:submenu>  
+                                <p:menuitem value="Mobile"  icon="ui-icon-signal"/>  
+                            </p:submenu> 
+                            <p:separator />  
+                        </p:panelMenu>  
+
+                    </h:form>  
                 </p:layoutUnit>
 
                 <p:layoutUnit position="center">
@@ -48,4 +89,3 @@
 
     </f:view>
 </html>
-

@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+
+        <h:outputScript library="js/libraries" name="jquery_plugins.js"></h:outputScript>
+        <h:outputStylesheet library="css/libraries" name="default.css"></h:outputStylesheet>
+        
+        
+        
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <div class="post">
+            <div class="entry">
+                <h:form>  
+
+                    <p:growl id="messages" autoUpdate="true"/>  
+
+                    <p:panelMenu style="width:200px "  >  
+                        <p:submenu label="Loteria">  
+                            <p:menuitem value="Nacional" actionListener="#{buttonBean.save}" icon="ui-icon-disk" />  
+                            <p:menuitem value="Quiniela y pale" actionListener="#{buttonBean.update}"  icon="ui-icon-arrowrefresh-1-w" />  
+                        </p:submenu>  
+                        <p:submenu label="Loteria2">  
+                            <p:menuitem value="Jugada2" actionListener="#{buttonBean.delete}"  ajax="false" icon="ui-icon-close"/>  
+                        </p:submenu>  
+                        <p:submenu label="Loteria3">  
+                            <p:menuitem value="Jugada3" actionListener="#{buttonBean.save}" icon="ui-icon-disk" />  
+                            <p:menuitem value="Update" actionListener="#{buttonBean.update}"  icon="ui-icon-arrowrefresh-1-w" />  
+                        </p:submenu>  
+                        <p:submenu label="Loteria4">  
+                            <p:menuitem value="Jugada4" actionListener="#{buttonBean.save}" icon="ui-icon-disk" />  
+                            <p:menuitem value="Update" actionListener="#{buttonBean.update}"  icon="ui-icon-arrowrefresh-1-w" />  
+                        </p:submenu>  
+                        <p:submenu label="Loteria5">  
+                            <p:menuitem value="Jugada5" actionListener="#{buttonBean.save}" icon="ui-icon-disk" />  
+                            <p:menuitem value="Update" actionListener="#{buttonBean.update}"  icon="ui-icon-arrowrefresh-1-w" />  
+                        </p:submenu>  
+                        <p:submenu label="Loteria6">  
+                            <p:menuitem value="Jugada6" actionListener="#{buttonBean.save}" icon="ui-icon-disk" />  
+                            <p:menuitem value="Update" actionListener="#{buttonBean.update}"  icon="ui-icon-arrowrefresh-1-w" />  
+                        </p:submenu>  
+                        <p:submenu label="Loteria7">  
+                            <p:menuitem value="Jugada7" actionListener="#{buttonBean.save}" icon="ui-icon-disk" />  
+                            <p:menuitem value="Update" actionListener="#{buttonBean.update}"  icon="ui-icon-arrowrefresh-1-w" />  
+                        </p:submenu>  
+                        <p:separator />  
+                    </p:panelMenu>  
+
+                </h:form>   
+            </div>
+
+        </div>
+
+    </h:body>
+</html>
+
