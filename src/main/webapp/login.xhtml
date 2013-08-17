@@ -12,21 +12,27 @@
         <h:outputScript library="js/libraries" name="JQuery_v1.10.2.js"></h:outputScript>
         <h:outputStylesheet library="css/libraries" name="bootstrap.min.css"></h:outputStylesheet>
         <h:outputScript library="js/libraries" name="bootstrap.min.js"></h:outputScript>
-        <h:form>  
-            <div class="row">                
-                <div class="col-lg-6" style="width:50%">Imagen</div>
-                <div class="col-lg-6" style="width:50%">
-                    <p:panel id="panel" header="Bienvenido" style="margin-bottom:10px;width:55%;height:45%;"  >  
+        <h:form> 
+           <div class="row-fluid" style="width:100%;margin-left:auto;margin-right:auto;">                
+                <div class="span2 offset3">
+                    <h:graphicImage value="resources/images/login.png"/>                                      
+                </div>
+               
+                <div class="span7" >
+                    <p:panel id="panel" header="Bienvenido" style="margin-bottom:10px;width:45%;height:45%;"  >  
                         <p:messages id="messages" closable="true" />  
                         <h:panelGrid columns="2">
-                            <h:outputLabel for="txtName" value="Nombre de usuario:" />      
-                            <p:inputText id="txtName" required="true" requiredMessage="Usuario requerido."/>  
+                            <h:outputLabel for="txtName" value="Usuario:" />      
+                            <p:inputText id="txtName" required="true" requiredMessage="Usuario requerido"/>  
                             <h:outputLabel for="txtPassword" value="Contrase&ntilde;a:"/>  
-                            <p:inputText id="txtPassword" required="true" requiredMessage="Contrase&ntilde;a requerida "/>  
-                            <br />
+                            <p:password id="txtPassword" required="true" requiredMessage="Contrase&ntilde;a requerida"/>                                
                             <br/>
-                        </h:panelGrid>  
-                            <p:commandButton value="Iniciar Sesi&oacute;n" update="panel" style="margin-right:20px;" /> 
+                        </h:panelGrid> 
+                        <div class="row-fluid">                
+                            <div class="span2 offset8">
+                                <p:commandButton value="Entrar" update="panel" style="margin-right:20px;" />
+                            </div>                                                                                 
+                        </div>
                     </p:panel>                   
                 </div>                                  
             </div>
