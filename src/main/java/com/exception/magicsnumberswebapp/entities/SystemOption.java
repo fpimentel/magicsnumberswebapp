@@ -4,6 +4,7 @@
  */
 package com.exception.magicsnumberswebapp.entities;
 
+import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 /**
@@ -13,10 +14,20 @@ import java.io.Serializable;
 
 public class SystemOption implements Serializable {
     private static final long serialVersionUID = 1L;
+    
+    @SerializedName("id")
     private Integer id;
+    
+    @SerializedName("name")
     private String name;
+    
+    @SerializedName("description")
     private String description;
+    
+    @SerializedName("optionCategory")
     private int optionCategory;
+    
+    @SerializedName("statusId")
     private int statusId;    
 
     public SystemOption() {

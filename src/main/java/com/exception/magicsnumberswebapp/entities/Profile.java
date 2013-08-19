@@ -4,11 +4,8 @@
  */
 package com.exception.magicsnumberswebapp.entities;
 
+import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -18,14 +15,26 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Profile implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @SerializedName("id")
     private Integer id;
+    @SerializedName("name")
     private String name;
+    /*
+    @SerializedName("description")
     private String description;
+    
+    @SerializedName("creationUser")
     private String creationUser;
-    private Date creationDate;
+    
+    @SerializedName("creationDate")
+    private String creationDate;
+    
+    @SerializedName("statusId")
     private int statusId;
-    private SystemOption systemOptionId;
-    private Set<User> users = new HashSet<User>(0);
+    */
+    //@SerializedName("systemOptionId")
+    //private SystemOption systemOptionId;
+        
     
     public Profile() {
     }
@@ -34,13 +43,13 @@ public class Profile implements Serializable {
         this.id = id;
     }
 
-    public Profile(Integer id, String name, String description, String creationUser, Date creationDate, int statusId) {
+    public Profile(Integer id, String name, String description, String creationUser, String creationDate, int statusId) {
         this.id = id;
         this.name = name;
-        this.description = description;
-        this.creationUser = creationUser;
-        this.creationDate = creationDate;
-        this.statusId = statusId;
+        //this.description = description;
+        //this.creationUser = creationUser;
+        //this.creationDate = creationDate;
+        //this.statusId = statusId;
     }
 
     public Integer getId() {
@@ -58,7 +67,7 @@ public class Profile implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
+   /*
     public String getDescription() {
         return description;
     }
@@ -75,11 +84,11 @@ public class Profile implements Serializable {
         this.creationUser = creationUser;
     }
 
-    public Date getCreationDate() {
+    public String getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
 
@@ -90,23 +99,15 @@ public class Profile implements Serializable {
     public void setStatusId(int statusId) {
         this.statusId = statusId;
     }
-
-    public SystemOption getSystemOptionId() {
+*/
+    /*public SystemOption getSystemOptionId() {
         return systemOptionId;
     }
 
     public void setSystemOptionId(SystemOption systemOptionId) {
         this.systemOptionId = systemOptionId;
-    }
-    @XmlTransient
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
-    
+    }    
+    */
     @Override
     public int hashCode() {
         int hash = 0;

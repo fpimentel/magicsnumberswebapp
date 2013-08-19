@@ -4,23 +4,23 @@
  */
 package com.exception.magicsnumberswebapp.entities;
 
-import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
 /**
  *
  * @author fpimentel
  */
-public class UserConteiner {
-    private List<User>users;
+public class ProfileContainer {
+    @SerializedName("profiles")
+    private Profile users;
 
-    public List<User> getUsers() {
+    public Profile getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Profile users) {
         this.users = users;
     }
-    
     
     
 }

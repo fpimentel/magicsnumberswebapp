@@ -23,14 +23,14 @@
                         <p:messages id="messages" closable="true" />  
                         <h:panelGrid columns="2">
                             <h:outputLabel for="txtName" value="Usuario:" />      
-                            <p:inputText id="txtName" required="true" requiredMessage="Usuario requerido"/>  
+                            <p:inputText id="txtUserName" value="#{loginController.userName}" required="true" requiredMessage="Usuario requerido"/>  
                             <h:outputLabel for="txtPassword" value="Contrase&ntilde;a:"/>  
                             <p:password id="txtPassword" required="true" requiredMessage="Contrase&ntilde;a requerida"/>                                
                             <br/>
                         </h:panelGrid> 
                         <div class="row-fluid">                
                             <div class="span2 offset8">
-                                <p:commandButton value="Entrar" update="panel" style="margin-right:20px;" />
+                                <p:commandButton value="Entrar" update="panel" action ="welcomePrimefaces?faces-redirect=true" style="margin-right:20px;" />
                             </div>                                                                                 
                         </div>
                     </p:panel>                   
