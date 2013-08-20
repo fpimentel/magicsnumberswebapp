@@ -30,7 +30,7 @@
                         </h:panelGrid> 
                         <div class="row-fluid">                
                             <div class="span2 offset8">
-                                <p:commandButton value="Entrar" update="panel" action ="welcomePrimefaces?faces-redirect=true" style="margin-right:20px;" />
+                                <p:commandButton value="Entrar"  action ="#{loginController.getUserByCredential}" style="margin-right:20px;" />
                             </div>                                                                                 
                         </div>
                     </p:panel>                   

@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
  * @author fpimentel
  */
 public class UserContainer {
-    @SerializedName("user")
+    @SerializedName("User")
     private User users;        
         
     public User getUsers() {

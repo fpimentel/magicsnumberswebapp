@@ -32,8 +32,8 @@ public class User implements Serializable {
     @SerializedName("password")
     private String password;
 
-    
-    //private Collection<Profile>profiles;
+    @SerializedName("profiles")
+    private Collection<Profile>profiles;
     
     public String getContactNumber() {
         return contactNumber;
@@ -75,11 +75,11 @@ public class User implements Serializable {
         this.firtName = firtName;
     }
     
-    /*public Collection<Profile> getProfiles() {
+    public Collection<Profile> getProfiles() {
         return profiles;
     }
 
     public void setProfiles(Collection<Profile> profiles) {
         this.profiles = profiles;
-    } */ 
+    } 
 }

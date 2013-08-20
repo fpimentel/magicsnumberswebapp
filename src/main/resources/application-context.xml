@@ -11,6 +11,12 @@
           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
 ">
+    
+    <bean id="magicNumberWSClient" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean">
+        <property name="serviceInterface" value="com.exception.magicsnumbersws.endpoints.SecurityEndPoint"/>                                                 
+        <property name="baseUri" value="http://localhost:8084/MagicsNumbersWS/" />                                        
+    </bean>
+    
     <context:annotation-config/>
     <context:component-scan base-package="com.exception"/>
 </beans>

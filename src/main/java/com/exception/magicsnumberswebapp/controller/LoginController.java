@@ -3,42 +3,43 @@
  * and open the template in the editor.
  */
 package com.exception.magicsnumberswebapp.controller;
-import com.exception.magicsnumberswebapp.service.UserService;
 import javax.faces.bean.ManagedBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+import com.exception.magicsnumbersws.endpoints.SecurityEndPoint;
+import java.util.List;
+
 /**
  *
  * @author fpimentel
  */
 @ManagedBean
+@Controller
 @Scope
 public class LoginController {
-    
+          
     @Autowired
-    UserService userService;    
+    private SecurityEndPoint magicNumberWSClient;
+    
     
     private String userName;
     private String password;
 
     public LoginController(){}
     
-    public LoginController(UserService userService, String userName, String password) {
-        this.userService = userService;
+    public LoginController(String userName, String password) {        
         this.userName = userName;
         this.password = password;
     }
 
-    public UserService getUserService() {
-        return userService;
-    }
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
+    public String getUserByCredential(){
+        return "home";
+    }    
             
     public String getUserName() {
-        userService=userService;
+        List<com.exception.magicsnumbersws.entities.User> 
+                users = magicNumberWSClient.getAllUsers();
         return userName;        
     }
 

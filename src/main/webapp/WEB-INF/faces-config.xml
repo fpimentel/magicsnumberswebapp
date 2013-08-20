@@ -10,12 +10,11 @@
         </el-resolver>
     </application>
     
-    <nanavigation-rule>
-        <from-view-id>/login.xhtml</from-view-id>
+    <navigation-rule>
+        <from-view-id>login.xhtml</from-view-id>
         <navigation-case>
             <from-outcome>home</from-outcome>
             <to-view-id>welcomePrimefaces.xhtml</to-view-id>
-            <redirect/>
         </navigation-case>
-    </nanavigation-rule>
+    </navigation-rule>
 </faces-config>
