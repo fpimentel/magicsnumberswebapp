@@ -12,25 +12,25 @@
         <h:outputScript library="js/libraries" name="JQuery_v1.10.2.js"></h:outputScript>
         <h:outputStylesheet library="css/libraries" name="bootstrap.min.css"></h:outputStylesheet>
         <h:outputScript library="js/libraries" name="bootstrap.min.js"></h:outputScript>
-        <h:form> 
+        <h:form id ="form"> 
+            <p:growl id="messages" showDetail="true" autoUpdate="true" />
            <div class="row-fluid" style="width:100%;margin-left:auto;margin-right:auto;">                
                 <div class="span2 offset3">
                     <h:graphicImage value="resources/images/login.png"/>                                      
                 </div>
                
                 <div class="span7" >
-                    <p:panel id="panel" header="Bienvenido" style="margin-bottom:10px;width:45%;height:45%;"  >  
-                        <p:messages id="messages" closable="true" />  
+                    <p:panel id="panel" header="Bienvenido" style="margin-bottom:10px;width:45%;height:45%;"  >                          
                         <h:panelGrid columns="2">
                             <h:outputLabel for="txtName" value="Usuario:" />      
                             <p:inputText id="txtUserName" value="#{loginController.userName}" required="true" requiredMessage="Usuario requerido"/>  
                             <h:outputLabel for="txtPassword" value="Contrase&ntilde;a:"/>  
-                            <p:password id="txtPassword" required="true" requiredMessage="Contrase&ntilde;a requerida"/>                                
+                            <p:password id="txtPassword" value="#{loginController.password}" required="true" requiredMessage="Contrase&ntilde;a requerida"/>                                
                             <br/>
                         </h:panelGrid> 
                         <div class="row-fluid">                
                             <div class="span2 offset8">
-                                <p:commandButton value="Entrar"  action ="#{loginController.getUserByCredential}" style="margin-right:20px;" />
+                                <p:commandButton value="Entrar" update=":form:messages" action="#{loginController.isValidUser()}" ajax="true" style="margin-right:20px;" />
                             </div>                                                                                 
                         </div>
                     </p:panel>                   
