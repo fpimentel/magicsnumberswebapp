@@ -7,9 +7,9 @@ package com.exception.magicsnumberswebapp.dao.impl;
 import com.exception.magicsnumberswebapp.dao.UserDao;
 import com.exception.magicsnumbersws.endpoints.SecurityEndPoint;
 import com.exception.magicsnumbersws.entities.User;
+import com.exception.magicsnumbersws.exception.SearchAllUserException;
 import java.util.List;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -45,7 +45,7 @@ public class UserDaoImpl implements UserDao{
         this.users = users;
     }        
     @Override
-    public List<User> getAllUsers() {        
+    public List<User> getAllUsers() throws SearchAllUserException{        
         if(users == null){
             users = magicNumberWSClient.getAllUsers();
         }        
@@ -53,7 +53,7 @@ public class UserDaoImpl implements UserDao{
     }        
 
     @Override
-    public User getUserByCredentials(String userName, String pass) {
+    public User getUserByCredentials(String userName, String pass) throws SearchAllUserException{
        if(users == null)
         {
             users = getAllUsers();

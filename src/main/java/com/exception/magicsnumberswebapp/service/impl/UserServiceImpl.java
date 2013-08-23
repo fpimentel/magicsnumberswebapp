@@ -4,6 +4,7 @@ package com.exception.magicsnumberswebapp.service.impl;
 import com.exception.magicsnumberswebapp.dao.UserDao;
 import com.exception.magicsnumberswebapp.service.UserService;
 import com.exception.magicsnumbersws.entities.User;
+import com.exception.magicsnumbersws.exception.SearchAllUserException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,12 +20,12 @@ public class UserServiceImpl implements UserService{
     private UserDao userDao;
     
     @Override
-    public List<User> getAllUsers() {       
+    public List<User> getAllUsers() throws SearchAllUserException{       
         return userDao.getAllUsers();
     }
 
     @Override
-    public User getUserByCredentials(String userName, String pass) {        
+    public User getUserByCredentials(String userName, String pass) throws SearchAllUserException{        
         return userDao.getUserByCredentials(userName, pass);
     }   
 
