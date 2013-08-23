@@ -6,6 +6,7 @@ package com.exception.magicsnumberswebapp.controller;
 import com.exception.magicsnumberswebapp.service.UserService;
 import com.exception.magicsnumbersws.endpoints.SecurityEndPoint;
 import com.exception.magicsnumbersws.entities.User;
+import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -67,8 +68,9 @@ public class LoginController {
         if(user != null){            
             actionToExcecute = "home";
         }
-        else{
-            facesContext.addMessage(null, new FacesMessage("Usuario invalido"));                           
+        else{            
+          
+        facesContext.addMessage(null, new FacesMessage("Successful", "Hello " + "probar"));          
         }
         return actionToExcecute;
     }       
