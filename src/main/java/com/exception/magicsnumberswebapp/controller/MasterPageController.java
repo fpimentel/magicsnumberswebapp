@@ -14,6 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.submenu.Submenu;
 import org.primefaces.component.menuitem.MenuItem;
 import org.primefaces.model.MenuModel;
@@ -59,7 +61,7 @@ public class MasterPageController {
                         menuItem.setId(currOption.getName());
                         menuItem.setValue(currOption.getValue());
                         menuItem.setUrl(currOption.getUrl()); 
-                        
+                        menuItem.setOutcome(currOption.getOutCome());
                         Set<CategoryOption> categoriesOptions = currOption.getCategories();                        
                         for(CategoryOption currCategoryOption : categoriesOptions){
                              
@@ -150,6 +152,7 @@ public class MasterPageController {
                 optionMenu.setId(option.getName());
                 optionMenu.setValue(option.getName());
                 optionMenu.setUrl(option.getUrl());
+               //optionMenu.setOutcome(option.getUrl());
                 subMenu.getChildren().add(optionMenu);                       
             }        
         }
@@ -159,8 +162,6 @@ public class MasterPageController {
         return subMenu;
     }
     
-    private void putItemIntoExistingComponent(String componentId){
-    }
     
     public MenuModel getModel() {   
         generateModelMenu();

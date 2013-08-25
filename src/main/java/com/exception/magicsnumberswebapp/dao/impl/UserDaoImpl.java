@@ -7,8 +7,10 @@ package com.exception.magicsnumberswebapp.dao.impl;
 import com.exception.magicsnumberswebapp.dao.UserDao;
 import com.exception.magicsnumbersws.endpoints.SecurityEndPoint;
 import com.exception.magicsnumbersws.entities.User;
+import com.exception.magicsnumbersws.exception.SaveUsersDataException;
 import com.exception.magicsnumbersws.exception.SearchAllUserException;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -66,6 +68,11 @@ public class UserDaoImpl implements UserDao{
             }
         }                    
         return null;
+    }
+
+    @Override
+    public void saveUsersData(Set<User> users) throws SaveUsersDataException {
+        magicNumberWSClient.saveUsersData(users);
     }
 
 
