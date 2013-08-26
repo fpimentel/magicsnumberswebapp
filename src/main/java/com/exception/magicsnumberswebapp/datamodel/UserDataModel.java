@@ -8,7 +8,7 @@ import org.primefaces.model.SelectableDataModel;
 public class UserDataModel extends ListDataModel<User> implements SelectableDataModel<User> {    
   
     private List<User> users;
-    private User selectedUser;
+    //private User selectedUser;
     
     public UserDataModel() {  
     }  
@@ -26,13 +26,13 @@ public class UserDataModel extends ListDataModel<User> implements SelectableData
         this.users = users;
     }
 
-    public User getSelectedUser() {
-        return selectedUser;
-    }
+   // public User getSelectedUser() {
+     //   return selectedUser;
+    //}
 
-    public void setSelectedUser(User selectedUser) {
-        this.selectedUser = selectedUser;
-    }
+    //public void setSelectedUser(User selectedUser) {
+   //     this.selectedUser = selectedUser;
+   // }
       
     @Override  
     public User getRowData(String rowKey) {  

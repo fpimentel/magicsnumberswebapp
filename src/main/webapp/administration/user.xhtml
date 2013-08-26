@@ -8,7 +8,7 @@
 
 
     <h:head>
-        <title>Facelet Title</title>
+        <title>Usuarios</title>
     </h:head>
     <h:body>
 
@@ -16,63 +16,40 @@
 
             <ui:define name="center">
                 <h:form id="form">  
+
                     <p:growl id="messages" showDetail="true"/>  
-                    <p:dataTable id="dtUsers"  var="user" value="#{userController.userDataModel}" 
-                                 rows="8" paginator="true" selection="#{userController.selectedUser}" selectionMode="single">  
+
+                    <p:dataTable id="cars" var="user" value="#{userController.userDataModel}" paginator="true" rows="10"  
+                                 selection="#{userController.selectedUser}" selectionMode="single">  
                         <f:facet name="header"  >  
                             Consulta de Usuarios  
-                        </f:facet>  
-
-                        <p:ajax event="rowSelect" listener="#{userController.onRowSelect}" update=":form:pUserData :form:messages" oncomplete="userDialog.show()" />
-                        <p:ajax event="rowUnselect" listener="#{userController.onRowUnselect}" update=":form:messages"/>
+                        </f:facet> 
+                        <p:ajax event="rowSelect" listener="#{userController.onRowSelect}"   
+                                update=":form:pUserData :form:messages" oncomplete="userDialog.show()" />  
+                        <p:ajax event="rowUnselect" listener="#{userController.onRowUnselect}" update=":form:messages"/>                           
+                        <p:column headerText="Usuario" style="width:8%" sortBy="#{user.userName}" filterBy="#{user.userName}"  filterMatchMode="contains">  
+                            #{user.userName }  
+                        </p:column>
                         <p:column headerText="Nombre" style="width:8%" sortBy="#{user.firtName}" filterBy="#{user.firtName}"  filterMatchMode="contains">  
-                            <p:cellEditor>  
-                                <f:facet name="output">  
-                                    <h:outputText value="#{user.firtName}" />  
-                                </f:facet>  
-                                <f:facet name="input">  
-                                    <p:inputText value="#{user.firtName}" style="width:100%"/>  
-                                </f:facet>  
-                            </p:cellEditor>  
+                            #{user.firtName}  
                         </p:column>  
 
                         <p:column headerText="Apellido" style="width:8%" sortBy="#{user.lastName}" filterBy="#{user.lastName}"  filterMatchMode="contains">  
-                            <p:cellEditor>  
-                                <f:facet name="output">  
-                                    <h:outputText value="#{user.lastName}" />  
-                                </f:facet>  
-                                <f:facet name="input">  
-                                    <p:inputText value="#{user.lastName}" style="width:100%" label="Year"/>  
-                                </f:facet>  
-                            </p:cellEditor>  
+                            #{user.lastName}  
                         </p:column>  
-
-                        <p:column headerText="Contraseña" style="width:8%" sortBy="#{user.password}" filterBy="#{user.password}"  filterMatchMode="contains">  
-                            <p:cellEditor>  
-                                <f:facet name="output">  
-                                    <h:outputText value="#{user.password}" />  
-                                </f:facet>  
-                                <f:facet name="input">  
-                                    <p:inputText value="#{user.password}" style="width:100%" />  
-                                </f:facet>  
-                            </p:cellEditor>  
-                        </p:column>  
-
-                        <p:column headerText="Usuario" style="width:8%" sortBy="#{user.userName}" filterBy="#{user.userName}"  filterMatchMode="contains">  
-                            <p:cellEditor>  
-                                <f:facet name="output">  
-                                    <h:outputText value="#{user.userName}" />  
-                                </f:facet>  
-                                <f:facet name="input">  
-                                    <p:inputText value="#{user.userName }" style="width:80%" />  
-                                </f:facet>  
-                            </p:cellEditor>  
+                        <p:column headerText="No. Contacto" style="width:8%" sortBy="#{user.contactNumber}" filterBy="#{user.contactNumber}"  filterMatchMode="contains">  
+                            #{user.contactNumber}  
+                        </p:column> 
+                        <p:column headerText="Estatus" style="width:8%" sortBy="#{user.status.name}" filterBy="#{user.status.name}"  filterMatchMode="contains">  
+                            #{user.status.name}  
                         </p:column>                         
                     </p:dataTable>  
                     <p:dialog id="dialog" header="Datos usuarios" widgetVar="userDialog" resizable="false"  
                               showEffect="fade" hideEffect="explode">  
-
                         <h:panelGrid id="pUserData" columns="2" cellpadding="4">                           
+                            <h:outputText value="Nombre Usuario:" />  
+                            <p:inputText id="txtUserName" required="true" value="#{userController.selectedUser.userName}" />
+
                             <h:outputText value="Nombre:" />  
                             <p:inputText id="txtName" required="true"  value="#{userController.selectedUser.userName}" />  
 
@@ -80,13 +57,17 @@
                             <p:inputText id="txtLastName" required="true" value="#{userController.selectedUser.lastName}" />    
 
                             <h:outputText value="No. Contacto:" />  
-                            <p:inputText id="txtContactNumber" required="true" value="#{userController.selectedUser.contactNumber}" />    
+                            <p:inputText id="txtContactNumber" required="true" value="#{userController.selectedUser.contactNumber}" />                              
 
-                            <h:outputText value="Nombre Usuario:" />  
-                            <p:inputText id="txtUserName" required="true" value="#{userController.selectedUser.userName}" />    
+                            <h:outputText value="Estatus: " />  
+                            <p:selectOneMenu value="#{userController.selectedUser}" effect="fade">  
+                                <f:selectItem itemLabel="Seleccionar" itemValue="" />  
+                                <f:selectItems value="#{userController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status.id}"/>  
+                            </p:selectOneMenu>
                         </h:panelGrid>  
-                    </p:dialog>
-                </h:form>                
+                    </p:dialog> 
+
+                </h:form>
             </ui:define>
 
         </ui:composition>

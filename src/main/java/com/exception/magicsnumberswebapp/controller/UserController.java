@@ -5,7 +5,9 @@
 package com.exception.magicsnumberswebapp.controller;
 
 import com.exception.magicsnumberswebapp.datamodel.UserDataModel;
+import com.exception.magicsnumberswebapp.service.StatusService;
 import com.exception.magicsnumberswebapp.service.UserService;
+import com.exception.magicsnumbersws.entities.Status;
 import com.exception.magicsnumbersws.entities.User;
 import com.exception.magicsnumbersws.exception.SaveUsersDataException;
 import com.exception.magicsnumbersws.exception.SearchAllUserException;
@@ -35,15 +37,40 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-        
+    
+    @Autowired
+    private StatusService statusService;
+    
     private User selectedUser;
     private UserDataModel userDataModel;
+    private List<Status> status;
     
+    private Status selectedStatus;
 
     public UserController() {
         
     }
 
+    public Status getSelectedStatus() {
+        return selectedStatus;
+    }
+
+    public void setSelectedStatus(Status selectedStatus) {
+        this.selectedStatus = selectedStatus;
+    }
+        
+    public List<Status> getStatus() {
+        if(status == null){
+            status = statusService.getStatus();
+        }
+        return status;
+    }
+
+    public void setStatus(List<Status> status) {
+        this.status = status;
+    }
+
+    
     public User getSelectedUser() {
         return selectedUser;
     }

@@ -9,13 +9,19 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
-          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
-">
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
     
     <bean id="magicNumberWSClient" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean">
         <property name="serviceInterface" value="com.exception.magicsnumbersws.endpoints.SecurityEndPoint"/>                                                 
-        <property name="baseUri" value="http://localhost:8087/MagicsNumbersWS/" />                                                                                   
+        <property name="baseUri" value="http://localhost:8080/MagicsNumbersWS/" />                                                                                   
     </bean>
+    
+    <bean id="lookupTablesEndpoint" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean">              
+        <property name="serviceInterface" value="com.exception.magicsnumbersws.endpoints.LookupTablesEndpoint"/>                                                 
+        <property name="baseUri" value="http://localhost:8080/MagicsNumbersWS/" />                                                                                   
+    </bean>
+    
+    <!--<bean class="com.exception.magicsnumberswebapp.dao.impl.StatusDaoImpl" init-method="loadStatusData"/>-->
     
     <context:component-scan base-package="com.exception.magicsnumberswebapp"/>
 </beans>
