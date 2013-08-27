@@ -3,7 +3,7 @@ package com.exception.magicsnumberswebapp.dao;
 
 import com.exception.magicsnumbersws.entities.Status;
 import java.util.List;
-import org.springframework.stereotype.Repository;
+
 
 /**
  *

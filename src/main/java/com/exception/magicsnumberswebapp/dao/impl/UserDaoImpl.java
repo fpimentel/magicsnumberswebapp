@@ -23,7 +23,7 @@ import org.springframework.stereotype.Repository;
 public class UserDaoImpl implements UserDao{
    
     @Autowired
-    private SecurityEndPoint magicNumberWSClient;
+    private SecurityEndPoint securityEndpoint;
     
     private List<User> users;
     private boolean usersDataLoaded;
@@ -32,13 +32,15 @@ public class UserDaoImpl implements UserDao{
         
     }    
 
-    public SecurityEndPoint getMagicNumberWSClient() {
-        return magicNumberWSClient;
+    public SecurityEndPoint getSecurityEndpoint() {
+        return securityEndpoint;
     }
 
-    public void setMagicNumberWSClient(SecurityEndPoint magicNumberWSClient) {
-        this.magicNumberWSClient = magicNumberWSClient;
-    }       
+    public void setSecurityEndpoint(SecurityEndPoint securityEndpoint) {
+        this.securityEndpoint = securityEndpoint;
+    }
+
+   
    
     public List<User> getUsers() {
         return users;
@@ -49,7 +51,7 @@ public class UserDaoImpl implements UserDao{
     @Override
     public List<User> getAllUsers() throws SearchAllUserException{        
         if(users == null){
-            users = magicNumberWSClient.getAllUsers();
+            users = securityEndpoint.getAllUsers();
         }        
         return users;
     }        
@@ -72,7 +74,7 @@ public class UserDaoImpl implements UserDao{
 
     @Override
     public void saveUsersData(Set<User> users) throws SaveUsersDataException {
-        magicNumberWSClient.saveUsersData(users);
+        securityEndpoint.saveUsersData(users);
     }
 
 

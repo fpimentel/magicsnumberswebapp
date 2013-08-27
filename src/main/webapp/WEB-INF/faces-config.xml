@@ -13,8 +13,7 @@
     <navigation-rule>
         <from-view-id>/login.xhtml</from-view-id>
         <navigation-case>
-            <from-outcome>home</from-outcome>
-            <!--<to-view-id>/welcomePrimefaces.xhtml</to-view-id>-->
+            <from-outcome>home</from-outcome>            
             <to-view-id>/masterpage.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
@@ -34,6 +33,15 @@
         <navigation-case>
             <from-outcome>user</from-outcome>
             <to-view-id>/user.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    
+     <navigation-rule>
+        <from-view-id>/masterpage.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>option</from-outcome>
+            <to-view-id>faces/administration/systemOptions.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

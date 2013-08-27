@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <h:head>
+        <title>Opciones</title>
+    </h:head>
+    <h:body>
+
+        <ui:composition  template="../masterpage.xhtml">
+
+            <ui:define name="center">
+                <h:form id="form">  
+
+                    <p:growl id="messages" showDetail="true"/>  
+
+                    <p:dataTable id="dtOpt" var="sysOpt" value="#{systemOptionController.systemOptionDataModel}" paginator="true" rows="10"  
+                                 selection="#{systemOptionController.selectedSystemOption}" selectionMode="single">  
+                        <f:facet name="header"  >  
+                            Consulta de Opciones  
+                        </f:facet> 
+                        <p:ajax event="rowSelect" listener="#{systemOptionController.onRowSelect}"   
+                                update=":form:pOptData :form:messages" oncomplete="optDialog.show()" />  
+                        <p:ajax event="rowUnselect" listener="#{systemOptionController.onRowUnselect}" update=":form:messages"/>                           
+                        <p:column headerText="Nombre" style="width:8%" sortBy="#{sysOpt.name}" filterBy="#{sysOpt.name}"  filterMatchMode="contains">  
+                            #{sysOpt.name}  
+                        </p:column>
+                        <p:column headerText="Valor" style="width:8%" sortBy="#{sysOpt.value}" filterBy="#{sysOpt.value}"  filterMatchMode="contains">  
+                            #{sysOpt.value}  
+                        </p:column>  
+
+                        <p:column headerText="URL" style="width:8%" sortBy="#{sysOpt.url}" filterBy="#{sysOpt.url}"  filterMatchMode="contains">  
+                            #{sysOpt.url}  
+                        </p:column>  
+                        <p:column headerText="Out Come" style="width:8%" sortBy="#{sysOpt.outCome}" filterBy="#{sysOpt.outCome}"  filterMatchMode="contains">  
+                            #{sysOpt.outCome}  
+                        </p:column> 
+                        <p:column headerText="Estatus" style="width:8%" sortBy="#{sysOpt.statusId}" filterBy="#{sysOpt.statusId}"  filterMatchMode="contains">  
+                            #{sysOpt.statusId}  
+                        </p:column>                         
+                    </p:dataTable>  
+                    <p:dialog id="dialog" header="Datos usuarios" widgetVar="optDialog" resizable="false"  
+                              showEffect="fade" hideEffect="explode">  
+                        <h:panelGrid id="pOptData" columns="2" cellpadding="4">                           
+                            <h:outputText value="Nombre:" />  
+                            <p:inputText id="txtName" required="true" value="#{systemOptionController.selectedSystemOption.name}" />
+
+                            <h:outputText value="Nombre:" />  
+                            <p:inputText id="txtValue" required="true"  value="#{systemOptionController.selectedSystemOption.value}" />  
+
+                            <h:outputText value="URL:" />  
+                            <p:inputText id="txtUrl" required="true" value="#{systemOptionController.selectedSystemOption.url}" />    
+
+                            <h:outputText value="Out Come:" />  
+                            <p:inputText id="txtOutcome" required="true" value="#{systemOptionController.selectedSystemOption.outCome}" />                              
+
+                            <h:outputText value="Estatus: " />  
+                            <p:selectOneMenu value="#{systemOptionController.selectedSystemOption}" effect="fade">  
+                                <f:selectItem itemLabel="Seleccionar" itemValue="" />  
+                                <f:selectItems value="#{systemOptionController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status.id}"/>  
+                            </p:selectOneMenu>
+                        </h:panelGrid>  
+                    </p:dialog> 
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>
+
+
