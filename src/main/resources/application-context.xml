@@ -13,15 +13,14 @@
     
     <bean id="securityEndpoint" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean">
         <property name="serviceInterface" value="com.exception.magicsnumbersws.endpoints.SecurityEndPoint"/>                                                 
-        <property name="baseUri" value="http://localhost:8092/MagicsNumbersWS/" />                                                                                   
+        <property name="baseUri" value="http://localhost:8080/MagicsNumbersWS/" />                                                                                   
     </bean>
     
     <bean id="lookupTablesEndpoint" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean">              
         <property name="serviceInterface" value="com.exception.magicsnumbersws.endpoints.LookupTablesEndpoint"/>                                                 
-        <property name="baseUri" value="http://localhost:8092/MagicsNumbersWS/" />                                                                                   
+        <property name="baseUri" value="http://localhost:8080/MagicsNumbersWS/" />                                                                                   
     </bean>
     
-    <!--<bean class="com.exception.magicsnumberswebapp.dao.impl.StatusDaoImpl" init-method="loadStatusData"/>-->
-    
+        
     <context:component-scan base-package="com.exception.magicsnumberswebapp"/>
 </beans>

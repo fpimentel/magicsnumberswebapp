@@ -11,6 +11,7 @@ import com.exception.magicsnumbersws.entities.Status;
 import com.exception.magicsnumbersws.entities.User;
 import com.exception.magicsnumbersws.exception.SaveUsersDataException;
 import com.exception.magicsnumbersws.exception.SearchAllUserException;
+import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -21,6 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +65,7 @@ public class UserController {
         if(status == null){
             status = statusService.getStatus();
         }
-        return status;
+        return status;        
     }
 
     public void setStatus(List<Status> status) {
@@ -109,4 +111,39 @@ public class UserController {
 
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
+    public void addOrUpdateUser() {  
+        RequestContext context = RequestContext.getCurrentInstance();  
+        FacesMessage msg = null;  
+        boolean success = true;  
+        
+        if(userAlreadyExist()){
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario ya existe", selectedUser.getUserName());  
+            success = false;  
+        }                        
+                
+        FacesContext.getCurrentInstance().addMessage(null, msg);  
+        context.addCallbackParam("success", success);  
+    }
+    
+    private boolean userAlreadyExist(){
+        List<User> users = userDataModel.getUsers();
+        int counterUserExist = 0;
+        for(User currUser : users){
+            if(currUser.getUserName().equals(selectedUser.getUserName())){
+                counterUserExist++;
+            }
+        }
+        return (counterUserExist==2);
+    }
+    /*
+    public void addOrUpdateUser(ActionEvent actionEvent){
+        //userDataModel.getUsers();
+        RequestContext context = RequestContext.getCurrentInstance();  
+        FacesMessage msg = null;  
+        boolean success = true;  
+        msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario agregado", "BIEN");    
+        FacesContext.getCurrentInstance().addMessage(null, msg);  
+        context.addCallbackParam("success", success);                            
+    }
+    */
 }

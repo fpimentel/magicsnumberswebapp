@@ -19,7 +19,7 @@
 
                     <p:growl id="messages" showDetail="true"/>  
 
-                    <p:dataTable id="cars" var="user" value="#{userController.userDataModel}" paginator="true" rows="10"  
+                    <p:dataTable id="dtUsuarios" var="user" value="#{userController.userDataModel}" paginator="true" rows="10"  
                                  selection="#{userController.selectedUser}" selectionMode="single">  
                         <f:facet name="header"  >  
                             Consulta de Usuarios  
@@ -51,7 +51,7 @@
                             <p:inputText id="txtUserName" required="true" value="#{userController.selectedUser.userName}" />
 
                             <h:outputText value="Nombre:" />  
-                            <p:inputText id="txtName" required="true"  value="#{userController.selectedUser.userName}" />  
+                            <p:inputText id="txtName" required="true"  value="#{userController.selectedUser.firtName}" />  
 
                             <h:outputText value="Apellido:" />  
                             <p:inputText id="txtLastName" required="true" value="#{userController.selectedUser.lastName}" />    
@@ -59,15 +59,39 @@
                             <h:outputText value="No. Contacto:" />  
                             <p:inputText id="txtContactNumber" required="true" value="#{userController.selectedUser.contactNumber}" />                              
 
+                            <h:outputText value="Clave:" />  
+                            <p:password id="txtPassword" value="#{userController.selectedUser.password}" required="true" feedback="true" match="txtConfirmPassword" validatorMessage="La clave y la confirmacion deben ser iguales"/> 
+
+                            <h:outputText value="Confirmar clave:" />  
+                            <p:password id="txtConfirmPassword" value="#{userController.selectedUser.password}"  required="true" feedback="false"/> 
+                            
+                            <h:outputText value="Perfil:" /> 
+                            <p:autoComplete id="dd" dropdown="true" value="#{userController.txt6}"   
+                                            completeMethod="#{autoCompleteBean.complete}" /> 
                             <h:outputText value="Estatus: " />  
-                            <p:selectOneMenu value="#{userController.selectedUser}" effect="fade">  
-                                <f:selectItem itemLabel="Seleccionar" itemValue="" />  
+                            
+                            <p:selectOneMenu value="#{userController.selectedUser.status.id}" rendered="#{userController.selectedUser != null}" effect="fade">  
+                                <f:selectItem itemLabel="Seleccionar" itemValue="" />
                                 <f:selectItems value="#{userController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status.id}"/>  
                             </p:selectOneMenu>
+                            <f:facet name="footer">  
+                                <p:commandButton id="loginButton" value="Registrar" update="messages"   
+                                                 action="#{userController.addOrUpdateUser}"    
+                                                 oncomplete="handleAddOrUpdateUser(xhr, status, args)"/>  
+                            </f:facet> 
                         </h:panelGrid>  
                     </p:dialog> 
-
                 </h:form>
+                <script type="text/javascript">
+                    function handleAddOrUpdateUser(xhr, status, args) {
+                        if (args.validationFailed || !args.success) {
+                            userDialog.jq.effect("shake", {times: 5}, 100);
+                        }
+                        else {
+                            userDialog.hide();
+                        }
+                    }
+                </script>
             </ui:define>
 
         </ui:composition>
