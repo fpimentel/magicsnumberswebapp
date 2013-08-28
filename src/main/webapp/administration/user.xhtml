@@ -64,26 +64,33 @@
 
                             <h:outputText value="Confirmar clave:" />  
                             <p:password id="txtConfirmPassword" value="#{userController.selectedUser.password}"  required="true" feedback="false"/> 
-                            
+
                             <h:outputText value="Perfil:" /> 
-                            <p:autoComplete id="dd" dropdown="true" value="#{userController.txt6}"   
-                                            completeMethod="#{autoCompleteBean.complete}" /> 
+                            <p:autoComplete id="cbProfile" forceSelection="true" dropdown="true" value="#{userController.selectedUser.profile}" rendered="#{userController.selectedUser != null}"
+                                             completeMethod="#{userController.getProfiles}"
+                                             var="prof"
+                                             itemLabel="#{prof.name}"
+                                             itemValue="#{prof}"
+                                             converter="profileConverter"
+                                             required="true" scrollHeight="200"
+                                             />
+
                             <h:outputText value="Estatus: " />  
-                            
-                            <p:selectOneMenu value="#{userController.selectedUser.status.id}" rendered="#{userController.selectedUser != null}" effect="fade">  
+                            <p:selectOneMenu id="cbEstatus" value="#{userController.selectedUser.status.id}" rendered="#{userController.selectedUser != null}" effect="fade">  
                                 <f:selectItem itemLabel="Seleccionar" itemValue="" />
                                 <f:selectItems value="#{userController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status.id}"/>  
                             </p:selectOneMenu>
                             <f:facet name="footer">  
-                                <p:commandButton id="loginButton" value="Registrar" update="messages"   
-                                                 action="#{userController.addOrUpdateUser}"    
-                                                 oncomplete="handleAddOrUpdateUser(xhr, status, args)"/>  
+                                <p:commandButton id="addUpdateUserBtn" value="Registrar" update=":form:messages"   
+                                                 action="#{userController.addOrUpdateUser}"   
+                                                 oncomplete="handleAddOrUpdateUser(xhr, status, args)"/>
                             </f:facet> 
-                        </h:panelGrid>  
+                        </h:panelGrid>                          
                     </p:dialog> 
+
                 </h:form>
                 <script type="text/javascript">
-                    function handleAddOrUpdateUser(xhr, status, args) {
+                    function handleAddOrUpdateUser(xhr, status, args) {                  
                         if (args.validationFailed || !args.success) {
                             userDialog.jq.effect("shake", {times: 5}, 100);
                         }

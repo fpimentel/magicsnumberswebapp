@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  *
- * @author cpimentel
+ * @author fpimentel
  */
 public interface ProfileDao {
     List<Profile> findAll() throws SearchAllProfileException;
