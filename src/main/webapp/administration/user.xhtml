@@ -66,23 +66,24 @@
                             <p:password id="txtConfirmPassword" value="#{userController.selectedUser.password}"  required="true" feedback="false"/> 
 
                             <h:outputText value="Perfil:" /> 
-                            <p:autoComplete id="cbProfile" forceSelection="true" dropdown="true" value="#{userController.selectedUser.profile}" rendered="#{userController.selectedUser != null}"
+                            <p:autoComplete id="cbProfile" forceSelection="true" dropdown="true" value="#{userController.selectedUser.profile}" 
                                              completeMethod="#{userController.getProfiles}"
                                              var="prof"
                                              itemLabel="#{prof.name}"
                                              itemValue="#{prof}"
-                                             converter="profileConverter"
-                                             required="true" scrollHeight="200"
-                                             />
-
+                                             converter="#{profileConverter}"
+                                             required="true"
+                             />
+                                  
+                       
                             <h:outputText value="Estatus: " />  
                             <p:selectOneMenu id="cbEstatus" value="#{userController.selectedUser.status.id}" rendered="#{userController.selectedUser != null}" effect="fade">  
                                 <f:selectItem itemLabel="Seleccionar" itemValue="" />
                                 <f:selectItems value="#{userController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status.id}"/>  
                             </p:selectOneMenu>
                             <f:facet name="footer">  
-                                <p:commandButton id="addUpdateUserBtn" value="Registrar" update=":form:messages"   
-                                                 action="#{userController.addOrUpdateUser}"   
+                                <p:commandButton id="addUpdateUserBtn" value="Registrar" 
+                                                 actionListener="#{userController.addOrUpdateUser}"   
                                                  oncomplete="handleAddOrUpdateUser(xhr, status, args)"/>
                             </f:facet> 
                         </h:panelGrid>                          

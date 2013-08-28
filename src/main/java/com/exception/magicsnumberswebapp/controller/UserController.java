@@ -38,6 +38,7 @@ public class UserController {
     private StatusService statusService;
    
     private User selectedUser;
+    
     private UserDataModel userDataModel;
     private List<Status> status;
     private Status selectedStatus;
@@ -131,7 +132,7 @@ public class UserController {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
-    public void addOrUpdateUser() {
+    public void addOrUpdateUser(ActionEvent actionEvent) {
         String name = "fausto";
          boolean success = true;         
         RequestContext context = RequestContext.getCurrentInstance();
@@ -150,6 +151,7 @@ public class UserController {
         FacesContext.getCurrentInstance().addMessage(null, msg);
         context.addCallbackParam("success", success);
     }
+    
 
     private boolean userAlreadyExist() {
         List<User> users = userDataModel.getUsers();

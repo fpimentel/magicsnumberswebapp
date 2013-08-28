@@ -36,7 +36,7 @@ public class ProfileConverter implements Converter {
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String submittedValue) {
         int id = Integer.parseInt(submittedValue);
-        for(Profile currProfile : profiles){
+        for(Profile currProfile : getProfiles()){
             if(currProfile.getId() == id){
                 return currProfile;
             }
