@@ -14,5 +14,5 @@ import java.util.Set;
 public interface UserDao {
     public List<User> getAllUsers() throws SearchAllUserException;        
     public User getUserByCredentials(String userName, String pass) throws SearchAllUserException;     
-    void saveUsersData(Set<User> users) throws SaveUsersDataException;
+    void saveUsersData(List<User> users) throws SaveUsersDataException;
 }

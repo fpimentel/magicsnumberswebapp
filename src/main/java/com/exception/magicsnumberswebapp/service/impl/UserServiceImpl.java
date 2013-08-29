@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void saveUsersData(Set<User> users) throws SaveUsersDataException {
+    public void saveUsersData(List<User> users) throws SaveUsersDataException {
         userDao.saveUsersData(users);
     }
     

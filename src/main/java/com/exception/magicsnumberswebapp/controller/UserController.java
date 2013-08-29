@@ -7,6 +7,7 @@ import com.exception.magicsnumberswebapp.view.converter.ProfileConverter;
 import com.exception.magicsnumbersws.entities.Profile;
 import com.exception.magicsnumbersws.entities.Status;
 import com.exception.magicsnumbersws.entities.User;
+import com.exception.magicsnumbersws.exception.SaveUsersDataException;
 import com.exception.magicsnumbersws.exception.SearchAllUserException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,9 @@ import javax.faces.context.FacesContext;
 import org.springframework.context.annotation.Scope;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.component.UIComponent;
 import javax.faces.event.ActionEvent;
+import javax.faces.validator.ValidatorException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -36,15 +39,15 @@ public class UserController {
     private UserService userService;
     @Autowired
     private StatusService statusService;
-   
+    private List<User> updatedUsers;
     private User selectedUser;
-    
+    private boolean editMode = false;
     private UserDataModel userDataModel;
     private List<Status> status;
     private Status selectedStatus;
     private List<Profile> profiles;
     @Autowired
-    private ProfileConverter profileConverter;    
+    private ProfileConverter profileConverter;
 
     public ProfileConverter getProfileConverter() {
         return profileConverter;
@@ -53,27 +56,27 @@ public class UserController {
     public void setProfileConverter(ProfileConverter profileConverter) {
         this.profileConverter = profileConverter;
     }
-    
+
     public UserController() {
-        
+        updatedUsers = new ArrayList<User>();
     }
 
     public List<Profile> getProfiles(String query) {
-        List<Profile> suggestions = new ArrayList<Profile>();   
+        List<Profile> suggestions = new ArrayList<Profile>();
         query = query.toUpperCase();
-        for(Profile p : profileConverter.getProfiles()) {  
-            if(p.getName().toUpperCase().contains(query))  
-                suggestions.add(p);  
-        }  
-          
-        return suggestions;  
+        for (Profile p : profileConverter.getProfiles()) {
+            if (p.getName().toUpperCase().contains(query)) {
+                suggestions.add(p);
+            }
+        }
+
+        return suggestions;
     }
 
     public void setProfiles(List<Profile> profiles) {
         this.profiles = profiles;
     }
-    
-    
+
     public Status getSelectedStatus() {
         return selectedStatus;
     }
@@ -93,7 +96,6 @@ public class UserController {
         this.status = status;
     }
 
-    
     public User getSelectedUser() {
         return selectedUser;
     }
@@ -120,9 +122,8 @@ public class UserController {
     }
 
     public void onRowSelect(SelectEvent event) {
-
         FacesMessage msg = new FacesMessage("Usuario", ((User) event.getObject()).getFirtName());
-
+        editMode = true;
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
@@ -132,36 +133,79 @@ public class UserController {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
-    public void addOrUpdateUser(ActionEvent actionEvent) {
-        String name = "fausto";
-         boolean success = true;         
-        RequestContext context = RequestContext.getCurrentInstance();
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario ya existe", selectedUser.getUserName());
-        List<User> userss = userDataModel.getUsers();
-        List<User> userss2 = userDataModel.getUsers();
-        /*
-        
-       
-
+    /*public void addOrUpdateUser(FacesContext context, UIComponent validate, Object value) {
+     boolean success = true;
+     FacesMessage msg;
+     RequestContext reqContext = RequestContext.getCurrentInstance();
+     if (userAlreadyExist(value.toString())) {
+     msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario ya existe", value.toString());
+     success = false;
+     throw new ValidatorException(msg);
+     }
+     if (updatedUsers.contains(selectedUser)) {
+     for (User currUser : updatedUsers) {
+     if (currUser.getId() == selectedUser.getId()) {
+     currUser = selectedUser;
+     }
+     }
+     } else {
+     updatedUsers.add(selectedUser);
+     }
+     reqContext.addCallbackParam("success", success);
+     }*/
+    public void addOrUpdateUser(ActionEvent event) {
+        boolean success = true;
+        FacesMessage msg;
+        RequestContext reqContext = RequestContext.getCurrentInstance();
         if (userAlreadyExist()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario ya existe", selectedUser.getUserName());
-            success = false;            
-        }                
-        */
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-        context.addCallbackParam("success", success);
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario ya existe", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            success = false;
+        }
+        if (editMode) {
+            User userVo = new User();
+            userVo.setId(selectedUser.getId());
+            int index = userDataModel.getUsers().indexOf(userVo);
+            userDataModel.getUsers().set(index, selectedUser);
+            int updatedUserIndex = updatedUsers.indexOf(userVo);
+            if (updatedUserIndex >= 0) {
+                updatedUsers.set(updatedUserIndex, selectedUser);
+            } else {
+                updatedUsers.add(selectedUser);
+            }
+            editMode = false;
+        }
+        reqContext.addCallbackParam("success", success);
     }
-    
+
+    public void saveAll() {
+        FacesMessage msg;
+        boolean success = true;
+        RequestContext reqContext = RequestContext.getCurrentInstance();
+        try {
+            userService.saveUsersData(updatedUsers);
+        } catch (SaveUsersDataException ex) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ocurrio un error guardando la informacion de los usuarios.", null);
+            success = false;
+            throw new ValidatorException(msg);
+        }
+        msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Grabado exitosamente", null);
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+        //reqContext.addCallbackParam("success", success);
+    }
 
     private boolean userAlreadyExist() {
         List<User> users = userDataModel.getUsers();
-        int counterUserExist = 0;
-        for (User currUser : users) {
-            if (currUser.getUserName().equals(selectedUser.getUserName())) {
-                counterUserExist++;
+        boolean userExist = true;
+        if (editMode) {
+            for (User currUser : users) {
+                if (!currUser.equals(selectedUser)) {
+                    if (currUser.getUserName().equals(selectedUser.getUserName())) {
+                        return userExist;
+                    }
+                }
             }
         }
-        return (counterUserExist == 2);
+        return !userExist;
     }
-
 }

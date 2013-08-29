@@ -1,9 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.exception.magicsnumberswebapp.dao.impl;
-
 import com.exception.magicsnumberswebapp.dao.UserDao;
 import com.exception.magicsnumbersws.endpoints.SecurityEndPoint;
 import com.exception.magicsnumbersws.entities.User;
@@ -24,7 +19,7 @@ public class UserDaoImpl implements UserDao{
    
     @Autowired
     private SecurityEndPoint securityEndpoint;
-    
+    private int ACTIVO = 1;
     private List<User> users;
     private boolean usersDataLoaded;
 
@@ -64,7 +59,8 @@ public class UserDaoImpl implements UserDao{
         }
         for(User currentUser : users){
             boolean isValidUser =  currentUser.getUserName().equals(userName) 
-                                    && currentUser.getPassword().equals(pass); 
+                                    && currentUser.getPassword().equals(pass) 
+                                    && currentUser.getStatus().getId() == ACTIVO;             
             if(isValidUser){
                 return currentUser;
             }
@@ -73,7 +69,7 @@ public class UserDaoImpl implements UserDao{
     }
 
     @Override
-    public void saveUsersData(Set<User> users) throws SaveUsersDataException {
+    public void saveUsersData(List<User> users) throws SaveUsersDataException {
         securityEndpoint.saveUsersData(users);
     }
 

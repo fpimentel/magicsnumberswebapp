@@ -4,11 +4,11 @@ import com.exception.magicsnumbersws.entities.User;
 import java.util.List;  
 import javax.faces.model.ListDataModel;  
 import org.primefaces.model.SelectableDataModel;  
+import org.springframework.beans.BeanUtils;
   
 public class UserDataModel extends ListDataModel<User> implements SelectableDataModel<User> {    
   
-    private List<User> users;
-    //private User selectedUser;
+    private List<User> users;    
     
     public UserDataModel() {  
     }  
@@ -25,31 +25,22 @@ public class UserDataModel extends ListDataModel<User> implements SelectableData
     public void setUsers(List<User> users) {
         this.users = users;
     }
-
-   // public User getSelectedUser() {
-     //   return selectedUser;
-    //}
-
-    //public void setSelectedUser(User selectedUser) {
-   //     this.selectedUser = selectedUser;
-   // }
       
     @Override  
-    public User getRowData(String rowKey) {  
-        //In a real app, a more efficient way like a query by rowKey should be implemented to deal with huge data  
-          
-        List<User> users = (List<User>) getWrappedData();  
-          
+    public User getRowData(String rowKey) {                   
+        List<User> users = (List<User>) getWrappedData();   
         for(User user : users) {  
-            if(user.getUserName().equals(rowKey))  
-                return user;  
-        }  
-          
+            if(user.getId().toString().equals(rowKey)){
+                User userCopy = new User();
+                BeanUtils.copyProperties(user,userCopy);
+                return  userCopy;  
+            }
+        }            
         return null;  
     }  
   
     @Override  
     public Object getRowKey(User user) {  
-        return user.getUserName();  
+        return user.getId();
     }  
 }
