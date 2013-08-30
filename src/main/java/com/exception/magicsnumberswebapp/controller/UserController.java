@@ -97,11 +97,22 @@ public class UserController {
     }
 
     public User getSelectedUser() {
+        if (selectedUser == null) {
+            selectedUser = new User();
+        }
         return selectedUser;
     }
-
+    
+    public void resetData(ActionEvent event){
+        selectedUser = new User();
+    }
+    
     public void setSelectedUser(User selectedUser) {
         this.selectedUser = selectedUser;
+    }
+
+    public void addNewUser() {
+        this.selectedUser = new User();
     }
 
     public UserDataModel getUserDataModel() {
@@ -117,7 +128,6 @@ public class UserController {
 
     private void createMessage(String header, String message) {
         FacesMessage msgToAction = new FacesMessage(header, message);
-
         FacesContext.getCurrentInstance().addMessage(null, msgToAction);
     }
 
@@ -133,26 +143,6 @@ public class UserController {
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
-    /*public void addOrUpdateUser(FacesContext context, UIComponent validate, Object value) {
-     boolean success = true;
-     FacesMessage msg;
-     RequestContext reqContext = RequestContext.getCurrentInstance();
-     if (userAlreadyExist(value.toString())) {
-     msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario ya existe", value.toString());
-     success = false;
-     throw new ValidatorException(msg);
-     }
-     if (updatedUsers.contains(selectedUser)) {
-     for (User currUser : updatedUsers) {
-     if (currUser.getId() == selectedUser.getId()) {
-     currUser = selectedUser;
-     }
-     }
-     } else {
-     updatedUsers.add(selectedUser);
-     }
-     reqContext.addCallbackParam("success", success);
-     }*/
     public void addOrUpdateUser(ActionEvent event) {
         boolean success = true;
         FacesMessage msg;
@@ -161,6 +151,7 @@ public class UserController {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario ya existe", "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             success = false;
+            return;
         }
         if (editMode) {
             User userVo = new User();
@@ -174,7 +165,12 @@ public class UserController {
                 updatedUsers.add(selectedUser);
             }
             editMode = false;
+        } else {
+            selectedUser.setId(userDataModel.nextUserId());
+            updatedUsers.add(selectedUser);
+            userDataModel.getUsers().add(selectedUser);
         }
+        selectedUser = null;
         reqContext.addCallbackParam("success", success);
     }
 
@@ -183,7 +179,14 @@ public class UserController {
         boolean success = true;
         RequestContext reqContext = RequestContext.getCurrentInstance();
         try {
-            userService.saveUsersData(updatedUsers);
+            if (updatedUsers.size() > 0) {
+                userService.saveUsersData(updatedUsers);
+            } else {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No hay nuevos cambios para registrar", null);
+                success = false;
+                throw new ValidatorException(msg);
+            }
+
         } catch (SaveUsersDataException ex) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ocurrio un error guardando la informacion de los usuarios.", null);
             success = false;
@@ -191,18 +194,21 @@ public class UserController {
         }
         msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Grabado exitosamente", null);
         FacesContext.getCurrentInstance().addMessage(null, msg);
-        //reqContext.addCallbackParam("success", success);
     }
 
     private boolean userAlreadyExist() {
         List<User> users = userDataModel.getUsers();
         boolean userExist = true;
-        if (editMode) {
-            for (User currUser : users) {
+        for (User currUser : users) {
+            if (editMode) {
                 if (!currUser.equals(selectedUser)) {
                     if (currUser.getUserName().equals(selectedUser.getUserName())) {
                         return userExist;
                     }
+                }
+            } else {
+                if (currUser.getUserName().equals(selectedUser.getUserName())) {
+                    return userExist;
                 }
             }
         }

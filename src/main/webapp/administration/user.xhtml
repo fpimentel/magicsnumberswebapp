@@ -41,30 +41,31 @@
                         <p:column headerText="No. Contacto" style="width:8%" sortBy="#{user.contactNumber}" filterBy="#{user.contactNumber}"  filterMatchMode="contains">  
                             #{user.contactNumber}  
                         </p:column> 
+                        <p:column headerText="Perfil" style="width:8%" sortBy="#{user.contactNumber}" filterBy="#{user.contactNumber}"  filterMatchMode="contains">  
+                            #{user.profile.name}  
+                        </p:column> 
                         <p:column headerText="Estatus" style="width:8%" sortBy="#{user.status.name}" filterBy="#{user.status.name}"  filterMatchMode="contains">  
                             #{user.status.name}  
                         </p:column>                         
                     </p:dataTable>  
                     <p:dialog id="dialog" header="Datos usuarios" widgetVar="userDialog" resizable="false"  
-                              showEffect="fade" hideEffect="explode">  
+                              showEffect="fade" hideEffect="explode" >  
                         <h:panelGrid id="pUserData" columns="2" cellpadding="4">                           
                             <h:outputText value="Nombre Usuario:" />  
-                            <p:inputText id="txtUserName" required="true" value="#{userController.selectedUser.userName}" />
+                            <p:inputText id="txtUserName" required="true" validatorMessage="Nombre usuario requerido" value="#{userController.selectedUser.userName}" />
 
                             <h:outputText value="Nombre:" />  
-                            <p:inputText id="txtName" required="true"  value="#{userController.selectedUser.firtName}" />  
+                            <p:inputText id="txtName" required="true"  validatorMessage="Nombre requerido" value="#{userController.selectedUser.firtName}" />  
 
                             <h:outputText value="Apellido:" />  
-                            <p:inputText id="txtLastName" required="true" value="#{userController.selectedUser.lastName}" />    
+                            <p:inputText id="txtLastName" required="true" validatorMessage="Apellido requerido" value="#{userController.selectedUser.lastName}" />    
 
                             <h:outputText value="No. Contacto:" />  
-                            <p:inputText id="txtContactNumber" required="true" value="#{userController.selectedUser.contactNumber}" />                              
+                            <p:inputText id="txtContactNumber" required="true" validatorMessage="No. contacto requerido" value="#{userController.selectedUser.contactNumber}" />                              
 
                             <h:outputText value="Clave:" />  
-                            <p:password id="txtPassword" value="#{userController.selectedUser.password}" feedback="true" match="txtConfirmPassword" validatorMessage="La clave y la confirmacion deben ser iguales"/> 
-
-                            <h:outputText value="Confirmar clave:" />  
-                            <p:password id="txtConfirmPassword" value="#{userController.selectedUser.password}"  feedback="false"/> 
+                            <p:password id="txtPassword" value="#{userController.selectedUser.password}" feedback="true" /> 
+                            
 
                             <h:outputText value="Perfil:" /> 
                             <p:autoComplete id="cbProfile" forceSelection="true" dropdown="true" value="#{userController.selectedUser.profile}" 
@@ -74,6 +75,7 @@
                                             itemValue="#{prof}"
                                             converter="#{profileConverter}"
                                             required="true"
+                                            validatorMessage="Perfil requerido"
                                             />
 
 
@@ -86,9 +88,18 @@
                                 <p:commandButton id="addUpdateUserBtn" value="Registrar" 
                                                  actionListener="#{userController.addOrUpdateUser}"   
                                                  oncomplete="handleAddOrUpdateUser(xhr, status, args)" update=":form:dtUsuarios messages"/>
+                                
+                                <p:commandButton id="btnCancel" value="Cancelar" 
+                                                 actionListener="#{userController.resetData}"   
+                                                 oncomplete="handleAddOrUpdateUser(xhr, status, args)" update=":form:dtUsuarios messages"/>
                             </f:facet> 
                         </h:panelGrid>                          
                     </p:dialog> 
+                    <p:commandButton id="btnNewUser" value="Agregar usuario" 
+                                     actionListener="#{userController.addNewUser}"  
+                                     onclick="userDialog.show();"
+                                     oncomplete="handleAddOrUpdateUser(xhr, status, args)" update=":form:dtUsuarios messages"/>
+                    
                     <p:commandButton id="saveAllUserbtn" value="Registrar datos" 
                                      actionListener="#{userController.saveAll}"   
                                      oncomplete="handleAddOrUpdateUser(xhr, status, args)" update=":form:dtUsuarios messages"/>

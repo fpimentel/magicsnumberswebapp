@@ -45,15 +45,16 @@ public class UserDaoImpl implements UserDao{
     }        
     @Override
     public List<User> getAllUsers() throws SearchAllUserException{        
-        if(users == null){
+        //if(users == null){
             users = securityEndpoint.getAllUsers();
-        }        
+        //}        
         return users;
     }        
 
     @Override
-    public User getUserByCredentials(String userName, String pass) throws SearchAllUserException{
-       if(users == null)
+    public User getUserByCredentials(String userName, String pass) throws SearchAllUserException{         
+        return securityEndpoint.getUserByCredential(userName, pass);       
+       /*if(users == null)
         {
             users = getAllUsers();
         }
@@ -65,7 +66,7 @@ public class UserDaoImpl implements UserDao{
                 return currentUser;
             }
         }                    
-        return null;
+        return null;*/
     }
 
     @Override
