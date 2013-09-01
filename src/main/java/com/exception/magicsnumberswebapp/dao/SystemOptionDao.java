@@ -13,5 +13,5 @@ import java.util.List;
  */
 public interface SystemOptionDao {
    
-   List<SystemOption> findAll()throws SearchAllSystemOptionException;
+   List<SystemOption> findAll()throws SearchAllSystemOptionException;   
 }

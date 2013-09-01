@@ -84,6 +84,7 @@
                                 <f:selectItem itemLabel="Seleccionar" itemValue="" />
                                 <f:selectItems value="#{userController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
                             </p:selectOneMenu>
+                            
                             <f:facet name="footer">  
                                 <p:commandButton id="addUpdateUserBtn" value="Registrar" 
                                                  actionListener="#{userController.addOrUpdateUser}"   

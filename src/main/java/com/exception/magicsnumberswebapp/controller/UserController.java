@@ -126,11 +126,6 @@ public class UserController {
         return userDataModel;
     }
 
-    private void createMessage(String header, String message) {
-        FacesMessage msgToAction = new FacesMessage(header, message);
-        FacesContext.getCurrentInstance().addMessage(null, msgToAction);
-    }
-
     public void onRowSelect(SelectEvent event) {
         FacesMessage msg = new FacesMessage("Usuario", ((User) event.getObject()).getFirtName());
         editMode = true;
