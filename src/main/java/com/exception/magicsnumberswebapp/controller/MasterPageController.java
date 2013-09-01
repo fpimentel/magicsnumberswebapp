@@ -1,19 +1,15 @@
 package com.exception.magicsnumberswebapp.controller;
 
 import com.exception.magicsnumbersws.entities.Category;
-import com.exception.magicsnumbersws.entities.CategoryOption;
 import com.exception.magicsnumbersws.entities.Profile;
 import com.exception.magicsnumbersws.entities.SystemOption;
 import com.exception.magicsnumbersws.entities.User;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.submenu.Submenu;
 import org.primefaces.component.menuitem.MenuItem;
 import org.primefaces.model.MenuModel;
@@ -58,23 +54,23 @@ public class MasterPageController {
                 menuItem.setValue(currOption.getValue());
                 menuItem.setUrl(currOption.getUrl());
                 menuItem.setOutcome(currOption.getOutCome());
-                Set<CategoryOption> categoriesOptions = currOption.getCategories();
-                for (CategoryOption currCategoryOption : categoriesOptions) {
+                Category category = currOption.getCategory();
 
-                    String categoryName = currCategoryOption.getCategory().getName();
-                    Submenu subMenu = getCategoryItem(categoryName);
 
-                    if (subMenu == null) {
-                        subMenu = new Submenu();
-                        subMenu.setId(categoryName);
-                        subMenu.setLabel(categoryName);
-                        subMenu.getChildren().add(menuItem);
-                        model.addSubmenu(subMenu);
-                    } else {
-                        subMenu.getChildren().add(menuItem);
-                    }
+                String categoryName = category.getName();
+                Submenu subMenu = getCategoryItem(categoryName);
+
+                if (subMenu == null) {//Si no existe la categoria en el menu la agregamos
+                    subMenu = new Submenu();
+                    subMenu.setId(categoryName);
+                    subMenu.setLabel(categoryName);
+                    subMenu.getChildren().add(menuItem);
+                    model.addSubmenu(subMenu);
+                } else {
+                    subMenu.getChildren().add(menuItem);
                 }
             }
+
 
         } catch (Exception ex) {
             LOG.log(Level.SEVERE, "Error generando menu principal: " + ex.getMessage());

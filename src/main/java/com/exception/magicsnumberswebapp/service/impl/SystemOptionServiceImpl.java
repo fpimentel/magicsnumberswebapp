@@ -1,7 +1,9 @@
 package com.exception.magicsnumberswebapp.service.impl;
+
 import com.exception.magicsnumberswebapp.dao.SystemOptionDao;
 import com.exception.magicsnumberswebapp.service.SystemOptionService;
 import com.exception.magicsnumbersws.entities.SystemOption;
+import com.exception.magicsnumbersws.exception.SaveSystemOptionsDataException;
 import com.exception.magicsnumbersws.exception.SearchAllSystemOptionException;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -20,14 +22,14 @@ public class SystemOptionServiceImpl implements SystemOptionService {
     private List<SystemOption> systemOptions;
 
     @PostConstruct
-    public void loadSytemOptionData() throws SearchAllSystemOptionException {                
-      systemOptions = systemOptionDao.findAll();                
+    public void loadSytemOptionData() throws SearchAllSystemOptionException {
+        systemOptions = systemOptionDao.findAll();
     }
 
     public List<SystemOption> getSystemOptions() {
         return systemOptions;
     }
-    
+
     public void setSystemOptions(List<SystemOption> systemOptions) {
         this.systemOptions = systemOptions;
     }
@@ -43,5 +45,10 @@ public class SystemOptionServiceImpl implements SystemOptionService {
     @Override
     public List<SystemOption> findAll() throws SearchAllSystemOptionException {
         return systemOptionDao.findAll();
+    }
+
+    @Override
+    public void saveSystemOptionsData(List<SystemOption> systemOptions) throws SaveSystemOptionsDataException {
+        systemOptionDao.saveAllSystemOptionData(systemOptions);
     }
 }

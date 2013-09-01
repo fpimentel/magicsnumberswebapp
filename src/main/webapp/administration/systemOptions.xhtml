@@ -19,55 +19,92 @@
 
                     <p:growl id="messages" showDetail="true"/>  
 
-                    <p:dataTable id="dtOpt" var="sysOpt" value="#{systemOptionController.systemOptionDataModel}" paginator="true" rows="10"  
+                    <p:dataTable id="dtOption" var="option" value="#{systemOptionController.systemOptionDataModel}" paginator="true" rows="10"  
                                  selection="#{systemOptionController.selectedSystemOption}" selectionMode="single">  
                         <f:facet name="header"  >  
-                            Consulta de Opciones  
+                            Consulta de Opciones
                         </f:facet> 
                         <p:ajax event="rowSelect" listener="#{systemOptionController.onRowSelect}"   
-                                update=":form:pOptData :form:messages" oncomplete="optDialog.show()" />  
-                        <p:ajax event="rowUnselect" listener="#{systemOptionController.onRowUnselect}" update=":form:messages"/>                           
-                        <p:column headerText="Nombre" style="width:8%" sortBy="#{sysOpt.name}" filterBy="#{sysOpt.name}"  filterMatchMode="contains">  
-                            #{sysOpt.name}  
+                                update=":form:pOptionData :form:messages" oncomplete="optionDialog.show()"  />  
+                        <p:ajax event="rowUnselect" listener="#{systemOptionController.onRowUnselect}" update=":form:messages"/>  
+
+                        <p:column headerText="Nombre" style="width:8%" sortBy="#{option.name}" filterBy="#{option.name}"  filterMatchMode="contains">  
+                            #{option.name }  
                         </p:column>
-                        <p:column headerText="Valor" style="width:8%" sortBy="#{sysOpt.value}" filterBy="#{sysOpt.value}"  filterMatchMode="contains">  
-                            #{sysOpt.value}  
+                        <p:column headerText="Valor" style="width:8%" sortBy="#{option.value}" filterBy="#{option.value}"  filterMatchMode="contains">  
+                            #{option.value}  
                         </p:column>  
 
-                        <p:column headerText="URL" style="width:8%" sortBy="#{sysOpt.url}" filterBy="#{sysOpt.url}"  filterMatchMode="contains">  
-                            #{sysOpt.url}  
+                        <p:column headerText="URL" style="width:8%" sortBy="#{option.url}" filterBy="#{option.url}"  filterMatchMode="contains">  
+                            #{option.url}  
                         </p:column>  
-                        <p:column headerText="Out Come" style="width:8%" sortBy="#{sysOpt.outCome}" filterBy="#{sysOpt.outCome}"  filterMatchMode="contains">  
-                            #{sysOpt.outCome}  
-                        </p:column> 
-                        <p:column headerText="Estatus" style="width:8%" sortBy="#{sysOpt.statusId}" filterBy="#{sysOpt.statusId}"  filterMatchMode="contains">  
-                            #{sysOpt.statusId}  
-                        </p:column>                         
+                        <p:column headerText="Out Come" style="width:8%" sortBy="#{option.outCome}" filterBy="#{option.outCome}"  filterMatchMode="contains">  
+                            #{option.outCome}  
+                        </p:column>
+                        <p:column headerText="Categoria" style="width:8%" sortBy="#{option.category.name}" filterBy="#{option.category.name}"  filterMatchMode="contains">  
+                            #{option.category.name}  
+                        </p:column>             
+                        <p:column headerText="Estatus" style="width:8%" sortBy="#{option.status.name}" filterBy="#{option.status.name}"  filterMatchMode="contains">  
+                            #{option.status.name}  
+                        </p:column>             
+
                     </p:dataTable>  
-                    <p:dialog id="dialog" header="Datos usuarios" widgetVar="optDialog" resizable="false"  
-                              showEffect="fade" hideEffect="explode">  
-                        <h:panelGrid id="pOptData" columns="2" cellpadding="4">                           
-                            <h:outputText value="Nombre:" />  
-                            <p:inputText id="txtName" required="true" value="#{systemOptionController.selectedSystemOption.name}" />
+                    <p:dialog id="dialog" header="Información de Opción" widgetVar="optionDialog" resizable="false"  
+                              showEffect="fade" hideEffect="explode" closable="false" >  
+                        <h:panelGrid id="pOptionData" columns="2" cellpadding="4">                           
+                            <h:outputText value=" Nombre: " />  
+                            <p:inputText id="txtName" required="true" validatorMessage="Nombre es requerido" value="#{systemOptionController.selectedSystemOption.name}" />
 
-                            <h:outputText value="Nombre:" />  
-                            <p:inputText id="txtValue" required="true"  value="#{systemOptionController.selectedSystemOption.value}" />  
+                            <h:outputText value=" Valor: " />  
+                            <p:inputText id="txtValue" required="true"  validatorMessage="Valor es requerido" value="#{systemOptionController.selectedSystemOption.value}" />  
 
-                            <h:outputText value="URL:" />  
-                            <p:inputText id="txtUrl" required="true" value="#{systemOptionController.selectedSystemOption.url}" />    
+                            <h:outputText value=" URL: " />  
+                            <p:inputText id="txtUrl" required="true" validatorMessage="Url  es requerida" value="#{systemOptionController.selectedSystemOption.url}" />    
 
                             <h:outputText value="Out Come:" />  
-                            <p:inputText id="txtOutcome" required="true" value="#{systemOptionController.selectedSystemOption.outCome}" />                              
+                            <p:inputText id="txtOutCome" required="true" validatorMessage="Out come es requerido" value="#{systemOptionController.selectedSystemOption.outCome}" />                              
+
+                            <h:outputText value="Categoria: " />  
+                            <p:selectOneMenu id="cbCategory" value="#{systemOptionController.selectedSystemOption.category}" rendered="#{systemOptionController.selectedSystemOption != null}" effect="fade" converter="#{categoryConverter}">  
+                                <f:selectItem itemLabel="Seleccionar" itemValue="" />
+                                <f:selectItems value="#{systemOptionController.categories}" var="category" itemLabel="#{category.name}" itemValue="#{category}"/>  
+                            </p:selectOneMenu>    
 
                             <h:outputText value="Estatus: " />  
-                            <p:selectOneMenu value="#{systemOptionController.selectedSystemOption}" effect="fade">  
-                                <f:selectItem itemLabel="Seleccionar" itemValue="" />  
-                                <f:selectItems value="#{systemOptionController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status.id}"/>  
+                            <p:selectOneMenu id="cbEstatus" value="#{systemOptionController.selectedSystemOption.status}" rendered="#{systemOptionController.selectedSystemOption != null}" effect="fade" converter="#{statusConverter}">  
+                                <f:selectItem itemLabel="Seleccionar" itemValue="" />
+                                <f:selectItems value="#{systemOptionController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
                             </p:selectOneMenu>
-                        </h:panelGrid>  
-                    </p:dialog> 
 
+                            <f:facet name="footer">  
+                                <p:commandButton id="btnaddUpdateSystemOption" value="Registrar" 
+                                                 actionListener="#{systemOptionController.addOrUpdateSystemOption}"   
+                                                 oncomplete="handleAddOrUpdateSystemOption(xhr, status, args)" update=":form:dtOption messages"/>
+
+                                <p:commandButton value="Cancelar"  id="btnCancel"  styleClass="ui-priority-primary"
+                                                 oncomplete=" optionDialog.hide()"/>  
+
+                            </f:facet> 
+                        </h:panelGrid>                          
+                    </p:dialog> 
+                    <p:commandButton id="btnNewSystemOption" value="Agregar Opcion" 
+                                     actionListener="#{systemOptionController.addNewSystemOption}"  
+                                     oncomplete="optionDialog.show()" update=":form:pOptionData"/>
+
+                    <p:commandButton id="btnsaveAllSystemOption" value="Registrar datos" 
+                                     actionListener="#{systemOptionController.saveAll}"   
+                                     oncomplete="handleAddOrUpdateSystemOption(xhr, status, args)" update=":form:dtOption messages"/>
                 </h:form>
+                <script type="text/javascript">
+                                         function handleAddOrUpdateSystemOption(xhr, status, args) {
+                                             if (args.validationFailed || !args.success) {
+                                                 optionDialog.jq.effect("shake", {times: 5}, 100);
+                                             }
+                                             else {
+                                                 optionDialog.hide();
+                                             }
+                                         }                                         
+                </script>
             </ui:define>
 
         </ui:composition>
