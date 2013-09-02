@@ -18,7 +18,7 @@
             <redirect/>
         </navigation-case>
     </navigation-rule>
-    
+   <!-- 
     <navigation-rule>
         <from-view-id>/login.xhtml</from-view-id>
         <navigation-case>
@@ -29,7 +29,7 @@
     </navigation-rule>
     
     <navigation-rule>
-        <from-view-id>/masterpage.xhtml</from-view-id>
+        <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>user</from-outcome>
             <to-view-id>/user.xhtml</to-view-id>
@@ -38,10 +38,10 @@
     </navigation-rule>
     
      <navigation-rule>
-        <from-view-id>/masterpage.xhtml</from-view-id>
+        <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>option</from-outcome>
-            <to-view-id>faces/administration/systemOptions.xhtml</to-view-id>
+            <to-view-id>/administration/systemOptions.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
@@ -54,5 +54,5 @@
             <redirect/>
         </navigation-case>
     </navigation-rule>
-    
+    -->
 </faces-config>

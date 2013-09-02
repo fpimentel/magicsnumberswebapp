@@ -79,20 +79,24 @@
                             <f:facet name="footer">  
                                 <p:commandButton id="btnaddUpdateSystemOption" value="Registrar" 
                                                  actionListener="#{systemOptionController.addOrUpdateSystemOption}"   
-                                                 oncomplete="handleAddOrUpdateSystemOption(xhr, status, args)" update=":form:dtOption messages"/>
+                                                 oncomplete="handleAddOrUpdateSystemOption(xhr, status, args)" update=":form:dtOption messages"                                                 
+                                                 />
 
                                 <p:commandButton value="Cancelar"  id="btnCancel"  styleClass="ui-priority-primary"
-                                                 oncomplete=" optionDialog.hide()"/>  
+                                                 oncomplete=" optionDialog.hide()" 
+                                                 immediate="true"/>  
 
                             </f:facet> 
                         </h:panelGrid>                          
                     </p:dialog> 
                     <p:commandButton id="btnNewSystemOption" value="Agregar Opcion" 
-                                     actionListener="#{systemOptionController.addNewSystemOption}"  
-                                     oncomplete="optionDialog.show()" update=":form:pOptionData"/>
+                                     actionListener="#{systemOptionController.addNewSystemOption}"   
+                                     immediate="true"
+                                     oncomplete="optionDialog.show()"/>
 
                     <p:commandButton id="btnsaveAllSystemOption" value="Registrar datos" 
-                                     actionListener="#{systemOptionController.saveAll}"   
+                                     actionListener="#{systemOptionController.saveAll}" 
+                                     immediate="true"
                                      oncomplete="handleAddOrUpdateSystemOption(xhr, status, args)" update=":form:dtOption messages"/>
                 </h:form>
                 <script type="text/javascript">

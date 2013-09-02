@@ -10,6 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import org.primefaces.component.submenu.Submenu;
 import org.primefaces.component.menuitem.MenuItem;
 import org.primefaces.model.MenuModel;
@@ -44,6 +46,7 @@ public class MasterPageController {
         model = new DefaultMenuModel();
         try {
             User loggedUser = loginController.getUser();
+            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
             Profile profile = loggedUser.getProfile();
 
             Set<SystemOption> options = profile.getOptions();
@@ -53,7 +56,7 @@ public class MasterPageController {
                 menuItem.setId(currOption.getName());
                 menuItem.setValue(currOption.getValue());
                 menuItem.setUrl(currOption.getUrl());
-                menuItem.setOutcome(currOption.getOutCome());
+                //menuItem.setOutcome(currOption.getOutCome());
                 Category category = currOption.getCategory();
 
 
