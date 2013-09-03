@@ -4,6 +4,7 @@ import com.exception.magicsnumberswebapp.datamodel.UserDataModel;
 import com.exception.magicsnumberswebapp.service.StatusService;
 import com.exception.magicsnumberswebapp.service.UserService;
 import com.exception.magicsnumberswebapp.view.converter.ProfileConverter;
+import com.exception.magicsnumbersws.entities.Consortium;
 import com.exception.magicsnumbersws.entities.Profile;
 import com.exception.magicsnumbersws.entities.Status;
 import com.exception.magicsnumbersws.entities.User;
@@ -17,12 +18,16 @@ import javax.faces.context.FacesContext;
 import org.springframework.context.annotation.Scope;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.component.UIComponent;
 import javax.faces.event.ActionEvent;
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
 import javax.faces.validator.ValidatorException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.DualListModel;
+import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -45,23 +50,57 @@ public class UserController {
     private UserDataModel userDataModel;
     private List<Status> status;
     private Status selectedStatus;
-    private List<Profile> profiles;
+    private List<Profile> avariableProfiles;
+    private List<Profile> selecetedProfiles;
+    private DualListModel<Profile> profileDualList;
     @Autowired
     private ProfileConverter profileConverter;
+    private List<SelectItem> categories;
+    private String selection;
+
+    public UserController() {
+        avariableProfiles = new ArrayList<Profile>();
+        avariableProfiles.add(new Profile(1, "Fausto", null, null, null, 1));
+        avariableProfiles.add(new Profile(1, "Pedro", null, null, null, 1));
+        selecetedProfiles = new ArrayList<Profile>();
+        profileDualList = new DualListModel<Profile>(avariableProfiles, selecetedProfiles);
+        updatedUsers = new ArrayList<User>();
+
+    }
 
     public ProfileConverter getProfileConverter() {
         return profileConverter;
+    }
+
+    public DualListModel<Profile> getProfileDualList() {
+        return profileDualList;
+    }
+
+    public void setProfileDualList(DualListModel<Profile> profileDualList) {
+        this.profileDualList = profileDualList;
+    }
+
+    public List<Profile> getAvariableProfiles() {
+        return avariableProfiles;
+    }
+
+    public void setAvariableProfiles(List<Profile> avariableProfiles) {
+        this.avariableProfiles = avariableProfiles;
+    }
+
+    public List<Profile> getSelecetedProfiles() {
+        return selecetedProfiles;
+    }
+
+    public void setSelecetedProfiles(List<Profile> selecetedProfiles) {
+        this.selecetedProfiles = selecetedProfiles;
     }
 
     public void setProfileConverter(ProfileConverter profileConverter) {
         this.profileConverter = profileConverter;
     }
 
-    public UserController() {
-        updatedUsers = new ArrayList<User>();
-    }
-
-    public List<Profile> getProfiles(String query) {
+    public List<Profile> getAutoCompleteProfiles(String query) {
         List<Profile> suggestions = new ArrayList<Profile>();
         query = query.toUpperCase();
         for (Profile p : profileConverter.getProfiles()) {
@@ -73,8 +112,24 @@ public class UserController {
         return suggestions;
     }
 
-    public void setProfiles(List<Profile> profiles) {
-        this.profiles = profiles;
+    public List<SelectItem> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<SelectItem> categories) {
+        this.categories = categories;
+    }
+
+    public String getSelection() {
+        return selection;
+    }
+
+    public void setSelection(String selection) {
+        this.selection = selection;
+    }
+
+    public List<Profile> getProfiles() {
+        return profileConverter.getProfiles();
     }
 
     public Status getSelectedStatus() {
@@ -102,11 +157,11 @@ public class UserController {
         }
         return selectedUser;
     }
-    
-    public void resetData(ActionEvent event){
+
+    public void resetData(ActionEvent event) {
         selectedUser = new User();
     }
-    
+
     public void setSelectedUser(User selectedUser) {
         this.selectedUser = selectedUser;
     }

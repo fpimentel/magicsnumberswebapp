@@ -1,10 +1,10 @@
 package com.exception.magicsnumberswebapp.controller;
-
 import com.exception.magicsnumberswebapp.service.UserService;
 import com.exception.magicsnumbersws.entities.User;
 import com.exception.magicsnumbersws.exception.SearchAllUserException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Controller;
 @Controller
 @Scope
 public class LoginController {
-    
+
     private User user;
     private String userName;
     private String password;
@@ -30,7 +30,7 @@ public class LoginController {
     private String LOGIN_PAGE = "login";
 
     public LoginController() {
-       // facesContext = FacesContext.getCurrentInstance();
+        
     }
 
     public LoginController(String userName, String password) {
@@ -66,20 +66,28 @@ public class LoginController {
     public void setUser(User user) {
         this.user = user;
     }
-    
+
     public String isValidUser() {
         String actionToExcecute = LOGIN_PAGE;
-        try {                        
+        FacesMessage msg;
+        try {
             user = userService.getUserByCredentials(this.userName, this.password);
             if (user != null) {
                 actionToExcecute = HOME_PAGE;
             } else {
-                //facesContext.addMessage(null, new FacesMessage("Successful", "Usuario invalido" + "Usuario invalido"));
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario invalido", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
             }
         } catch (SearchAllUserException ex) {
             Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, "Ocurrio un error buscando todos los usuarios ", ex);
-            //facesContext.addMessage(null, new FacesMessage("Failed", "Ocurrio un error buscando todos los usuarios " + "Ocurrio un error buscando todos los usuarios"));
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error validando credenciales", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        } catch (Exception ex) {
+            Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, "Ha ocurrido un error validando las credenciales de usuario ", ex.getMessage());
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error validando credenciales", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
         }
+
         return actionToExcecute;
     }
 }

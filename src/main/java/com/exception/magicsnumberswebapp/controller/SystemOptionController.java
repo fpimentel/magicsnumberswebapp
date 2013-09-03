@@ -14,7 +14,6 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
-import org.springframework.context.annotation.Scope;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.event.ActionEvent;
@@ -30,7 +29,6 @@ import org.springframework.stereotype.Controller;
  * @author cpimentel
  */
 @ManagedBean
-@Scope
 @Controller
 public class SystemOptionController {
 

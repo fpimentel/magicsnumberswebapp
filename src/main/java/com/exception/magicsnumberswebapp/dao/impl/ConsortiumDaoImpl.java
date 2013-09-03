@@ -1,15 +1,9 @@
 package com.exception.magicsnumberswebapp.dao.impl;
-
 import com.exception.magicsnumberswebapp.dao.ConsortiumDao;
-import com.exception.magicsnumberswebapp.dao.SystemOptionDao;
-
-import com.exception.magicsnumbersws.endpoints.SecurityEndPoint;
+import com.exception.magicsnumbersws.endpoints.LookupTablesEndpoint;
 import com.exception.magicsnumbersws.entities.Consortium;
-
-import com.exception.magicsnumbersws.entities.User;
 import com.exception.magicsnumbersws.exception.SearchAllConsortiumException;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +15,7 @@ import org.springframework.stereotype.Repository;
 public class ConsortiumDaoImpl implements ConsortiumDao {
 
     @Autowired
-    private SecurityEndPoint securityEndpoint;
+    private LookupTablesEndpoint securityEndpoint;
 
     public ConsortiumDaoImpl() {
     }

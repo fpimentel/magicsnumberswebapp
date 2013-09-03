@@ -1,16 +1,9 @@
 package com.exception.magicsnumberswebapp.service.impl;
-
 import com.exception.magicsnumberswebapp.dao.ConsortiumDao;
-import com.exception.magicsnumberswebapp.dao.SystemOptionDao;
 import com.exception.magicsnumberswebapp.service.ConsortiumService;
 import com.exception.magicsnumbersws.entities.Consortium;
-import com.exception.magicsnumbersws.entities.SystemOption;
-import com.exception.magicsnumbersws.entities.User;
-import com.exception.magicsnumbersws.exception.SaveSystemOptionsDataException;
 import com.exception.magicsnumbersws.exception.SearchAllConsortiumException;
-import com.exception.magicsnumbersws.exception.SearchAllSystemOptionException;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +36,7 @@ public class ConsortiumServiceImpl implements ConsortiumService {
     
     @Override
     public List<Consortium> findAll(int userId) throws SearchAllConsortiumException {
-      return this.consortiumDao.findAll(userId);  
+      return this.consortiumDao.findAll(userId);
     }
 
     

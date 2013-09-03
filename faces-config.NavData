@@ -4,8 +4,6 @@
     <Scope Scope="Project">
         <Node id="administration/systemOptions.xhtml" x="400" y="450" zoom="true"/>
         <Node id="login.xhtml" x="650" y="166" zoom="true"/>
-        <Node id="user.xhtml" x="495" y="373" zoom="true"/>
-        <Node id="faces/administration/systemOptions.xhtml" x="21" y="358" zoom="true"/>
         <Node id="Menu.xhtml" x="1003" y="387" zoom="true"/>
         <Node id="administration/user.xhtml" x="150" y="450" zoom="true"/>
         <Node id="welcomePrimefaces.xhtml" x="1065" y="656" zoom="true"/>

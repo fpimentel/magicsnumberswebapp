@@ -50,7 +50,7 @@
                     </p:dataTable>  
                     <p:dialog id="dialog" header="Datos usuarios" widgetVar="userDialog" resizable="false"  
                               showEffect="fade" hideEffect="explode" >  
-                        <h:panelGrid id="pUserData" columns="2" cellpadding="4">                           
+                        <h:panelGrid id="pUserData" columns="2" cellpadding="4" width="100%">                           
                             <h:outputText value="Nombre Usuario:" />  
                             <p:inputText id="txtUserName" required="true" validatorMessage="Nombre usuario requerido" value="#{userController.selectedUser.userName}" />
 
@@ -65,18 +65,30 @@
 
                             <h:outputText value="Clave:" />  
                             <p:password id="txtPassword" value="#{userController.selectedUser.password}" feedback="true" /> 
-                            
 
                             <h:outputText value="Perfil:" /> 
                             <p:autoComplete id="cbProfile" forceSelection="true" dropdown="true" value="#{userController.selectedUser.profile}" 
-                                            completeMethod="#{userController.getProfiles}"
+                                            completeMethod="#{userController.getAutoCompleteProfiles}"
                                             var="prof"
                                             itemLabel="#{prof.name}"
                                             itemValue="#{prof}"
                                             converter="#{profileConverter}"
                                             required="true"
-                                            validatorMessage="Perfil requerido"
+                                            validatorMessage="Perfil requerido"                                            
                                             />
+                            </h:panelGrid> 
+                            
+                                
+                                <p:pickList id="pojoPickList" value="#{userController.profileDualList}" var="profile" 
+                                            itemValue="#{profile}" itemLabel="#{profile.name}" converter="#{profileConverter}" 
+                                            showSourceControls="true" showTargetControls="true" 
+                                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
+
+                                    <f:facet name="sourceCaption">Available</f:facet>  
+                                    <f:facet name="targetCaption">Starting</f:facet>  
+
+                                </p:pickList>
+                            
 
 
                             <h:outputText value="Estatus: " />  
@@ -84,36 +96,42 @@
                                 <f:selectItem itemLabel="Seleccionar" itemValue="" />
                                 <f:selectItems value="#{userController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
                             </p:selectOneMenu>
-                            
+
+
+
                             <f:facet name="footer">  
                                 <p:commandButton id="addUpdateUserBtn" value="Registrar" 
                                                  actionListener="#{userController.addOrUpdateUser}"   
-                                                 oncomplete="handleAddOrUpdateUser(xhr, status, args)" update=":form:dtUsuarios messages"/>
-                                
-                                <p:commandButton id="btnCancel" value="Cancelar" 
-                                                 actionListener="#{userController.resetData}"   
-                                                 oncomplete="handleAddOrUpdateUser(xhr, status, args)" update=":form:dtUsuarios messages"/>
+                                                 oncomplete="handleAddOrUpdateUser(xhr, status, args)" update=":form:dtUsuarios messages"                                                 
+                                                 />
+
+                                <p:commandButton id="btnCancel" value="Cancelar"                                                  
+                                                 immediate="true"
+                                                 oncomplete="userDialog.hide()" update=":form:dtUsuarios messages"/>                                 
+
                             </f:facet> 
-                        </h:panelGrid>                          
+                                                 
                     </p:dialog> 
                     <p:commandButton id="btnNewUser" value="Agregar usuario" 
                                      actionListener="#{userController.addNewUser}"  
                                      onclick="userDialog.show();"
-                                     oncomplete="handleAddOrUpdateUser(xhr, status, args)" update=":form:dtUsuarios messages"/>
-                    
+                                     update=":form:dtUsuarios messages"
+                                     immediate="true"
+                                     />
+
                     <p:commandButton id="saveAllUserbtn" value="Registrar datos" 
                                      actionListener="#{userController.saveAll}"   
                                      oncomplete="handleAddOrUpdateUser(xhr, status, args)" update=":form:dtUsuarios messages"/>
                 </h:form>
                 <script type="text/javascript">
-                    function handleAddOrUpdateUser(xhr, status, args) {
-                        if (args.validationFailed || !args.success) {
-                            userDialog.jq.effect("shake", {times: 5}, 100);
-                        }
-                        else {
-                            userDialog.hide();
-                        }
-                    }
+                                         function handleAddOrUpdateUser(xhr, status, args) {
+                                             if (args.validationFailed || !args.success) {
+                                                 userDialog.jq.effect("shake", {times: 5}, 100);
+                                             }
+                                             else {
+                                                 userDialog.hide();
+                                             }
+                                         }
                 </script>
             </ui:define>
 
