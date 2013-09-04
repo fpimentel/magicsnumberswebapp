@@ -11,6 +11,7 @@ import com.exception.magicsnumbersws.entities.Consortium;
 import com.exception.magicsnumbersws.entities.Status;
 import com.exception.magicsnumbersws.entities.SystemOption;
 import com.exception.magicsnumbersws.entities.User;
+import com.exception.magicsnumbersws.exception.SaveConsortiumDataException;
 import com.exception.magicsnumbersws.exception.SaveSystemOptionsDataException;
 import com.exception.magicsnumbersws.exception.SearchAllConsortiumException;
 import com.exception.magicsnumbersws.exception.SearchAllSystemOptionException;
@@ -128,12 +129,17 @@ public class ConsortiumController {
             success = false;
             return;
         }
+        User loggedUser = loginController.getUser();
+        this.selectedConsortium.setCreationUser(loggedUser.getUserName());
         if (editMode) {
             Consortium consortiumToRegister = new Consortium();
             consortiumToRegister.setId(this.selectedConsortium.getId());
             int index = consortiumDataModel.getConsortiums().indexOf(consortiumToRegister);
             consortiumDataModel.getConsortiums().set(index, this.selectedConsortium);
             int updatedConsortiumIndex = updatedConsortiums.indexOf(consortiumToRegister);
+            
+                        
+            
             if (updatedConsortiumIndex >= 0) {
                 updatedConsortiums.set(updatedConsortiumIndex, this.selectedConsortium);
             } else {
@@ -149,27 +155,38 @@ public class ConsortiumController {
         reqContext.addCallbackParam("success", success);
     }
 
-    /* public void saveAll() {
+    public void saveAll() {
         FacesMessage msg;
 
 
         if (updatedConsortiums.size() > 0) {
-            try {
-                consortiumServiceService.saveSystemOptionsData(updatedOptions);
-            } catch (SaveSystemOptionsDataException ex) {
-                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error registrando las opciones", null);
+            try 
+            {
+                consortiumService.saveConsortiumsData(updatedConsortiums);
+            } 
+            catch (SaveConsortiumDataException ex) 
+            {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error registrando los consorcios!", null);
                 Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
-                throw new ValidatorException(msg);
-
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            } 
+            catch (Exception ex) 
+            {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error registrando los consorcios!", null);
+                Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+             return;
             }
-        } else {
+        }
+        else 
+        {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No hay nuevos cambios para registrar", null);
-            throw new ValidatorException(msg);
+            return;
         }
         msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Grabado exitosamente", null);
         FacesContext.getCurrentInstance().addMessage(null, msg);
-    }*/
-
+    }
     private boolean consortiumAlreadyExist() {
         List<Consortium> consortiums = consortiumDataModel.getConsortiums();
         boolean consortiumExist = true;

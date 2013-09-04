@@ -48,7 +48,15 @@
                             <h:outputText value=" Descripción " />  
                             <p:inputText id="txtDescription" required="true"  validatorMessage="Valor es requerido" value="#{consortiumController.selectedConsortium.description}" />  
                             <h:outputText value="Estatus: " />  
-                            
+                            <p:pickList id="plBetBanking" value="#{userController.profileDualList}" var="profile" 
+                                        itemValue="#{profile}" itemLabel="#{profile.name}" converter="#{profileConverter}" 
+                                        showSourceControls="true" showTargetControls="true" 
+                                        showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
+
+                                <f:facet name="sourceCaption">Available</f:facet>  
+                                <f:facet name="targetCaption">Starting</f:facet>  
+
+                            </p:pickList>
                             <p:selectOneMenu id="cbEstatus" value="#{consortiumController.selectedConsortium.status}" rendered="#{consortiumController.selectedConsortium!= null}" effect="fade" converter="#{statusConverter}">  
                                 <f:selectItem itemLabel="Seleccionar" itemValue="" />
                                 <f:selectItems value="#{consortiumController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
@@ -60,28 +68,28 @@
                                                  oncomplete="handleAddOrUpdateConsortium(xhr, status, args)" update=":form:dtConsortium messages"/>
 
                                 <p:commandButton value="Cancelar"  id="btnCancel"  styleClass="ui-priority-primary"
-                                                 oncomplete=" consortiumDialog.hide()"/>  
+                                                 oncomplete=" consortiumDialog.hide()" immediate="true"/>  
 
                             </f:facet> 
                         </h:panelGrid>                          
                     </p:dialog> 
                     <p:commandButton id="btnNewConsortium" value="Agregar Consorcio" 
                                      actionListener="#{consortiumController.addNewConsortium}"  
-                                     oncomplete="consortiumDialog.show()" update=":form:pConsortiumData"/>
+                                     oncomplete="consortiumDialog.show()" update=":form:pConsortiumData" immediate="true" />
 
                     <p:commandButton id="btnsaveAllConsortium" value="Registrar datos" 
                                      actionListener="#{consortiumController.saveAll}"   
                                      oncomplete="handleAddOrUpdateConsortium(xhr, status, args)" update=":form:dtConsortium messages"/>
                 </h:form>
                 <script type="text/javascript">
-                                         function handleAddOrUpdateConsortium(xhr, status, args) {
-                                             if (args.validationFailed || !args.success) {
-                                                 consortiumDialog.jq.effect("shake", {times: 5}, 100);
-                                             }
-                                             else {
-                                                 consortiumDialog.hide();
-                                             }
-                                         }                                         
+                    function handleAddOrUpdateConsortium(xhr, status, args) {
+                        if (args.validationFailed || !args.success) {
+                            consortiumDialog.jq.effect("shake", {times: 5}, 100);
+                        }
+                        else {
+                            consortiumDialog.hide();
+                        }
+                    }
                 </script>
             </ui:define>
 

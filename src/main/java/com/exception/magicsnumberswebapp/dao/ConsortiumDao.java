@@ -3,6 +3,7 @@ package com.exception.magicsnumberswebapp.dao;
 
 
 import com.exception.magicsnumbersws.entities.Consortium;
+import com.exception.magicsnumbersws.exception.SaveConsortiumDataException;
 import com.exception.magicsnumbersws.exception.SearchAllConsortiumException;
 import java.util.List;
 
@@ -15,4 +16,5 @@ import java.util.List;
 public interface ConsortiumDao {
    
    List<Consortium> findAll(int userId)throws SearchAllConsortiumException;
+   public void saveConsortiumsData(List<Consortium> list) throws SaveConsortiumDataException;
 }
