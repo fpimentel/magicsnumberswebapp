@@ -7,7 +7,6 @@ package com.exception.magicsnumberswebapp.dao.impl;
 import com.exception.magicsnumberswebapp.dao.CategoryDao;
 import com.exception.magicsnumbersws.endpoints.LookupTablesEndpoint;
 import com.exception.magicsnumbersws.entities.Category;
-import com.exception.magicsnumbersws.entities.Status;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +45,6 @@ public class CategoryDaoImpl implements CategoryDao{
     public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
-
-    
 
     @Override
     @PostConstruct

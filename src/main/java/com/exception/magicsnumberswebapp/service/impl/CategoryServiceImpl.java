@@ -5,7 +5,6 @@ import com.exception.magicsnumberswebapp.dao.CategoryDao;
 import com.exception.magicsnumberswebapp.dao.StatusDao;
 import com.exception.magicsnumberswebapp.service.CategoryService;
 import com.exception.magicsnumbersws.entities.Category;
-import com.exception.magicsnumbersws.entities.Status;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

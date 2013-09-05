@@ -4,7 +4,6 @@ import com.exception.magicsnumberswebapp.datamodel.UserDataModel;
 import com.exception.magicsnumberswebapp.service.StatusService;
 import com.exception.magicsnumberswebapp.service.UserService;
 import com.exception.magicsnumberswebapp.view.converter.ProfileConverter;
-import com.exception.magicsnumbersws.entities.Consortium;
 import com.exception.magicsnumbersws.entities.Profile;
 import com.exception.magicsnumbersws.entities.Status;
 import com.exception.magicsnumbersws.entities.User;
@@ -20,14 +19,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
-import javax.faces.model.SelectItemGroup;
 import javax.faces.validator.ValidatorException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
-import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.DualListModel;
-import org.primefaces.model.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -36,7 +32,7 @@ import org.springframework.stereotype.Controller;
  * @author fpimentel
  */
 @ManagedBean
-@Scope
+@Scope("request")
 @Controller
 public class UserController {
 

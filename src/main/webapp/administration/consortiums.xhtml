@@ -48,8 +48,8 @@
                             <h:outputText value=" Descripción " />  
                             <p:inputText id="txtDescription" required="true"  validatorMessage="Valor es requerido" value="#{consortiumController.selectedConsortium.description}" />  
                             <h:outputText value="Estatus: " />  
-                            <p:pickList id="plBetBanking" value="#{userController.profileDualList}" var="profile" 
-                                        itemValue="#{profile}" itemLabel="#{profile.name}" converter="#{profileConverter}" 
+                            <p:pickList id="plBetBanking" value="#{consortiumController.consortiumDualList}" var="consortium" rendered="#{consortiumController.consortiumDualList!=null}" 
+                                        itemValue="#{consortium}" itemLabel="#{consortium.name}" converter="#{betbankingConverter}" 
                                         showSourceControls="true" showTargetControls="true" 
                                         showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
 
