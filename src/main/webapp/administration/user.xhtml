@@ -52,7 +52,7 @@
                               showEffect="fade" hideEffect="explode" >  
                         <h:panelGrid id="pUserData" columns="2" cellpadding="4" width="100%">                           
                             <h:outputText value="Nombre Usuario:" />  
-                            <p:inputText id="txtUserName" required="true" validatorMessage="Nombre usuario requerido" value="#{userController.selectedUser.userName}" />
+                            <p:inputText id="txtUserName" tabindex="1" required="true" validatorMessage="Nombre usuario requerido" value="#{userController.selectedUser.userName}" />
 
                             <h:outputText value="Nombre:" />  
                             <p:inputText id="txtName" required="true"  validatorMessage="Nombre requerido" value="#{userController.selectedUser.firtName}" />  
@@ -76,6 +76,11 @@
                                             required="true"
                                             validatorMessage="Perfil requerido"                                            
                                             />
+                            <h:outputText value="Estatus: " />  
+                            <p:selectOneMenu id="cbEstatus" value="#{userController.selectedUser.status}" rendered="#{userController.selectedUser != null}" effect="fade" converter="#{statusConverter}">  
+                                <f:selectItem itemLabel="Seleccionar" itemValue="" />
+                                <f:selectItems value="#{userController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
+                            </p:selectOneMenu>
                             </h:panelGrid> 
                             
                                 
@@ -91,15 +96,11 @@
                             
 
 
-                            <h:outputText value="Estatus: " />  
-                            <p:selectOneMenu id="cbEstatus" value="#{userController.selectedUser.status}" rendered="#{userController.selectedUser != null}" effect="fade" converter="#{statusConverter}">  
-                                <f:selectItem itemLabel="Seleccionar" itemValue="" />
-                                <f:selectItems value="#{userController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
-                            </p:selectOneMenu>
+                            
 
 
 
-                            <f:facet name="footer">  
+                            <f:facet name="footer" >  
                                 <p:commandButton id="addUpdateUserBtn" value="Registrar" 
                                                  actionListener="#{userController.addOrUpdateUser}"   
                                                  oncomplete="handleAddOrUpdateUser(xhr, status, args)" update=":form:dtUsuarios messages"                                                 

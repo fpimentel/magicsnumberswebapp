@@ -8,7 +8,16 @@
         <el-resolver>
             org.springframework.web.jsf.el.SpringBeanFacesELResolver
         </el-resolver>
+        <locale-config>
+            <supported-locale>es_DO</supported-locale>
+            <default-locale>es_DO</default-locale>
+        </locale-config>
+        <resource-bundle>
+            <var>labels</var>
+            <base-name>application_resources</base-name>
+        </resource-bundle>
     </application>
+    
     
     <navigation-rule>
         <from-view-id>/login.xhtml</from-view-id>
