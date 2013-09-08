@@ -1,4 +1,5 @@
 package com.exception.magicsnumberswebapp.service.impl;
+
 import com.exception.magicsnumberswebapp.dao.BetBankingDao;
 import com.exception.magicsnumberswebapp.service.BetBankingService;
 import com.exception.magicsnumbersws.entities.BetBanking;
@@ -18,12 +19,14 @@ public class BetBankingServiceImpl implements BetBankingService {
     @Autowired
     private BetBankingDao betBankingDao;
     private List<BetBanking> betbanking;
-    
+
     @Override
-    public List<BetBanking> findAllBetBanking() throws SearchAllBetBankingException {
-        return betBankingDao.findAll();
+    public List<BetBanking> findAllBetBanking(int consortiumid) throws SearchAllBetBankingException {
+        return betBankingDao.findAll(consortiumid);
     }
 
-    
-    
+    @Override
+    public BetBanking findById(int id) throws SearchAllBetBankingException {
+        return betBankingDao.findById(id);
+    }
 }

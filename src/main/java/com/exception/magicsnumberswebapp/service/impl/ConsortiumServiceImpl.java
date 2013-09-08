@@ -57,5 +57,10 @@ public class ConsortiumServiceImpl implements ConsortiumService {
         return consortiumDao.findBetBankingAsignedToConsortium(consortiumId);
     }
 
+    @Override
+    public void saveConsortiumData(Consortium consortium) throws SaveConsortiumDataException {
+        this.consortiumDao.saveConsortiumData(consortium);
+    }
+
     
 }

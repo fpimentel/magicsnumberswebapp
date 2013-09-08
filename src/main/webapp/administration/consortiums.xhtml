@@ -13,43 +13,40 @@
                     <p:growl id="messages" showDetail="true"/>  
 
                     <p:dataTable id="dtConsortium" var="consortium" value="#{consortiumController.consortiumDataModel}" paginator="true" rows="10"  
-                                 selection="#{consortiumController.selectedConsortium}" selectionMode="single">  
+                                 selection="#{consortiumController.selectedConsortium}" selectionMode="single" >  
                         <f:facet name="header"  >  
-                            Consulta de Consorcios #{labels.name}
+                             #{labels.consortium_title}
                         </f:facet> 
                         <p:ajax event="rowSelect" listener="#{consortiumController.onRowSelect}"   
                                 update=":form:dialog :form:messages" oncomplete="consortiumDialog.show()"  />  
                         <p:ajax event="rowUnselect" listener="#{consortiumController.onRowUnselect}" update=":form:messages"/>  
 
-                        <p:column headerText="Nombre" style="width:8%" sortBy="#{consortium.name}" filterBy="#{consortium.name}"  filterMatchMode="contains">  
-                            #{consortium.name }  
+                        <p:column headerText="#{labels.name}" style="width:8%" sortBy="#{consortium.name}" filterBy="#{consortium.name}"  filterMatchMode="contains">  
+                            #{consortium.name}  
                         </p:column>
-                        <p:column headerText="Descripción" style="width:8%" sortBy="#{consortium.description}" filterBy="#{consortium.description}"  filterMatchMode="contains">  
+                        <p:column headerText="#{labels.Description}" style="width:8%" sortBy="#{consortium.description}" filterBy="#{consortium.description}"  filterMatchMode="contains">  
                             #{consortium.description}  
                         </p:column>  
-                        <p:column headerText="Estatus" style="width:8%" sortBy="#{consortium.status.name}" filterBy="#{consortium.status.name}"  filterMatchMode="contains">  
+                        <p:column headerText="#{labels.status}" style="width:8%" sortBy="#{consortium.status.name}" filterBy="#{consortium.status.name}"  filterMatchMode="contains">  
                             #{consortium.status.name}  
                         </p:column>             
 
                     </p:dataTable>  
                     
                     <p:commandButton id="btnNewConsortium" value="Agregar Consorcio" 
-                                     actionListener="#{consortiumController.addNewConsortium}"  
-                                     oncomplete="consortiumDialog.show()" update=":form:pConsortiumData" immediate="true" />
-
-                    <p:commandButton id="btnsaveAllConsortium" value="Registrar datos" 
-                                     actionListener="#{consortiumController.saveAll}"   
-                                     oncomplete="handleAddOrUpdateConsortium(xhr, status, args)" update=":form:dtConsortium messages"/>
+                                     actionListener="#{consortiumController.addNewConsortium}"
+                                     oncomplete="consortiumDialog.show()"
+                                     update=":form:pConsortiumData :form:pSecond" immediate="true" />
                     <p:dialog id="dialog" header="Información del consorcio" widgetVar="consortiumDialog" resizable="false"  
-                              showEffect="fade" hideEffect="explode" closable="false" modal="true" appendToBody="true">  
+                              showEffect="fade" hideEffect="explode" closable="false" >  
                         <h:panelGrid id="pConsortiumData" columns="2" cellpadding="4">    
-                            <h:outputText value=" Nombre: " />  
-                            <p:inputText id="txtName" required="true" validatorMessage="Nombre es requerido" value="#{consortiumController.selectedConsortium.name}" />
+                            <h:outputText value="#{labels.name}" />  
+                            <p:inputText id="txtName" required="true" requiredMessage="Nombre es requerido" value="#{consortiumController.selectedConsortium.name}" />
 
-                            <h:outputText value=" Descripción " />  
-                            <p:inputText id="txtDescription" required="true"  validatorMessage="Valor es requerido" value="#{consortiumController.selectedConsortium.description}" />                             
+                            <h:outputText value=" #{labels.Description}" />  
+                            <p:inputText id="txtDescription" required="true"  requiredMessage="Descripción es requerido" value="#{consortiumController.selectedConsortium.description}" />                             
 
-                            <h:outputText value=" Estatus " /> 
+                            <h:outputText value=" #{labels.status}" /> 
                             <p:selectOneMenu id="cbEstatus" value="#{consortiumController.selectedConsortium.status}" rendered="#{consortiumController.selectedConsortium!= null}" effect="fade" converter="#{statusConverter}">  
                                 <f:selectItem itemLabel="Seleccionar" itemValue="" />
                                 <f:selectItems value="#{consortiumController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
@@ -57,23 +54,23 @@
 
                         </h:panelGrid> 
                         <h:panelGrid id="pSecond" columns="1" cellpadding="4">                             
-                            <p:pickList id="plBetBanking" value="#{consortiumController.consortiumDualList}" var="consortium" rendered="#{consortiumController.consortiumDualList!=null}" 
-                                        itemValue="#{consortium}" itemLabel="#{consortium.name}" converter="#{betbankingConverter}" 
-                                        showSourceControls="true" showTargetControls="true" 
+                            <p:pickList id="plBetBanking" value="#{consortiumController.consortiumDualList}" var="betBanking" rendered="#{consortiumController.consortiumDualList!=null}" 
+                                        itemValue="#{betBanking}" itemLabel="#{betBanking.name}" converter="#{betBakingConverter}"                                                                                                     
+                                        showSourceControls="true" showTargetControls="true"                                         
                                         showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
 
-                                <f:facet name="sourceCaption">Disponible</f:facet>  
-                                <f:facet name="targetCaption">Seleccionado</f:facet>  
+                                <f:facet name="sourceCaption">#{labels.availables}</f:facet>  
+                                <f:facet name="targetCaption">#{labels.assigned}</f:facet>  
 
                             </p:pickList>                             
                         </h:panelGrid>  
                         <f:facet name="footer">  
                             <p:outputPanel style="float:right;">
-                                <p:commandButton id="btnaddUpdateConsortium" value="Registrar" 
+                                <p:commandButton id="btnaddUpdateConsortium" value="#{labels.register}" 
                                                  actionListener="#{consortiumController.addOrUpdateConsortium}"   
-                                                 oncomplete="handleAddOrUpdateConsortium(xhr, status, args)" update=":form:dtConsortium messages"/>
+                                                 oncomplete="handleAddOrUpdateConsortium(xhr, status, args)" update=":form:dtConsortium :form:messages"/>
 
-                                <p:commandButton value="Cancelar"  id="btnCancel"  styleClass="ui-priority-primary"
+                                <p:commandButton value="#{labels.cancel}"  id="btnCancel"  styleClass="ui-priority-primary"
                                                  oncomplete=" consortiumDialog.hide()" immediate="true"/>  
                             </p:outputPanel>                            
                         </f:facet>

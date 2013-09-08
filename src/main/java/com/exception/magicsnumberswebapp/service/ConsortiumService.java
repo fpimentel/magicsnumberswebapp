@@ -17,4 +17,5 @@ public interface ConsortiumService {
   public void saveConsortiumsData(List<Consortium> list) throws SaveConsortiumDataException;
   public List<BetBanking>  findBetBankingAvailable() throws SearchAllBetBankingException;
   public List<BetBanking> findBetBankingAsignedToConsortium(int consortiumId) throws SearchAllBetBankingException;
+  public void saveConsortiumData(Consortium consortium) throws SaveConsortiumDataException;
 }

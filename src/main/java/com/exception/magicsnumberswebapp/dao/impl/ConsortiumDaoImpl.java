@@ -18,28 +18,30 @@ import org.springframework.stereotype.Repository;
 public class ConsortiumDaoImpl implements ConsortiumDao {
 
     @Autowired
-    private LookupTablesEndpoint securityEndpoint;
+    private LookupTablesEndpoint lookupTableEndpoint;
 
     public ConsortiumDaoImpl() {
     }
 
     @Override
     public List<Consortium> findAll(int userId) throws SearchAllConsortiumException {
-        return securityEndpoint.findConsortiumByUserId(userId);
+        return lookupTableEndpoint.findConsortiumByUserId(userId);
     }
 
     @Override
     public void saveConsortiumsData(List<Consortium> list) throws SaveConsortiumDataException {
-        securityEndpoint.saveConsortiumsData(list);
+        lookupTableEndpoint.saveConsortiumsData(list);
     }
-
     @Override
     public List<BetBanking>  findBetBankingAvailable() throws SearchAllBetBankingException {
-        return securityEndpoint.findAvailableBetBankings();
+        return lookupTableEndpoint.findAvailableBetBankings();
     }
-
     @Override
     public List<BetBanking> findBetBankingAsignedToConsortium(int consortiumId) throws SearchAllBetBankingException {
-        return securityEndpoint.findBetBankingAsignedToConsortium(consortiumId);
+        return lookupTableEndpoint.findBetBankingAsignedToConsortium(consortiumId);
+    }
+    @Override
+    public void saveConsortiumData(Consortium consortium) throws SaveConsortiumDataException {         
+        this.lookupTableEndpoint.saveConsortiumData(consortium);
     }
 }

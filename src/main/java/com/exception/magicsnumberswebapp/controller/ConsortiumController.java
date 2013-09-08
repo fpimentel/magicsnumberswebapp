@@ -11,7 +11,9 @@ import com.exception.magicsnumbersws.exception.SaveConsortiumDataException;
 import com.exception.magicsnumbersws.exception.SearchAllBetBankingException;
 import com.exception.magicsnumbersws.exception.SearchAllConsortiumException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
@@ -31,7 +33,7 @@ import org.springframework.stereotype.Controller;
  * @author cpimentel
  */
 @ManagedBean
-@Scope("request")
+@Scope
 @Controller
 public class ConsortiumController {
 
@@ -46,7 +48,7 @@ public class ConsortiumController {
     private boolean editMode = false;
     private ConsortiumDataModel consortiumDataModel;
     private List<Status> status;
-    private DualListModel<BetBanking> consortiumDualList;
+    private static DualListModel<BetBanking> consortiumDualList;
     private Status selectedStatus;
     private List<BetBanking> availableBetBanking;
     private List<BetBanking> asignedBetBanking;
@@ -111,11 +113,29 @@ public class ConsortiumController {
     }
 
     public void addNewConsortium() {
-        boolean success = true;
-        RequestContext reqContext = RequestContext.getCurrentInstance();
-        this.selectedConsortium = new Consortium();
-        editMode = false;
-        reqContext.addCallbackParam("success", success);
+        FacesMessage msg;
+        try {
+            this.availableBetBanking = this.consortiumService.findBetBankingAvailable();
+            this.asignedBetBanking = new ArrayList<BetBanking>();
+            this.consortiumDualList = new DualListModel<BetBanking>(this.availableBetBanking, this.asignedBetBanking);
+            boolean success = true;
+            RequestContext reqContext = RequestContext.getCurrentInstance();
+            this.selectedConsortium = new Consortium();
+            editMode = false;
+            reqContext.addCallbackParam("success", success);
+        } catch (SearchAllBetBankingException ex) {
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error buscando las bancas disponibles!", null);
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+
+        } catch (Exception ex) {
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error buscando las bancas disponibles!", null);
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+
     }
 
     public ConsortiumDataModel getConsortiumDataModel() {
@@ -132,14 +152,12 @@ public class ConsortiumController {
 
     public void onRowSelect(SelectEvent event) {
         FacesMessage msg;
-        try 
-        {
-
+        try {
             this.availableBetBanking = this.consortiumService.findBetBankingAvailable();
             this.asignedBetBanking = this.consortiumService.findBetBankingAsignedToConsortium(this.selectedConsortium.getId());
             consortiumDualList = new DualListModel<BetBanking>(this.availableBetBanking, this.asignedBetBanking);
             msg = new FacesMessage("Consorcio ", ((Consortium) event.getObject()).getName());
-            editMode = true;
+            this.editMode = true;
             FacesContext.getCurrentInstance().addMessage(null, msg);
         } catch (SearchAllBetBankingException ex) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error en la seleccion de un consorcio!", null);
@@ -150,9 +168,7 @@ public class ConsortiumController {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error en la seleccion de un consorcio!", null);
             Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
             FacesContext.getCurrentInstance().addMessage(null, msg);
-
         }
-
     }
 
     public void onRowUnselect(UnselectEvent event) {
@@ -162,69 +178,71 @@ public class ConsortiumController {
     }
 
     public void addOrUpdateConsortium(ActionEvent event) {
-
         boolean success = true;
         FacesMessage msg;
         RequestContext reqContext = RequestContext.getCurrentInstance();
-        if (consortiumAlreadyExist()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Consorcio ya existe", "");
+        try {
+            if (consortiumAlreadyExist()) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Consorcio ya existe", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+            User loggedUser = loginController.getUser();
+            this.selectedConsortium.setCreationUser(loggedUser.getUserName());
+            Set<BetBanking> asignedBetBankings = new HashSet<BetBanking>(consortiumDualList.getTarget());                   
+            this.selectedConsortium.setBetBankings(asignedBetBankings);
+            
+            consortiumService.saveConsortiumData(this.selectedConsortium);
+            if (editMode) {
+                int selectedConsortiumIndex = this.consortiumDataModel.getConsortiums().indexOf(this.selectedConsortium);
+
+                this.consortiumDataModel.getConsortiums().set(selectedConsortiumIndex, this.selectedConsortium);
+
+            } else {
+
+                this.consortiumDataModel.getConsortiums().add(this.selectedConsortium);
+            }
+        } catch (SaveConsortiumDataException ex) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error registrando los consorcios!", null);
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return;
-
-        }
-        User loggedUser = loginController.getUser();
-        this.selectedConsortium.setCreationUser(loggedUser.getUserName());
-        if (editMode) {
-            Consortium consortiumToRegister = new Consortium();
-            consortiumToRegister.setId(this.selectedConsortium.getId());
-            int index = consortiumDataModel.getConsortiums().indexOf(consortiumToRegister);
-            consortiumDataModel.getConsortiums().set(index, this.selectedConsortium);
-            int updatedConsortiumIndex = updatedConsortiums.indexOf(consortiumToRegister);
-
-
-
-            if (updatedConsortiumIndex >= 0) {
-                updatedConsortiums.set(updatedConsortiumIndex, this.selectedConsortium);
-            } else {
-                updatedConsortiums.add(this.selectedConsortium);
-            }
-            editMode = false;
-        } else {
-            this.selectedConsortium.setId(consortiumDataModel.nextConsortiumId());
-            updatedConsortiums.add(selectedConsortium);
-            consortiumDataModel.getConsortiums().add(this.selectedConsortium);
+        } catch (Exception ex) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error registrando los consorcios!", null);
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
         }
         this.selectedConsortium = null;
         reqContext.addCallbackParam("success", success);
     }
 
-    public void saveAll() {
-        FacesMessage msg;
+    /*public void saveAll() {
+     FacesMessage msg;
 
 
-        if (updatedConsortiums.size() > 0) {
-            try {
-                consortiumService.saveConsortiumsData(updatedConsortiums);
-            } catch (SaveConsortiumDataException ex) {
-                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error registrando los consorcios!", null);
-                Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
-                FacesContext.getCurrentInstance().addMessage(null, msg);
-                return;
-            } catch (Exception ex) {
-                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error registrando los consorcios!", null);
-                Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
-                FacesContext.getCurrentInstance().addMessage(null, msg);
-                return;
-            }
-        } else {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No hay nuevos cambios para registrar", null);
-            FacesContext.getCurrentInstance().addMessage(null, msg);
-            return;
-        }
-        msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Grabado exitosamente", null);
-        FacesContext.getCurrentInstance().addMessage(null, msg);
-    }
-
+     if (updatedConsortiums.size() > 0) {
+     try {
+     consortiumService.saveConsortiumsData(updatedConsortiums);
+     } catch (SaveConsortiumDataException ex) {
+     msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error registrando los consorcios!", null);
+     Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+     FacesContext.getCurrentInstance().addMessage(null, msg);
+     return;
+     } catch (Exception ex) {
+     msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error registrando los consorcios!", null);
+     Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+     FacesContext.getCurrentInstance().addMessage(null, msg);
+     return;
+     }
+     } else {
+     msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No hay nuevos cambios para registrar", null);
+     FacesContext.getCurrentInstance().addMessage(null, msg);
+     return;
+     }
+     msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Grabado exitosamente", null);
+     FacesContext.getCurrentInstance().addMessage(null, msg);
+     }*/
     private boolean consortiumAlreadyExist() {
         List<Consortium> consortiums = consortiumDataModel.getConsortiums();
         boolean consortiumExist = true;

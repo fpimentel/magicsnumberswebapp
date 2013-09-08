@@ -10,5 +10,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface BetBankingService {
-  List<BetBanking> findAllBetBanking()throws SearchAllBetBankingException;
+  List<BetBanking> findAllBetBanking(int consortiumid)throws SearchAllBetBankingException;
+  BetBanking findById(int id)throws SearchAllBetBankingException;
 }

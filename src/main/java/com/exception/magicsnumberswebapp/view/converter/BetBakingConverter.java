@@ -1,8 +1,11 @@
 package com.exception.magicsnumberswebapp.view.converter;
+
 import com.exception.magicsnumberswebapp.service.BetBankingService;
 import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.exception.SearchAllBetBankingException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -15,38 +18,34 @@ import org.springframework.stereotype.Component;
  * @author fpimentel
  */
 @Component
-@FacesConverter("betbankingConverter")
+@FacesConverter("betBankingConverter")
 public class BetBakingConverter implements Converter {
 
     @Autowired
     private BetBankingService betBankingService;
-    private List<BetBanking> betbanking;
+    private BetBanking betbanking;
+    private static final Logger LOG = Logger.getLogger(BetBakingConverter.class.getName());
+    
 
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String submittedValue) {
         int id = Integer.parseInt(submittedValue);
-        for (BetBanking currBetBanking : getBetbanking()) {
-            if (currBetBanking.getId() == id) {
-                return currBetBanking;
-            }
-        }
-        return null;
+        return getBetbanking(id);
     }
 
-    public List<BetBanking> getBetbanking() {
+    public BetBanking getBetbanking(int id) {
         try {
-            if (betbanking == null) {
-                betbanking = this.betBankingService.findAllBetBanking();
-            }
-            return betbanking;
-        } 
-        catch (SearchAllBetBankingException ex) 
-        {
-            
+            betbanking = this.betBankingService.findById(id);
+        } catch (SearchAllBetBankingException ex) {
+            LOG.log(Level.SEVERE, "getBetbanking in BetBankingConverter".concat(ex.getMessage()));
+        } catch(Exception ex){
+            LOG.log(Level.SEVERE, "getBetbanking in BetBankingConverter".concat(ex.getMessage()));
         }
-        return betbanking;
+        
+        return this.betbanking;
     }
-    public void setBetbanking(List<BetBanking> betbanking) {
+
+    public void setBetbanking(BetBanking betbanking) {
         this.betbanking = betbanking;
     }
 
@@ -55,7 +54,7 @@ public class BetBakingConverter implements Converter {
         if (value == null || value.equals("")) {
             return "";
         } else {
-            return String. valueOf(((BetBanking) value).getId());
+            return String.valueOf(((BetBanking) value).getId());
         }
     }
 }
