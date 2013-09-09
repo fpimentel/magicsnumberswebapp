@@ -12,7 +12,6 @@ import com.exception.magicsnumbersws.exception.SearchAllUserException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import org.springframework.context.annotation.Scope;
 import java.util.logging.Level;
@@ -31,9 +30,8 @@ import org.springframework.stereotype.Controller;
  *
  * @author fpimentel
  */
-@ManagedBean
-@Scope("request")
 @Controller
+@Scope("view")
 public class UserController {
 
     @Autowired
