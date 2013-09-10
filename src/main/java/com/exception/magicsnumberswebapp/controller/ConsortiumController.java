@@ -100,16 +100,15 @@ public class ConsortiumController {
     }
 
     public Consortium getSelectedConsortium() {
-        if(selectedConsortium == null){
+        if (selectedConsortium == null) {
             this.selectedConsortium = new Consortium();
-        }        
+        }
         return this.selectedConsortium;
     }
 
     public void setSelectedConsortium(Consortium selectedConsortium) {
         this.selectedConsortium = selectedConsortium;
     }
-   
 
     public void addNewConsortium() {
         FacesMessage msg;
@@ -120,7 +119,7 @@ public class ConsortiumController {
             boolean success = true;
             RequestContext reqContext = RequestContext.getCurrentInstance();
             this.selectedConsortium = new Consortium();
-            editMode = false;            
+            editMode = false;
         } catch (SearchAllBetBankingException ex) {
             Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error buscando las bancas disponibles!", null);
@@ -136,14 +135,20 @@ public class ConsortiumController {
 
     }
 
+    private void refreshDataModel() {
+
+        try {
+            User loggedUser = loginController.getUser();
+            this.consortiumDataModel = new ConsortiumDataModel(consortiumService.findAll(loggedUser.getId()));
+        } catch (SearchAllConsortiumException ex) {
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, "refreshDataModel() in ConsortiumController", ex);
+        }
+    }
+
     public ConsortiumDataModel getConsortiumDataModel() {
         if (this.consortiumDataModel == null) {
-            try {
-                User loggedUser = loginController.getUser();
-                this.consortiumDataModel = new ConsortiumDataModel(consortiumService.findAll(loggedUser.getId()));
-            } catch (SearchAllConsortiumException ex) {
-                Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+
+            refreshDataModel();
         }
         return this.consortiumDataModel;
     }
@@ -187,18 +192,17 @@ public class ConsortiumController {
             }
             User loggedUser = loginController.getUser();
             this.selectedConsortium.setCreationUser(loggedUser.getUserName());
-            Set<BetBanking> asignedBetBankings = new HashSet<BetBanking>(consortiumDualList.getTarget());                   
+            Set<BetBanking> asignedBetBankings = new HashSet<BetBanking>(consortiumDualList.getTarget());
             this.selectedConsortium.setBetBankings(asignedBetBankings);
-            
             consortiumService.saveConsortiumData(this.selectedConsortium);
             if (editMode) {
                 int selectedConsortiumIndex = this.consortiumDataModel.getConsortiums().indexOf(this.selectedConsortium);
-
                 this.consortiumDataModel.getConsortiums().set(selectedConsortiumIndex, this.selectedConsortium);
 
             } else {
-
+                this.selectedConsortium.setId(this.consortiumDataModel.nextConsortiumId()); 
                 this.consortiumDataModel.getConsortiums().add(this.selectedConsortium);
+                
             }
         } catch (SaveConsortiumDataException ex) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error registrando los consorcios!", null);

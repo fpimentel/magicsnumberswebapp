@@ -18,7 +18,14 @@
         </resource-bundle>
     </application>
     
-    
+    <render-kit>
+        <renderer>
+            <component-family>org.primefaces.component</component-family>
+            <renderer-type>org.primefaces.component.PickListRenderer</renderer-type>
+            <renderer-class>com.exception.magicsnumberswebapp.view.rendered.PickListBugfixRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+	
     <navigation-rule>
         <from-view-id>/login.xhtml</from-view-id>
         <navigation-case>
@@ -26,42 +33,5 @@
             <to-view-id>/masterpage.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-    </navigation-rule>
-   <!-- 
-    <navigation-rule>
-        <from-view-id>/login.xhtml</from-view-id>
-        <navigation-case>
-            <from-outcome>login</from-outcome>
-            <to-view-id>/login.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-    </navigation-rule>
-    
-    <navigation-rule>
-        <from-view-id>/*</from-view-id>
-        <navigation-case>
-            <from-outcome>user</from-outcome>
-            <to-view-id>/user.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-    </navigation-rule>
-    
-     <navigation-rule>
-        <from-view-id>/*</from-view-id>
-        <navigation-case>
-            <from-outcome>option</from-outcome>
-            <to-view-id>/administration/systemOptions.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-    </navigation-rule>
-    
-    <navigation-rule>
-        <from-view-id>/user.xhtml</from-view-id>
-        <navigation-case>
-            <from-outcome>user</from-outcome>
-            <to-view-id>/user.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-    </navigation-rule>
-    -->
+    </navigation-rule>   
 </faces-config>

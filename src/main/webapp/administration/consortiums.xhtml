@@ -52,8 +52,8 @@
                 </h:panelGrid> 
                 <p:panel header="#{labels.associated_banks}">                                                            
                     <h:panelGrid id="pSecond" columns="1" cellpadding="4">                             
-                        <p:pickList id="plBetBanking" value="#{consortiumController.consortiumDualList}" var="betBanking" rendered="#{consortiumController.consortiumDualList!=null}" 
-                                    itemValue="#{betBanking}" itemLabel="#{betBanking.name}" converter="#{betBakingConverter}"                                                                                                     
+                        <p:pickList id="plBetBanking" value="#{consortiumController.consortiumDualList}" var="betBanking" rendered="#{consortiumController.consortiumDualList!=null}"  
+                                    itemValue="#{betBanking}" itemLabel="#{betBanking.name}" converter="#{betBakingConverter}"                                                                                                       
                                     showSourceControls="true" showTargetControls="true"                                         
                                     showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
 
@@ -89,7 +89,3 @@
     </ui:define>
 
 </ui:composition>
-<!--    </h:body>
-</html>-->
-
-
