@@ -5,7 +5,6 @@ import com.exception.magicsnumbersws.exception.SearchAllUserException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -15,9 +14,8 @@ import org.springframework.stereotype.Controller;
  *
  * @author fpimentel
  */
-@ManagedBean
 @Controller
-@Scope
+@Scope("session")
 public class LoginController {
 
     private User user;

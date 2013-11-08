@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -24,9 +25,8 @@ import org.springframework.stereotype.Controller;
  *
  * @author fpimentel
  */
-@ManagedBean
 @Controller
-@Scope
+@Scope("session")
 public class MasterPageController {
 
     private MenuModel model;
@@ -76,7 +76,10 @@ public class MasterPageController {
 
 
         } catch (Exception ex) {
-            LOG.log(Level.SEVERE, "Error generando menu principal: " + ex.getMessage());
+            FacesMessage msg;
+            msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error generando el menu","");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            LOG.log(Level.SEVERE, "Error generando menu principal: " + ex);
         }
 
         /*

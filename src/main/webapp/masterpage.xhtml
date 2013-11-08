@@ -7,19 +7,19 @@
 
     <f:view contentType="text/html">
         <h:head>
-            <h:outputStylesheet library="css/libraries" name="default.css"></h:outputStylesheet>
 
+            <h:outputStylesheet library="css/libraries" name="default.css"></h:outputStylesheet>                    
             <f:facet name="first">
 
                 <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
                 <title>
                     <ui:insert name="title">Bienvenido</ui:insert>
-                 </title>
+                </title>
             </f:facet>
         </h:head>
 
-        <h:body>
-
+        <h:body>           
+            
             <p:layout fullPage="true">
 
                 <p:layoutUnit position="north" size="50" resizable="true" closable="true" collapsible="true">
@@ -31,12 +31,12 @@
                 </p:layoutUnit>
 
                 <p:layoutUnit position="west" size="205" header="Ocultar" collapsible="true" effect="drop">
-                   <h:form>  
+                    <h:form>  
                         <p:growl id="messages" autoUpdate="true"/>  
                         <p:panelMenu id="menu" model="#{masterPageController.model}" style="width:198px "/>                   
                     </h:form> 
                 </p:layoutUnit>
-                
+
                 <p:layoutUnit position="center">
                     <ui:insert name="center">
                         Bienvenido

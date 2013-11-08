@@ -20,6 +20,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Autowired
     private ProfileDao profileDao;
     private List<Profile> profiles;
+    
 
     @PostConstruct
     @Override

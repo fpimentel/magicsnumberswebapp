@@ -62,5 +62,12 @@ public class ConsortiumServiceImpl implements ConsortiumService {
         this.consortiumDao.saveConsortiumData(consortium);
     }
 
+    @Override
+    public List<Consortium> findAllConsortiumActive() throws SearchAllConsortiumException {
+        return this.consortiumDao.findAll();
+    }
+
+
+
     
 }

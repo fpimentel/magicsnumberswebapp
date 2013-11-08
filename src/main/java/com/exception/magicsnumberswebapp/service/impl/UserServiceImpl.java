@@ -3,11 +3,11 @@ package com.exception.magicsnumberswebapp.service.impl;
 
 import com.exception.magicsnumberswebapp.dao.UserDao;
 import com.exception.magicsnumberswebapp.service.UserService;
+import com.exception.magicsnumbersws.endpoints.SecurityEndPoint;
 import com.exception.magicsnumbersws.entities.User;
 import com.exception.magicsnumbersws.exception.SaveUsersDataException;
 import com.exception.magicsnumbersws.exception.SearchAllUserException;
 import java.util.List;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +20,8 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private SecurityEndPoint securityEndpoint;
     
     @Override
     public List<User> getAllUsers() throws SearchAllUserException{       
@@ -42,6 +44,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public void saveUsersData(List<User> users) throws SaveUsersDataException {
         userDao.saveUsersData(users);
+    }
+
+    @Override
+    public List<User> findUsersByConsortiumIds(int userId) throws SearchAllUserException {
+        return this.securityEndpoint.findUsersByConsortiumIds(userId);
     }
     
 }

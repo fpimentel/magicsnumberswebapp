@@ -1,13 +1,16 @@
 package com.exception.magicsnumberswebapp.controller;
 
 import com.exception.magicsnumberswebapp.datamodel.UserDataModel;
+import com.exception.magicsnumberswebapp.service.ConsortiumService;
 import com.exception.magicsnumberswebapp.service.StatusService;
 import com.exception.magicsnumberswebapp.service.UserService;
 import com.exception.magicsnumberswebapp.view.converter.ProfileConverter;
+import com.exception.magicsnumbersws.entities.Consortium;
 import com.exception.magicsnumbersws.entities.Profile;
 import com.exception.magicsnumbersws.entities.Status;
 import com.exception.magicsnumbersws.entities.User;
 import com.exception.magicsnumbersws.exception.SaveUsersDataException;
+import com.exception.magicsnumbersws.exception.SearchAllConsortiumException;
 import com.exception.magicsnumbersws.exception.SearchAllUserException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,61 +40,116 @@ public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
+    private LoginController loginController;
+    @Autowired
     private StatusService statusService;
+    @Autowired
+    private ConsortiumService consortiumService;
     private List<User> updatedUsers;
     private User selectedUser;
     private boolean editMode = false;
     private UserDataModel userDataModel;
     private List<Status> status;
     private Status selectedStatus;
-    private List<Profile> avariableProfiles;
-    private List<Profile> selecetedProfiles;
-    private DualListModel<Profile> profileDualList;
+    private List<Consortium> avariableConsortiums;
+    private List<Consortium> assignedConsortiums;
+    private DualListModel<Consortium> consortiumDualList;
     @Autowired
     private ProfileConverter profileConverter;
     private List<SelectItem> categories;
     private String selection;
 
     public UserController() {
-        avariableProfiles = new ArrayList<Profile>();
-        avariableProfiles.add(new Profile(1, "Fausto", null, null, null, 1));
-        avariableProfiles.add(new Profile(1, "Pedro", null, null, null, 1));
-        selecetedProfiles = new ArrayList<Profile>();
-        profileDualList = new DualListModel<Profile>(avariableProfiles, selecetedProfiles);
         updatedUsers = new ArrayList<User>();
+        this.assignedConsortiums = new ArrayList<Consortium>();
+        this.avariableConsortiums = new ArrayList<Consortium>();
+    }
 
+    public LoginController getLoginController() {
+        return loginController;
     }
 
     public ProfileConverter getProfileConverter() {
+
         return profileConverter;
     }
 
-    public DualListModel<Profile> getProfileDualList() {
-        return profileDualList;
+    public List<Consortium> getAvariableConsortiums() {
+        if (this.avariableConsortiums == null) {
+            this.avariableConsortiums = new ArrayList<Consortium>();
+        }
+        return avariableConsortiums;
     }
 
-    public void setProfileDualList(DualListModel<Profile> profileDualList) {
-        this.profileDualList = profileDualList;
+    public void setAvariableConsortiums(List<Consortium> avariableConsortiums) {
+        this.avariableConsortiums = avariableConsortiums;
     }
 
-    public List<Profile> getAvariableProfiles() {
-        return avariableProfiles;
+    public DualListModel<Consortium> getConsortiumDualList() {
+        if (this.consortiumDualList == null) {
+            this.consortiumDualList = new DualListModel<Consortium>();
+        }
+        return consortiumDualList;
     }
 
-    public void setAvariableProfiles(List<Profile> avariableProfiles) {
-        this.avariableProfiles = avariableProfiles;
+    public List<Consortium> getAssignedConsortiums() {
+        if (this.assignedConsortiums == null) {
+            this.assignedConsortiums = new ArrayList<Consortium>();
+        }
+        return assignedConsortiums;
     }
 
-    public List<Profile> getSelecetedProfiles() {
-        return selecetedProfiles;
+    public void setAssignedConsortiums(List<Consortium> assignedConsortiums) {
+        this.assignedConsortiums = assignedConsortiums;
     }
 
-    public void setSelecetedProfiles(List<Profile> selecetedProfiles) {
-        this.selecetedProfiles = selecetedProfiles;
+    public void setConsortiumDualList(DualListModel<Consortium> consortiumDualList) {
+        this.consortiumDualList = consortiumDualList;
     }
 
     public void setProfileConverter(ProfileConverter profileConverter) {
         this.profileConverter = profileConverter;
+    }
+
+    public void setAssignedAndAvailableConsortium(List<Consortium> consortiumsActive) {
+        for (Consortium currConsortium : consortiumsActive) {
+            List<User> users = new ArrayList<User>(currConsortium.getUsers());
+            //validamos si el consorcio actual esta asignado al usuario y lo agregamos en la lista de asignado 
+            //si la misma no lo contiene de lo contrario lo agregamos en la lista de disponible
+            if (users.contains(this.selectedUser)) {
+                if (!this.assignedConsortiums.contains(currConsortium)) {
+                    this.assignedConsortiums.add(currConsortium);
+                }
+            } else {
+                if (!this.avariableConsortiums.contains(currConsortium)) {
+                    this.avariableConsortiums.add(currConsortium);
+                }
+            }
+        }
+        this.consortiumDualList = new DualListModel<Consortium>(this.avariableConsortiums, this.assignedConsortiums);
+    }
+
+    public void loadAssignedAndAvailableConsortiumActive() {
+        List<Consortium> consortiumsActive = new ArrayList<Consortium>();
+        if (this.loginController.getUser().getProfile().getId() == com.exception.magicsnumberswebapp.constants.Profile.ADMINISTRATOR.getId()) {
+            try {
+                //SI es administrador busco todos los consorcios  que estan activos
+                consortiumsActive = this.consortiumService.findAllConsortiumActive();
+                setAssignedAndAvailableConsortium(consortiumsActive);
+            } catch (SearchAllConsortiumException ex) {
+                Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            try {
+                //Si el usuario no es administrador del sistema solo podra ver y asignar a los usuario
+                //consorcios que le pertenezcan
+                consortiumsActive = this.consortiumService.findAll(this.selectedUser.getId());
+                setAssignedAndAvailableConsortium(consortiumsActive);
+            } catch (SearchAllConsortiumException ex) {
+                Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
     }
 
     public List<Profile> getAutoCompleteProfiles(String query) {
@@ -102,7 +160,14 @@ public class UserController {
                 suggestions.add(p);
             }
         }
-
+        //validamos que si no es el administrador del sistema no muestre el perfil administrador
+        //y asi evitamos que  un lacayo pueda asignar a x usuario un perfil de administrador
+        if (this.loginController.getUser().getProfile().getId()
+                != com.exception.magicsnumberswebapp.constants.Profile.ADMINISTRATOR.getId()) {
+            Profile profileAdminitrator = new Profile();
+            profileAdminitrator.setId(com.exception.magicsnumberswebapp.constants.Profile.ADMINISTRATOR.getId());
+            suggestions.remove(profileAdminitrator);
+        }
         return suggestions;
     }
 
@@ -124,6 +189,7 @@ public class UserController {
 
     public List<Profile> getProfiles() {
         return profileConverter.getProfiles();
+
     }
 
     public Status getSelectedStatus() {
@@ -167,7 +233,15 @@ public class UserController {
     public UserDataModel getUserDataModel() {
         if (this.userDataModel == null) {
             try {
-                this.userDataModel = new UserDataModel(userService.getAllUsers());
+                //SI es administrador del sistema buscamos todos los usuarios
+                if (this.loginController.getUser().getProfile().getId() == com.exception.magicsnumberswebapp.constants.Profile.ADMINISTRATOR.getId()) {
+                    this.userDataModel = new UserDataModel(userService.getAllUsers());
+                } else {
+                    //SI no es administrador buscamos todos los usuarios de los consorcios asociados al usuario logeado
+                    List<User> users = this.userService.findUsersByConsortiumIds(this.loginController.getUser().getId());
+                    this.userDataModel = new UserDataModel(new ArrayList<User>(users));
+                }
+
             } catch (SearchAllUserException ex) {
                 Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -178,12 +252,12 @@ public class UserController {
     public void onRowSelect(SelectEvent event) {
         FacesMessage msg = new FacesMessage("Usuario", ((User) event.getObject()).getFirtName());
         editMode = true;
+        loadAssignedAndAvailableConsortiumActive();
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     public void onRowUnselect(UnselectEvent event) {
         FacesMessage msg = new FacesMessage("Usuario", ((User) event.getObject()).getFirtName());
-
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 

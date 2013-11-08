@@ -1,4 +1,5 @@
 package com.exception.magicsnumberswebapp.dao.impl;
+
 import com.exception.magicsnumberswebapp.dao.ConsortiumDao;
 import com.exception.magicsnumbersws.endpoints.LookupTablesEndpoint;
 import com.exception.magicsnumbersws.entities.BetBanking;
@@ -32,16 +33,24 @@ public class ConsortiumDaoImpl implements ConsortiumDao {
     public void saveConsortiumsData(List<Consortium> list) throws SaveConsortiumDataException {
         lookupTableEndpoint.saveConsortiumsData(list);
     }
+
     @Override
-    public List<BetBanking>  findBetBankingAvailable() throws SearchAllBetBankingException {
+    public List<BetBanking> findBetBankingAvailable() throws SearchAllBetBankingException {
         return lookupTableEndpoint.findAvailableBetBankings();
     }
+
     @Override
     public List<BetBanking> findBetBankingAsignedToConsortium(int consortiumId) throws SearchAllBetBankingException {
         return lookupTableEndpoint.findBetBankingAsignedToConsortium(consortiumId);
     }
+
     @Override
-    public void saveConsortiumData(Consortium consortium) throws SaveConsortiumDataException {         
+    public void saveConsortiumData(Consortium consortium) throws SaveConsortiumDataException {
         this.lookupTableEndpoint.saveConsortiumData(consortium);
+    }
+
+    @Override
+    public List<Consortium> findAll() throws SearchAllConsortiumException {
+        return this.lookupTableEndpoint.findActiveConsortium();
     }
 }

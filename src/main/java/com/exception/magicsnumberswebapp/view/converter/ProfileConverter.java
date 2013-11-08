@@ -20,11 +20,14 @@ public class ProfileConverter implements Converter {
 
     @Autowired
     private ProfileService profileService;
+    
+    
     private List<Profile> profiles;
 
     public List<Profile> getProfiles() {
-        if(profiles == null){
+        if(profiles == null){            
             profiles = profileService.getProfiles();
+           
         }
         return profiles;
     }

@@ -8,7 +8,6 @@ import com.exception.magicsnumbersws.entities.User;
 import com.exception.magicsnumbersws.exception.SaveUsersDataException;
 import com.exception.magicsnumbersws.exception.SearchAllUserException;
 import java.util.List;
-import java.util.Set;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,7 +16,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface UserService {
+
     public List<User> getAllUsers() throws SearchAllUserException;
+
     public User getUserByCredentials(String userName, String pass) throws SearchAllUserException;
-    void saveUsersData(List<User> users)throws SaveUsersDataException;
+
+    void saveUsersData(List<User> users) throws SaveUsersDataException;
+
+    public List<User> findUsersByConsortiumIds(int userId) throws SearchAllUserException;
 }

@@ -15,6 +15,7 @@ import java.util.List;
 public interface ConsortiumDao {
 
     List<Consortium> findAll(int userId) throws SearchAllConsortiumException;
+    List<Consortium> findAll() throws SearchAllConsortiumException;
 
     public void saveConsortiumsData(List<Consortium> list) throws SaveConsortiumDataException;
 

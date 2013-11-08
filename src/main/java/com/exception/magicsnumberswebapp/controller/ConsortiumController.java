@@ -1,3 +1,4 @@
+
 package com.exception.magicsnumberswebapp.controller;
 
 import com.exception.magicsnumberswebapp.datamodel.ConsortiumDataModel;
@@ -143,6 +144,9 @@ public class ConsortiumController {
         } catch (SearchAllConsortiumException ex) {
             Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, "refreshDataModel() in ConsortiumController", ex);
         }
+        catch (Exception ex) {
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, "refreshDataModel() in ConsortiumController", ex);
+        }
     }
 
     public ConsortiumDataModel getConsortiumDataModel() {
@@ -174,7 +178,7 @@ public class ConsortiumController {
         }
     }
 
-    public void onRowUnselect(UnselectEvent event) {
+    public void onRowUnselect(UnselectEvent event) {        
         FacesMessage msg = new FacesMessage("Consorcio", ((Consortium) event.getObject()).getName());
 
         FacesContext.getCurrentInstance().addMessage(null, msg);

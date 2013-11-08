@@ -1,4 +1,5 @@
 package com.exception.magicsnumberswebapp.service;
+
 import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
 import com.exception.magicsnumbersws.exception.SaveConsortiumDataException;
@@ -13,9 +14,16 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface ConsortiumService {
-    List<Consortium> findAll(int userId)throws SearchAllConsortiumException;
-  public void saveConsortiumsData(List<Consortium> list) throws SaveConsortiumDataException;
-  public List<BetBanking>  findBetBankingAvailable() throws SearchAllBetBankingException;
-  public List<BetBanking> findBetBankingAsignedToConsortium(int consortiumId) throws SearchAllBetBankingException;
-  public void saveConsortiumData(Consortium consortium) throws SaveConsortiumDataException;
+
+    List<Consortium> findAll(int userId) throws SearchAllConsortiumException;
+
+    List<Consortium> findAllConsortiumActive() throws SearchAllConsortiumException;
+
+    public void saveConsortiumsData(List<Consortium> list) throws SaveConsortiumDataException;
+
+    public List<BetBanking> findBetBankingAvailable() throws SearchAllBetBankingException;
+
+    public List<BetBanking> findBetBankingAsignedToConsortium(int consortiumId) throws SearchAllBetBankingException;
+
+    public void saveConsortiumData(Consortium consortium) throws SaveConsortiumDataException;
 }

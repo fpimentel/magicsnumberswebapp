@@ -25,7 +25,7 @@
                             Consulta de Usuarios  
                         </f:facet> 
                         <p:ajax event="rowSelect" listener="#{userController.onRowSelect}"   
-                                update=":form:pUserData :form:messages" oncomplete="userDialog.show()" />  
+                                update=":form:tvUser:pojoPickList :form:tvUser:pUserData :form:messages" oncomplete="userDialog.show()" />  
                         <p:ajax event="rowUnselect" listener="#{userController.onRowUnselect}" update=":form:messages"/>  
 
                         <p:column headerText="Usuario" style="width:8%" sortBy="#{user.userName}" filterBy="#{user.userName}"  filterMatchMode="contains">  
@@ -50,69 +50,67 @@
                     </p:dataTable>  
                     <p:dialog id="dialog" header="Datos usuarios" widgetVar="userDialog" resizable="false"  
                               showEffect="fade" hideEffect="explode" >  
-                        <h:panelGrid id="pUserData" columns="2" cellpadding="4" width="100%">                           
-                            <h:outputText value="Nombre Usuario:" />  
-                            <p:inputText id="txtUserName" tabindex="1" required="true" validatorMessage="Nombre usuario requerido" value="#{userController.selectedUser.userName}" />
+                        <p:tabView id="tvUser" widgetVar="tvUserTab">  
 
-                            <h:outputText value="Nombre:" />  
-                            <p:inputText id="txtName" required="true"  validatorMessage="Nombre requerido" value="#{userController.selectedUser.firtName}" />  
+                            <p:tab id="tabInfoGeneral"  title="#{labels.General}" >  
+                                <h:panelGrid id="pUserData" columns="2" cellpadding="4" width="100%">                           
+                                    <h:outputText value="Nombre Usuario:" />  
+                                    <p:inputText id="txtUserName" tabindex="1" required="true" validatorMessage="Nombre usuario requerido" value="#{userController.selectedUser.userName}" />
 
-                            <h:outputText value="Apellido:" />  
-                            <p:inputText id="txtLastName" required="true" validatorMessage="Apellido requerido" value="#{userController.selectedUser.lastName}" />    
+                                    <h:outputText value="Nombre:" />  
+                                    <p:inputText id="txtName" tabindex="2" required="true"  validatorMessage="Nombre requerido" value="#{userController.selectedUser.firtName}" />  
 
-                            <h:outputText value="No. Contacto:" />  
-                            <p:inputText id="txtContactNumber" required="true" validatorMessage="No. contacto requerido" value="#{userController.selectedUser.contactNumber}" />                              
+                                    <h:outputText value="Apellido:" />  
+                                    <p:inputText id="txtLastName" tabindex="3" required="true" validatorMessage="Apellido requerido" value="#{userController.selectedUser.lastName}" />    
 
-                            <h:outputText value="Clave:" />  
-                            <p:password id="txtPassword" value="#{userController.selectedUser.password}" feedback="true" /> 
+                                    <h:outputText value="No. Contacto:" />  
+                                    <p:inputText id="txtContactNumber" tabindex="4" required="true" validatorMessage="No. contacto requerido" value="#{userController.selectedUser.contactNumber}" />                              
 
-                            <h:outputText value="Perfil:" /> 
-                            <p:autoComplete id="cbProfile" forceSelection="true" dropdown="true" value="#{userController.selectedUser.profile}" 
-                                            completeMethod="#{userController.getAutoCompleteProfiles}"
-                                            var="prof"
-                                            itemLabel="#{prof.name}"
-                                            itemValue="#{prof}"
-                                            converter="#{profileConverter}"
-                                            required="true"
-                                            validatorMessage="Perfil requerido"                                            
-                                            />
-                            <h:outputText value="Estatus: " />  
-                            <p:selectOneMenu id="cbEstatus" value="#{userController.selectedUser.status}" rendered="#{userController.selectedUser != null}" effect="fade" converter="#{statusConverter}">  
-                                <f:selectItem itemLabel="Seleccionar" itemValue="" />
-                                <f:selectItems value="#{userController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
-                            </p:selectOneMenu>
-                            </h:panelGrid> 
-                            
-                                
-                                <p:pickList id="pojoPickList" value="#{userController.profileDualList}" var="profile" 
-                                            itemValue="#{profile}" itemLabel="#{profile.name}" converter="#{profileConverter}" 
+                                    <h:outputText value="Clave:" />  
+                                    <p:password id="txtPassword" tabindex="5" value="#{userController.selectedUser.password}" feedback="true" /> 
+
+                                    <h:outputText value="Perfil:" /> 
+                                    <p:autoComplete id="cbProfile" tabindex="6" forceSelection="true" dropdown="true" value="#{userController.selectedUser.profile}" 
+                                                    completeMethod="#{userController.getAutoCompleteProfiles}"
+                                                    var="prof"
+                                                    itemLabel="#{prof.name}"
+                                                    itemValue="#{prof}"
+                                                    converter="#{profileConverter}"
+                                                    required="true"
+                                                    validatorMessage="Perfil requerido"                                            
+                                                    />
+                                    <h:outputText value="Estatus: " />  
+                                    <p:selectOneMenu id="cbEstatus" tabindex="7" value="#{userController.selectedUser.status}" rendered="#{userController.selectedUser != null}" effect="fade" converter="#{statusConverter}">  
+                                        <f:selectItem itemLabel="Seleccionar" itemValue="" />
+                                        <f:selectItems value="#{userController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                            </p:tab>
+                            <p:tab id="tabConsortiums"  title="#{labels.consortiums}" >  
+                                <p:pickList id="pojoPickList" value="#{userController.consortiumDualList}" var="consortium" 
+                                            itemValue="#{consortium}" itemLabel="#{consortium.name}" converter="#{consortiumConverter}" 
                                             showSourceControls="true" showTargetControls="true" 
                                             showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
 
-                                    <f:facet name="sourceCaption">Available</f:facet>  
-                                    <f:facet name="targetCaption">Starting</f:facet>  
+                                    <f:facet name="sourceCaption">#{labels.availables}</f:facet>  
+                                    <f:facet name="targetCaption">#{labels.assigned}</f:facet>  
 
                                 </p:pickList>
-                            
+                            </p:tab>
+                        </p:tabView> 
+                        <f:facet name="footer">  
+                            <p:outputPanel style="float:right;">
+                                <p:commandButton  id="btnaddUpdateUser" value="#{labels.register}" 
+                                                  actionListener="#{betBankingController.addOrUpdateInfo}"  
 
+                                                  oncomplete="handleAddOrUpdateBetBanking(xhr, status, args)" update=":form:dtUsuarios :form:messages" icon="ui-icon-check"/>
 
-                            
-
-
-
-                            <f:facet name="footer" >  
-                                <p:commandButton id="addUpdateUserBtn" value="Registrar" 
-                                                 actionListener="#{userController.addOrUpdateUser}"   
-                                                 oncomplete="handleAddOrUpdateUser(xhr, status, args)" update=":form:dtUsuarios messages"                                                 
-                                                 />
-
-                                <p:commandButton id="btnCancel" value="Cancelar"                                                  
-                                                 immediate="true"
-                                                 oncomplete="userDialog.hide()" update=":form:dtUsuarios messages"/>                                 
-
-                            </f:facet> 
-                                                 
+                                <p:commandButton value="#{labels.cancel}"  id="btnCancel"  styleClass="ui-priority-primary" 
+                                                 oncomplete=" betBankingDialog.hide()" immediate="true" icon="ui-icon-closethick"/>  
+                            </p:outputPanel>                            
+                        </f:facet>
                     </p:dialog> 
+
                     <p:commandButton id="btnNewUser" value="Agregar usuario" 
                                      actionListener="#{userController.addNewUser}"  
                                      onclick="userDialog.show();"

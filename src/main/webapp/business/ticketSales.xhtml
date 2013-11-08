@@ -1,0 +1,242 @@
+<ui:composition  template="../masterpage.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://xmlns.jcp.org/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets" 
+                 xmlns:f="http://java.sun.com/jsf/core"
+                 xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title">
+        #{labels.ticketSale}
+    </ui:define>
+    <ui:define name="center">   
+
+        <h:form id="form">  
+            <p:growl id="messages" showDetail="true"/>  
+            <h:inputHidden id="txtQuantityToPlaySelected" value="#{ticketSaleController.quantityToPlaySelectedBet}"/> 
+            <h:inputHidden id="txtIsValidFields" value="#{ticketSaleController.isValidFields}"/> 
+            <h:inputHidden id="txtBetNumbers" value="#{ticketSaleController.numbersToPlay}"/>            
+            <div style="margin-left:15%">
+                <p:fieldset legend="#{labels.general_information}" style="width:75%;">
+                    <table width="100%">
+                        <tr>
+                            <td >
+                                <p:clock pattern="dd/MMM/yyyy hh:mm:ss a" mode="server"/>  
+                            </td>
+                            <td  width="40%">
+                                <h:outputText value="#{ticketSaleController.betBankingName}" style="color: black; font-weight: normal; font-size: large; width: 50%"/>                  
+                            </td>
+                            <td >
+                                TOTAL RD$:<h:outputText id="lblTicketTotalAmount" value="#{ticketSaleController.ticketTotalAmount}" style="font-weight:bold;font-size:large"/>                  
+                            </td>
+
+                        </tr>                                                                              
+                    </table>    
+                </p:fieldset>
+                <br/>
+                <p:fieldset legend="#{labels.betConfig}" style="width:75%">
+                    <table>
+                        <tr>
+                            <td style="font-weight:bold;">
+                                Loteria:
+                            </td>
+                            <td>
+                                <p:selectOneMenu id="cbLottery" value="#{ticketSaleController.selectedLottery}" 
+                                                 valueChangeListener="#{ticketSaleController.getBetsByLotteryOnChange}" widgetVar="cbLotterySelectMenu"
+                                                 effect="fade" converter="#{lotteryConverter}">  
+                                    <f:selectItem itemLabel="#{labels.upper_lottery}" itemValue=""/>
+                                    <f:selectItems value="#{ticketSaleController.lotteries}" var="lottery" itemLabel="#{lottery.name}" itemValue="#{lottery}"/>  
+                                    <p:ajax event="change" update="cbBet,cbTime"/>
+                                </p:selectOneMenu>
+                            </td>
+                            <td style="font-weight:bold;">
+                                Turno:
+                            </td>
+                            <td>
+                                <p:selectOneMenu id="cbTime" value="#{ticketSaleController.selectedTime}" widgetVar="cbTimeSelectMenu"  effect="fade" 
+                                                 converter="#{timeConverter}" >                                    
+                                    <f:selectItem itemLabel="#{labels.upper_turn}" itemValue=""/>
+                                    <f:selectItems value="#{ticketSaleController.times}" var="time" itemLabel="#{time.name}" itemValue="#{time}"/>  
+                                </p:selectOneMenu>
+                            </td>
+                            <td style="font-weight:bold;">
+                                Jugada:
+                            </td> 
+                            <td >
+                                <p:selectOneMenu id="cbBet" value="#{ticketSaleController.selectedBet}" widgetVar="cbBetSelectMenu"  effect="fade" converter="#{betConverter}"
+                                                 valueChangeListener="#{ticketSaleController.getNumberQuantityToPlay}">  
+                                    <f:selectItem itemLabel="#{labels.upper_bet}" itemValue=""/>
+                                    <f:selectItems value="#{ticketSaleController.bets}" 
+                                                   var="bet" itemLabel="#{bet.name}" itemValue="#{bet}"/> 
+                                    <p:ajax event="change" update="form:txtQuantityToPlaySelected" oncomplete="enableNumberQuantityComponent()"/>
+                                </p:selectOneMenu> 
+                            </td>                        
+                            <td>
+                                <p:inputText id="txtNume-1"  maxlength="2" style="width:35px;" disabled="true"/>   
+                                <p:inputText id="txtNume-2" style="width:35px;" disabled="true"/>
+                                <p:inputText id="txtNume-3" style="width:35px;" disabled="true"/>
+                                <p:inputText id="txtNume-4" style="width:35px;" disabled="true" />
+                                <p:inputText id="txtBetAmount" value="#{ticketSaleController.betAmount}" style="width:35px"/>
+                                <p:commandButton id="btnAddTicket"  icon="ui-icon-plusthick" actionListener="#{ticketSaleController.addBetsToTicket}" 
+                                                 process="@this form:cbTime form:txtBetAmount form:txtBetNumbers form:dtTicketDetail"  update="dtTicketDetail :form:lblTicketTotalAmount :form:txtIsValidFields" 
+                                                 oncomplete="clearComponent()" onclick="setBetNumbersField()"/>
+                                <p:tooltip for="btnPrintTicket" value="#{labels.print_ticket}" showEffect="fade" hideEffect="fade"  /> 
+                                <p:commandButton  id="btnPrintTicket"  icon="ui-icon-print" actionListener="#{ticketSaleController.saveTicket}" 
+                                                  process="@this" update=":form:dtTicketDetail :form:cbLottery :form:cbTime :form:cbBet :form:lblTicketTotalAmount :form:messages" 
+                                                  oncomplete="clearComponentToSave()"/>
+                                <p:tooltip for="btnPrintTicket" value="#{labels.print_ticket}" showEffect="fade" hideEffect="fade"  /> 
+                            </td>
+                        </tr>                       
+                    </table>    
+                </p:fieldset> 
+                <br/>                
+                <p:dataTable id="dtTicketDetail" var="ticketDetail"  emptyMessage="#{labels.there_are_not_recors}" 
+                             widgetVar="dtTicketDetail"  value="#{ticketSaleController.ticketDetailsDataModel}"   
+                             paginator="true" rows="5" selection="#{ticketSaleController.selectedTicketDetail}" 
+                             selectionMode="single" style="width:77.8%">  
+                    <f:facet name="header"  >  
+                        #{labels.plays_performed}
+                    </f:facet> 
+                    <p:ajax event="rowSelect" listener="#{ticketSaleController.onRowSelectTicketSale}" 
+                            update=":form:cbLottery :form:cbTime :form:cbBet :form:txtBetNumbers"  
+                            oncomplete="getBetNumbersField()"/>  
+                    <p:column headerText="#{labels.lottery}">  
+                        #{ticketDetail.lottery.name}  
+                    </p:column>
+                    <p:column headerText="#{labels.time}">  
+                        #{ticketDetail.time.name}  
+                    </p:column>
+                    <p:column headerText="#{labels.bet}">  
+                        #{ticketDetail.bet.name}  
+                    </p:column>
+                    <p:column headerText="#{labels.number}">  
+                        #{ticketDetail.numbersPlayed}  
+                    </p:column>
+                    <p:column headerText="#{labels.amount}">  
+                        #{ticketDetail.betAmount}  
+                    </p:column>
+
+                    <p:column width="5%">  
+                        <p:commandButton id="btnDeleteButton" update=":form:lblTicketTotalAmount dtTicketDetail"  
+                                         process="@this" icon="ui-icon-trash" title="#{labels.delete}">  
+                            <f:setPropertyActionListener value="#{ticketDetail}" target="#{ticketSaleController.ticketDetailToDelete}"  />  
+                        </p:commandButton>  
+                    </p:column>    
+                </p:dataTable>
+            </div>
+        </h:form>
+        <script type="text/javascript">
+                                                     //<![CDATA[
+                                                     $(function() {
+                                                         var tmpInputBetNumbers = $("input[id|='form:txtNume']");
+                                                         var betAmountField = $("input[id='form:txtBetAmount']");
+                                                         betAmountField.keypress(function(event) {
+                                                             //Si tiene espacio, no es un punto o no es numero lo rechaza
+                                                             if (event.which == 32 || event.which != 46 && isNaN(String.fromCharCode(event.which))) {
+                                                                 event.preventDefault();
+                                                             }
+                                                         });
+                                                         tmpInputBetNumbers.each(function()
+                                                         {
+                                                             $(this).keypress(function(event) {
+                                                                 //Si tiene espacio o no es un numero lo rechaza
+                                                                 if (event.which == 32 || isNaN(String.fromCharCode(event.which))) {
+                                                                     event.preventDefault();
+                                                                 }
+                                                             });
+                                                         });
+                                                     });
+                                                     function enableNumberQuantityComponent() {
+                                                         var tmpQuantityNumber = parseInt($('[id="form:txtQuantityToPlaySelected"]').val());
+                                                         var tmpCount = 0;
+                                                         var tmpInputBetNumbers = $("input[id|='form:txtNume']");
+                                                         disableNumberQuantityComponent(tmpInputBetNumbers);
+                                                         tmpInputBetNumbers.each(function()
+                                                         {
+                                                             if (tmpCount < tmpQuantityNumber) {
+                                                                 this.disabled = false;
+                                                                 $(this).removeClass('ui-state-disabled');
+                                                                 $(this).val("");
+                                                             }
+                                                             tmpCount = tmpCount + 1;
+                                                         });
+                                                     }
+                                                     function disableNumberQuantityComponent(inputBetNumbers)
+                                                     {
+                                                         inputBetNumbers.each(function()
+                                                         {
+                                                             this.disabled = false;
+                                                             $(this).removeClass('ui-state-disabled');
+                                                             $(this).val("");
+                                                         });
+                                                         inputBetNumbers.each(function()
+                                                         {
+                                                             this.disabled = true;
+                                                             $(this).addClass('ui-state-disabled');
+                                                         });
+                                                     }
+                                                     function disableBetNumersInputs(inputBetNumbers)
+                                                     {
+                                                         inputBetNumbers.each(function()
+                                                         {
+                                                             this.disabled = true;
+                                                             $(this).addClass('ui-state-disabled');
+                                                         });
+                                                     }
+                                                     function clearComponent()
+                                                     {
+                                                         var tmpIsValidFields = $("input[id|='form:txtIsValidFields']").val();
+                                                         var tmpInputBetNumbers = $("input[id|='form:txtNume']");
+                                                         if (tmpIsValidFields == "true") {
+                                                             tmpInputBetNumbers.each(function()
+                                                             {
+                                                                 this.value = "";
+                                                             });
+                                                             $("input[id='form:txtBetAmount']").val("");
+                                                         }
+                                                         tmpInputBetNumbers[0].focus();
+                                                     }
+                                                     function clearComponentToSave()
+                                                     {
+                                                         var tmpInputBetNumbers = $("input[id|='form:txtNume']");
+                                                         tmpInputBetNumbers.each(function()
+                                                         {
+                                                             this.value = "";
+                                                         });
+                                                         $("input[id='form:txtBetAmount']").val("");
+                                                     }
+                                                     function setBetNumbersField() {
+                                                         var tmpInputBetNumbers = $("input[id|='form:txtNume']");
+                                                         var betNumbersField = "";
+                                                         tmpInputBetNumbers.each(function()
+                                                         {
+                                                             if (this.value.length > 0) {
+                                                                 betNumbersField = betNumbersField + this.value + "-";
+                                                             }
+                                                         });
+                                                         //Esto se realizo para eliminar el ultimo pipe que esta demas
+                                                         if (betNumbersField.length > 0) {
+                                                             betNumbersField = betNumbersField.slice(0, -1);
+                                                             $("input[id='form:txtBetNumbers']").val(betNumbersField);
+                                                         }
+                                                     }
+                                                     function putNumbersInFields() {
+                                                         var tmpNumbers = $("input[id|='form:txtBetNumbers']").val().split('-');
+                                                         var tmpCount = 0;
+                                                         var tmpInputBetNumbers = $("input[id|='form:txtNume']");
+                                                         tmpInputBetNumbers.each(function()
+                                                         {
+                                                             if (tmpCount < tmpNumbers.length) {
+                                                                 this.disabled = false;
+                                                                 $(this).removeClass('ui-state-disabled');
+                                                                 $(this).val(tmpNumbers[tmpCount]);
+                                                             }
+                                                             tmpCount = tmpCount + 1;
+                                                         });
+                                                     }
+                                                     function getBetNumbersField() {
+                                                         var tmpInputBetNumbersField = $("input[id|='form:txtNume']");
+                                                         disableBetNumersInputs(tmpInputBetNumbersField);
+                                                         putNumbersInFields();
+                                                     }
+                                                     //]]>
+        </script>
+    </ui:define>
+</ui:composition>
