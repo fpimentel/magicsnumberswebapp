@@ -8,9 +8,12 @@
     </ui:define>
     <ui:define name="center">   
 
-        <h:form id="form">  
-            <p:growl id="messages" showDetail="true"/>  
+        <h:form id="form" onkeypress="if (event.keyCode == 105) { saveTicket(); return false; }">  
             <h:inputHidden id="txtQuantityToPlaySelected" value="#{ticketSaleController.quantityToPlaySelectedBet}"/> 
+            <p:remoteCommand name="saveTicket" actionListener="#{ticketSaleController.saveTicket}" process="@this" update=":form:dtTicketDetail :form:cbLottery :form:cbTime :form:cbBet :form:lblTicketTotalAmount :form:messages :form:txtQuantityToPlaySelected" 
+            oncomplete="clearComponent()" />
+            <p:growl id="messages" showDetail="true"/>  
+            
             <h:inputHidden id="txtIsValidFields" value="#{ticketSaleController.isValidFields}"/> 
             <h:inputHidden id="txtBetNumbers" value="#{ticketSaleController.numbersToPlay}"/>            
             <div style="margin-left:15%">
@@ -73,15 +76,14 @@
                                 <p:inputText id="txtNume-2" style="width:35px;" disabled="true"/>
                                 <p:inputText id="txtNume-3" style="width:35px;" disabled="true"/>
                                 <p:inputText id="txtNume-4" style="width:35px;" disabled="true" />
-                                <p:inputText id="txtBetAmount" value="#{ticketSaleController.betAmount}" style="width:35px" onkeypress="saveTicket()"/>
-                                <p:remoteCommand name="saveTicket" actionListener="#{ticketSaleController.saveTicket}"/>
+                                <p:inputText id="txtBetAmount" value="#{ticketSaleController.betAmount}" style="width:35px" />                                
                                 <p:commandButton id="btnAddTicket"  icon="ui-icon-plusthick" actionListener="#{ticketSaleController.addBetsToTicket}" 
                                                  process="@this form:cbTime form:txtBetAmount form:txtBetNumbers form:dtTicketDetail"  update="dtTicketDetail :form:lblTicketTotalAmount :form:txtIsValidFields" 
                                                  oncomplete="clearComponent()" onclick="setBetNumbersField()"/>
                                 <p:tooltip for="btnPrintTicket" value="#{labels.print_ticket}" showEffect="fade" hideEffect="fade"  /> 
                                 <p:commandButton  id="btnPrintTicket"  icon="ui-icon-print" actionListener="#{ticketSaleController.saveTicket}" 
                                                   process="@this" update=":form:dtTicketDetail :form:cbLottery :form:cbTime :form:cbBet :form:lblTicketTotalAmount :form:messages" 
-                                                  oncomplete="clearComponentToSave()"/>
+                                                  oncomplete="clearComponent()"/>
                                 <p:tooltip for="btnPrintTicket" value="#{labels.print_ticket}" showEffect="fade" hideEffect="fade"  /> 
                             </td>
                         </tr>                       
@@ -116,7 +118,7 @@
 
                     <p:column width="5%">  
                         <p:commandButton id="btnDeleteButton" update=":form:lblTicketTotalAmount dtTicketDetail"  
-                                         process="@this" icon="ui-icon-trash" title="#{labels.delete}">  
+                                         process="@this" icon="ui-icon-trash" title="#{labels.delete}" oncomplete="setFocusOnFirstBetNumber()">  
                             <f:setPropertyActionListener value="#{ticketDetail}" target="#{ticketSaleController.ticketDetailToDelete}"  />  
                         </p:commandButton>  
                     </p:column>    
@@ -177,6 +179,7 @@
                                                              }
                                                              tmpCount = tmpCount + 1;
                                                          });
+                                                         tmpInputBetNumbers[0].focus();
                                                      }
                                                      function disableNumberQuantityComponent(inputBetNumbers)
                                                      {
@@ -221,6 +224,13 @@
                                                              this.value = "";
                                                          });
                                                          $("input[id='form:txtBetAmount']").val("");
+                                                         tmpInputBetNumbers[0].focus();
+                                                         tmpInputBetNumbers[0].select();
+                                                     }
+                                                     function setFocusOnFirstBetNumber()
+                                                     {
+                                                         var tmpInputBetNumbers = $("input[id|='form:txtNume']");                                                                                                        
+                                                         tmpInputBetNumbers[0].focus();                                                         
                                                      }
                                                      function setBetNumbersField() {
                                                          var tmpInputBetNumbers = $("input[id|='form:txtNume']");

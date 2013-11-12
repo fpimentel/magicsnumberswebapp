@@ -271,20 +271,26 @@ public class TicketSaleController {
         FacesMessage msg;
         this.editMode = false;
         try {
-            if (isValidateInfoRequired()) {
-                this.ticket = new Ticket();
-                this.ticket.setCreationUser(this.loginController.getUser().getUserName());
-                this.ticket.setTicketDetails(new HashSet<TicketDetail>(this.ticketDetailsDataModel.getTicketDetails()));
-                this.ticketService.saveTicket(this.ticket);
-                this.ticketDetailsDataModel = new TicketDetailDataModel(new ArrayList<TicketDetail>());
-                this.selectedLottery = new Lottery();
-                this.selectedBet = new Bet();
-                this.selectedTime = new Time();
-                this.ticketTotalAmount = new BigDecimal(0);
-            } else {
-                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Loteria, Turno, Jugada, Numeros y monto Requeridos", "");
+
+            this.ticket = new Ticket();
+            this.ticket.setCreationUser(this.loginController.getUser().getUserName());
+            this.ticket.setTicketDetails(new HashSet<TicketDetail>(this.ticketDetailsDataModel.getTicketDetails()));
+            
+            if (ticketDetailsDataModel.getTicketDetails().size() < 1) {
+                setIsValidFields(false);
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe agregar al menos una jugada ",null);
                 FacesContext.getCurrentInstance().addMessage(null, msg);
-            }
+                return;
+            }           
+            this.ticketService.saveTicket(this.ticket);                      
+            this.ticketDetailsDataModel = new TicketDetailDataModel(new ArrayList<TicketDetail>());
+           /* this.selectedLottery = new Lottery();
+            this.selectedBet = new Bet();
+            this.selectedTime = new Time();
+            * */
+            this.ticketTotalAmount = new BigDecimal(0);
+            this.quantityToPlaySelectedBet = 0;
+
         } catch (SaveTicketException ex) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error salvando las jugadas de este ticket", "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
