@@ -24,8 +24,8 @@
                         <f:facet name="header"  >  
                             Consulta de Usuarios  
                         </f:facet> 
-                        <p:ajax event="rowSelect" listener="#{userController.onRowSelect}"   
-                                update=":form:tvUser:pojoPickList :form:tvUser:pUserData :form:messages" oncomplete="userDialog.show()" />  
+                        <p:ajax event="rowSelect" listener="#{userController.onRowSelect}"                                
+                                update=":form:tvUser:consortiumPickList :form:tvUser:betBankingPickList :form:tvUser:pUserData :form:messages" oncomplete="userDialog.show()" />  
                         <p:ajax event="rowUnselect" listener="#{userController.onRowUnselect}" update=":form:messages"/>  
 
                         <p:column headerText="Usuario" style="width:8%" sortBy="#{user.userName}" filterBy="#{user.userName}"  filterMatchMode="contains">  
@@ -87,8 +87,19 @@
                                 </h:panelGrid>
                             </p:tab>
                             <p:tab id="tabConsortiums"  title="#{labels.consortiums}" >  
-                                <p:pickList id="pojoPickList" value="#{userController.consortiumDualList}" var="consortium" 
+                                <p:pickList id="consortiumPickList" value="#{userController.consortiumDualList}" var="consortium" 
                                             itemValue="#{consortium}" itemLabel="#{consortium.name}" converter="#{consortiumConverter}" 
+                                            showSourceControls="true" showTargetControls="true" 
+                                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
+
+                                    <f:facet name="sourceCaption">#{labels.availables}</f:facet>  
+                                    <f:facet name="targetCaption">#{labels.assigned}</f:facet>  
+
+                                </p:pickList>
+                            </p:tab>
+                            <p:tab id="tabBetBanking"  title="#{labels.betbankings}" >  
+                                <p:pickList id="betBankingPickList" value="#{userController.betBankingDualList}" var="betBanking" 
+                                            itemValue="#{betBanking}" itemLabel="#{betBanking.name}" converter="#{betBankingConverter}" 
                                             showSourceControls="true" showTargetControls="true" 
                                             showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
 

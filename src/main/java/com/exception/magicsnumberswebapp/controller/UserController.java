@@ -5,6 +5,7 @@ import com.exception.magicsnumberswebapp.service.ConsortiumService;
 import com.exception.magicsnumberswebapp.service.StatusService;
 import com.exception.magicsnumberswebapp.service.UserService;
 import com.exception.magicsnumberswebapp.view.converter.ProfileConverter;
+import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
 import com.exception.magicsnumbersws.entities.Profile;
 import com.exception.magicsnumbersws.entities.Status;
@@ -13,7 +14,9 @@ import com.exception.magicsnumbersws.exception.SaveUsersDataException;
 import com.exception.magicsnumbersws.exception.SearchAllConsortiumException;
 import com.exception.magicsnumbersws.exception.SearchAllUserException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import org.springframework.context.annotation.Scope;
@@ -53,7 +56,10 @@ public class UserController {
     private Status selectedStatus;
     private List<Consortium> avariableConsortiums;
     private List<Consortium> assignedConsortiums;
+    private Set<BetBanking> availableBetBankings;
+    private Set<BetBanking> assignedBetBankings;
     private DualListModel<Consortium> consortiumDualList;
+    private DualListModel<BetBanking> betBankingDualList;
     @Autowired
     private ProfileConverter profileConverter;
     private List<SelectItem> categories;
@@ -85,6 +91,30 @@ public class UserController {
         this.avariableConsortiums = avariableConsortiums;
     }
 
+    public Set<BetBanking> getAvailableBetBankings() {
+        if (this.availableBetBankings == null) {
+            this.availableBetBankings = new HashSet<BetBanking>();
+        }
+        return this.availableBetBankings;
+
+    }
+
+    public void setAvailableBetBankings(Set<BetBanking> availableBetBankings) {
+        
+        this.availableBetBankings = availableBetBankings;
+    }
+
+    public Set<BetBanking> getAssignedBetBankings() {
+           if (this.assignedBetBankings == null) {
+            this.assignedBetBankings = new HashSet<BetBanking>();
+        }
+        return assignedBetBankings;
+    }
+
+    public void setAssignedBetBankings(Set<BetBanking> assignedBetBankings) {
+        this.assignedBetBankings = assignedBetBankings;
+    }
+
     public DualListModel<Consortium> getConsortiumDualList() {
         if (this.consortiumDualList == null) {
             this.consortiumDualList = new DualListModel<Consortium>();
@@ -112,6 +142,8 @@ public class UserController {
     }
 
     public void setAssignedAndAvailableConsortium(List<Consortium> consortiumsActive) {
+        this.assignedConsortiums = new ArrayList<Consortium>();
+        this.avariableConsortiums = new ArrayList<Consortium>();
         for (Consortium currConsortium : consortiumsActive) {
             List<User> users = new ArrayList<User>(currConsortium.getUsers());
             //validamos si el consorcio actual esta asignado al usuario y lo agregamos en la lista de asignado 
@@ -129,24 +161,56 @@ public class UserController {
         this.consortiumDualList = new DualListModel<Consortium>(this.avariableConsortiums, this.assignedConsortiums);
     }
 
+    public void setAssignedAndAvailableBetBankings(List<Consortium> consortiumsActive) {
+        this.availableBetBankings = new HashSet<BetBanking>();
+        this.assignedBetBankings = new HashSet<BetBanking>();
+        for (Consortium currConsortium : consortiumsActive) {
+            List<BetBanking> betBankings = new ArrayList<BetBanking>(currConsortium.getBetBankings());
+            //Primer for: bancas del consorcio asociado al usuario logueado
+            for (BetBanking betBankingCurrent : betBankings) {
+                //Segundo for: bancas del usuario seleccionado 
+                boolean isAssigned = false;
+                for (BetBanking currentBetBankingSelectedUser : this.selectedUser.getBetBankings()) {
+                    if (betBankingCurrent.equals(currentBetBankingSelectedUser)) {
+                        this.assignedBetBankings.add(betBankingCurrent);
+                        isAssigned = true;
+                    }
+                }
+                //Si la banca del consorcio no existe en el usuario seleccionado se coloca como disponible 
+                if (!isAssigned) {
+                    isAssigned = false;
+                    this.availableBetBankings.add(betBankingCurrent);
+                }
+            }
+        }
+        this.betBankingDualList = new DualListModel<BetBanking>(new ArrayList(this.availableBetBankings), new ArrayList(this.assignedBetBankings));
+    }
     public void loadAssignedAndAvailableConsortiumActive() {
         List<Consortium> consortiumsActive = new ArrayList<Consortium>();
         if (this.loginController.getUser().getProfile().getId() == com.exception.magicsnumberswebapp.constants.Profile.ADMINISTRATOR.getId()) {
             try {
                 //SI es administrador busco todos los consorcios  que estan activos
+                //lo mismo sucedera con las bancas
                 consortiumsActive = this.consortiumService.findAllConsortiumActive();
                 setAssignedAndAvailableConsortium(consortiumsActive);
+                setAssignedAndAvailableBetBankings(consortiumsActive);
+
             } catch (SearchAllConsortiumException ex) {
-                Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(UserController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             try {
                 //Si el usuario no es administrador del sistema solo podra ver y asignar a los usuario
-                //consorcios que le pertenezcan
-                consortiumsActive = this.consortiumService.findAll(this.selectedUser.getId());
+                //consorcios que le pertenezcan lo mismo sucedera con las bancas
+                consortiumsActive = this.consortiumService.findAll(this.loginController.getUser().getId());
                 setAssignedAndAvailableConsortium(consortiumsActive);
+                setAssignedAndAvailableBetBankings(consortiumsActive);
+
+
             } catch (SearchAllConsortiumException ex) {
-                Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(UserController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
 
         }
@@ -169,6 +233,18 @@ public class UserController {
             suggestions.remove(profileAdminitrator);
         }
         return suggestions;
+    }
+
+    public DualListModel<BetBanking> getBetBankingDualList() {
+        if (this.betBankingDualList == null) {
+            this.betBankingDualList = new DualListModel<BetBanking>();
+        }
+        return this.betBankingDualList;
+
+    }
+
+    public void setBetBankingDualList(DualListModel<BetBanking> betBankingDualList) {
+        this.betBankingDualList = betBankingDualList;
     }
 
     public List<SelectItem> getCategories() {
@@ -240,10 +316,13 @@ public class UserController {
                     //SI no es administrador buscamos todos los usuarios de los consorcios asociados al usuario logeado
                     List<User> users = this.userService.findUsersByConsortiumIds(this.loginController.getUser().getId());
                     this.userDataModel = new UserDataModel(new ArrayList<User>(users));
+
+
                 }
 
             } catch (SearchAllUserException ex) {
-                Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(UserController.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
         return userDataModel;
@@ -253,7 +332,7 @@ public class UserController {
         FacesMessage msg = new FacesMessage("Usuario", ((User) event.getObject()).getFirtName());
         editMode = true;
         loadAssignedAndAvailableConsortiumActive();
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+      
     }
 
     public void onRowUnselect(UnselectEvent event) {
