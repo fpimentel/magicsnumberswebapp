@@ -73,7 +73,8 @@
                                 <p:inputText id="txtNume-2" style="width:35px;" disabled="true"/>
                                 <p:inputText id="txtNume-3" style="width:35px;" disabled="true"/>
                                 <p:inputText id="txtNume-4" style="width:35px;" disabled="true" />
-                                <p:inputText id="txtBetAmount" value="#{ticketSaleController.betAmount}" style="width:35px"/>
+                                <p:inputText id="txtBetAmount" value="#{ticketSaleController.betAmount}" style="width:35px" onkeypress="saveTicket()"/>
+                                <p:remoteCommand name="saveTicket" actionListener="#{ticketSaleController.saveTicket}"/>
                                 <p:commandButton id="btnAddTicket"  icon="ui-icon-plusthick" actionListener="#{ticketSaleController.addBetsToTicket}" 
                                                  process="@this form:cbTime form:txtBetAmount form:txtBetNumbers form:dtTicketDetail"  update="dtTicketDetail :form:lblTicketTotalAmount :form:txtIsValidFields" 
                                                  oncomplete="clearComponent()" onclick="setBetNumbersField()"/>
@@ -127,6 +128,25 @@
                                                      $(function() {
                                                          var tmpInputBetNumbers = $("input[id|='form:txtNume']");
                                                          var betAmountField = $("input[id='form:txtBetAmount']");
+                                                         tmpInputBetNumbers.each(function()
+                                                         {
+                                                             $(this).keyup(function(event) {
+                                                                 var currentIndex = tmpInputBetNumbers.index($(this));
+                                                                 var tmpQuantityNumber = parseInt($('[id="form:txtQuantityToPlaySelected"]').val());
+
+                                                                 if ($(this).val().length == 2) {
+                                                                     if ((currentIndex + 1) < tmpQuantityNumber) {
+                                                                         tmpInputBetNumbers[currentIndex + 1].focus();
+                                                                         tmpInputBetNumbers[currentIndex + 1].select();
+                                                                     }
+                                                                     else {
+                                                                         betAmountField.focus();
+                                                                         betAmountField.select();
+                                                                     }
+                                                                 }
+                                                             });
+                                                         });
+
                                                          betAmountField.keypress(function(event) {
                                                              //Si tiene espacio, no es un punto o no es numero lo rechaza
                                                              if (event.which == 32 || event.which != 46 && isNaN(String.fromCharCode(event.which))) {
