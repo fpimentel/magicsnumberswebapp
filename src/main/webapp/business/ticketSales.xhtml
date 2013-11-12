@@ -8,10 +8,17 @@
     </ui:define>
     <ui:define name="center">   
 
-        <h:form id="form" onkeypress="if (event.keyCode == 105) { saveTicket(); return false; }">  
+        <h:form id="form" onkeypress="shorcutHandler(event.keyCode);">  
             <h:inputHidden id="txtQuantityToPlaySelected" value="#{ticketSaleController.quantityToPlaySelectedBet}"/> 
             <p:remoteCommand name="saveTicket" actionListener="#{ticketSaleController.saveTicket}" process="@this" update=":form:dtTicketDetail :form:cbLottery :form:cbTime :form:cbBet :form:lblTicketTotalAmount :form:messages :form:txtQuantityToPlaySelected" 
             oncomplete="clearComponent()" />
+            <p:remoteCommand name="changeLottery" actionListener="#{ticketSaleController.changeLottery}" process="@this" 
+                             update=":form:cbLottery :form:cbTime :form:cbBet" 
+                             oncomplete="clearComponent()" />
+            <p:remoteCommand name="changeTurn" actionListener="#{ticketSaleController.changeTurn}" process="@this" update=":form:cbTime" 
+                             oncomplete="clearComponent()" />
+            <p:remoteCommand name="changeBet" actionListener="#{ticketSaleController.changeBet}" process="@this" 
+                             update=":form:cbBet :form:txtQuantityToPlaySelected" oncomplete="enableNumberQuantityComponent()" />
             <p:growl id="messages" showDetail="true"/>  
             
             <h:inputHidden id="txtIsValidFields" value="#{ticketSaleController.isValidFields}"/> 
@@ -165,6 +172,29 @@
                                                              });
                                                          });
                                                      });
+                                                     function shorcutHandler(keyCode){
+                                                        
+                                                         KEY_CODE_I = 105;
+                                                         KEY_CODE_L = 108;
+                                                         KEY_CODE_T = 116;
+                                                         KEY_CODE_B = 98;
+                                                        if (KEY_CODE_I== keyCode) { 
+                                                            saveTicket(); 
+                                                            return false; 
+                                                        }
+                                                        else if(KEY_CODE_L==keyCode){
+                                                            changeLottery();
+                                                        }
+                                                        else if(KEY_CODE_T==keyCode){
+                                                          changeTurn();
+                                                          return;
+                                                        }
+                                                        else if(KEY_CODE_B==keyCode){
+                                                          changeBet();
+                                                          return;
+                                                        }
+                                                        
+                                                     }
                                                      function enableNumberQuantityComponent() {
                                                          var tmpQuantityNumber = parseInt($('[id="form:txtQuantityToPlaySelected"]').val());
                                                          var tmpCount = 0;

@@ -128,11 +128,11 @@ public class TicketSaleController {
     }
 
     public Lottery getSelectedLottery() {
-        if (this.selectedLottery != null) {
+     /*   if (this.selectedLottery != null) {
             if (this.selectedLottery.getBets() != null) {
-                this.bets = new ArrayList(this.selectedLottery.getBets());
+               // this.bets = new ArrayList(this.selectedLottery.getBets());
             }
-        }
+        }*/
         return this.selectedLottery;
     }
 
@@ -327,7 +327,34 @@ public class TicketSaleController {
         this.selectedLottery = (Lottery) event.getNewValue();
         loadTimesAndBetsByLottery();
     }
-
+    public void changeLottery(){
+        for(Lottery currentLottery: this.lotteries){
+            if(!currentLottery.equals(this.selectedLottery)){
+                this.selectedLottery = currentLottery;
+                 loadTimesAndBetsByLottery();
+                return;
+            }
+        }
+        
+    }
+    public void changeTurn(){
+        for(Time currentTime: this.times){
+            if(!currentTime.equals(this.selectedTime)){
+                this.selectedTime = currentTime;
+                return;
+            }
+        }      
+    }
+    public void changeBet(){
+        for(Bet currentBet: this.bets){
+            if(!currentBet.equals(this.selectedBet)){
+                this.selectedBet = currentBet;                 
+                this.quantityToPlaySelectedBet = currentBet.getNumberQtyToPlay();
+                return;
+            }
+        }      
+    }
+ 
     public List<Bet> getBets() {
         return bets;
     }
