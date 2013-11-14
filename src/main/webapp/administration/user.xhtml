@@ -99,7 +99,7 @@
                             </p:tab>
                             <p:tab id="tabBetBanking"  title="#{labels.betbankings}" >  
                                 <p:pickList id="betBankingPickList" value="#{userController.betBankingDualList}" var="betBanking" 
-                                            itemValue="#{betBanking}" itemLabel="#{betBanking.name}" converter="#{betBankingConverter}" 
+                                            itemValue="#{betBanking}" itemLabel="#{betBanking.name}"  converter="#{betBakingConverter}" 
                                             showSourceControls="true" showTargetControls="true" 
                                             showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
 
@@ -112,10 +112,8 @@
                         <f:facet name="footer">  
                             <p:outputPanel style="float:right;">
                                 <p:commandButton  id="btnaddUpdateUser" value="#{labels.register}" 
-                                                  actionListener="#{betBankingController.addOrUpdateInfo}"  
-
+                                                  actionListener="#{userController.addOrUpdateUser}"  
                                                   oncomplete="handleAddOrUpdateBetBanking(xhr, status, args)" update=":form:dtUsuarios :form:messages" icon="ui-icon-check"/>
-
                                 <p:commandButton value="#{labels.cancel}"  id="btnCancel"  styleClass="ui-priority-primary" 
                                                  oncomplete=" betBankingDialog.hide()" immediate="true" icon="ui-icon-closethick"/>  
                             </p:outputPanel>                            
@@ -129,9 +127,6 @@
                                      immediate="true"
                                      />
 
-                    <p:commandButton id="saveAllUserbtn" value="Registrar datos" 
-                                     actionListener="#{userController.saveAll}"   
-                                     oncomplete="handleAddOrUpdateUser(xhr, status, args)" update=":form:dtUsuarios messages"/>
                 </h:form>
                 <script type="text/javascript">
                                          function handleAddOrUpdateUser(xhr, status, args) {

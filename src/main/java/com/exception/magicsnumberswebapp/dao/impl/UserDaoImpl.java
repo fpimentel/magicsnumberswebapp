@@ -72,5 +72,10 @@ public class UserDaoImpl implements UserDao{
         securityEndpoint.saveUsersData(users);
     }
 
+    @Override
+    public void saveUser(User user) throws SaveUsersDataException {
+        this.securityEndpoint.saveUser(user);
+    }
+
 
 }

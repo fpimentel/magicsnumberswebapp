@@ -24,4 +24,5 @@ public interface UserService {
     void saveUsersData(List<User> users) throws SaveUsersDataException;
 
     public List<User> findUsersByConsortiumIds(int userId) throws SearchAllUserException;
+    public void saveUser(User user) throws SaveUsersDataException;
 }

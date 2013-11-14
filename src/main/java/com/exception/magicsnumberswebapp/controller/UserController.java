@@ -100,12 +100,12 @@ public class UserController {
     }
 
     public void setAvailableBetBankings(Set<BetBanking> availableBetBankings) {
-        
+
         this.availableBetBankings = availableBetBankings;
     }
 
     public Set<BetBanking> getAssignedBetBankings() {
-           if (this.assignedBetBankings == null) {
+        if (this.assignedBetBankings == null) {
             this.assignedBetBankings = new HashSet<BetBanking>();
         }
         return assignedBetBankings;
@@ -185,6 +185,7 @@ public class UserController {
         }
         this.betBankingDualList = new DualListModel<BetBanking>(new ArrayList(this.availableBetBankings), new ArrayList(this.assignedBetBankings));
     }
+
     public void loadAssignedAndAvailableConsortiumActive() {
         List<Consortium> consortiumsActive = new ArrayList<Consortium>();
         if (this.loginController.getUser().getProfile().getId() == com.exception.magicsnumberswebapp.constants.Profile.ADMINISTRATOR.getId()) {
@@ -332,7 +333,7 @@ public class UserController {
         FacesMessage msg = new FacesMessage("Usuario", ((User) event.getObject()).getFirtName());
         editMode = true;
         loadAssignedAndAvailableConsortiumActive();
-      
+
     }
 
     public void onRowUnselect(UnselectEvent event) {
@@ -341,34 +342,26 @@ public class UserController {
     }
 
     public void addOrUpdateUser(ActionEvent event) {
-        boolean success = true;
+
         FacesMessage msg;
         RequestContext reqContext = RequestContext.getCurrentInstance();
         if (userAlreadyExist()) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario ya existe", "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            success = false;
             return;
         }
-        if (editMode) {
-            User userVo = new User();
-            userVo.setId(selectedUser.getId());
-            int index = userDataModel.getUsers().indexOf(userVo);
-            userDataModel.getUsers().set(index, selectedUser);
-            int updatedUserIndex = updatedUsers.indexOf(userVo);
-            if (updatedUserIndex >= 0) {
-                updatedUsers.set(updatedUserIndex, selectedUser);
-            } else {
-                updatedUsers.add(selectedUser);
-            }
-            editMode = false;
-        } else {
-            selectedUser.setId(userDataModel.nextUserId());
-            updatedUsers.add(selectedUser);
-            userDataModel.getUsers().add(selectedUser);
+        this.selectedUser.setBetBankings(new HashSet<BetBanking>(this.betBankingDualList.getTarget()));
+        this.selectedUser.setConsortiums(new HashSet<Consortium>(this.consortiumDualList.getTarget()));
+        try {
+            this.selectedUser.setCreationUser(this.loginController.getUser().getUserName());
+            this.userService.saveUser(this.selectedUser);
+        } catch (SaveUsersDataException ex) {
+            Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error con este usuario", null);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
         }
-        selectedUser = null;
-        reqContext.addCallbackParam("success", success);
     }
 
     public void saveAll() {

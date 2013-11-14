@@ -50,5 +50,10 @@ public class UserServiceImpl implements UserService{
     public List<User> findUsersByConsortiumIds(int userId) throws SearchAllUserException {
         return this.securityEndpoint.findUsersByConsortiumIds(userId);
     }
+
+    @Override
+    public void saveUser(User user) throws SaveUsersDataException {
+         this.userDao.saveUser(user);
+    }
     
 }
