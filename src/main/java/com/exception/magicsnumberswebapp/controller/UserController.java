@@ -308,24 +308,24 @@ public class UserController {
     }
 
     public UserDataModel getUserDataModel() {
-        if (this.userDataModel == null) {
-            try {
-                //SI es administrador del sistema buscamos todos los usuarios
-                if (this.loginController.getUser().getProfile().getId() == com.exception.magicsnumberswebapp.constants.Profile.ADMINISTRATOR.getId()) {
-                    this.userDataModel = new UserDataModel(userService.getAllUsers());
-                } else {
-                    //SI no es administrador buscamos todos los usuarios de los consorcios asociados al usuario logeado
-                    List<User> users = this.userService.findUsersByConsortiumIds(this.loginController.getUser().getId());
-                    this.userDataModel = new UserDataModel(new ArrayList<User>(users));
+
+        try {
+            //SI es administrador del sistema buscamos todos los usuarios
+            if (this.loginController.getUser().getProfile().getId() == com.exception.magicsnumberswebapp.constants.Profile.ADMINISTRATOR.getId()) {
+                this.userDataModel = new UserDataModel(userService.getAllUsers());
+            } else {
+                //SI no es administrador buscamos todos los usuarios de los consorcios asociados al usuario logeado
+                List<User> users = this.userService.findUsersByConsortiumIds(this.loginController.getUser().getId());
+                this.userDataModel = new UserDataModel(new ArrayList<User>(users));
 
 
-                }
-
-            } catch (SearchAllUserException ex) {
-                Logger.getLogger(UserController.class
-                        .getName()).log(Level.SEVERE, null, ex);
             }
+
+        } catch (SearchAllUserException ex) {
+            Logger.getLogger(UserController.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
+
         return userDataModel;
     }
 
@@ -342,7 +342,7 @@ public class UserController {
     }
 
     public void addOrUpdateUser(ActionEvent event) {
-
+        boolean success = true;
         FacesMessage msg;
         RequestContext reqContext = RequestContext.getCurrentInstance();
         if (userAlreadyExist()) {
@@ -356,12 +356,16 @@ public class UserController {
             this.selectedUser.setCreationUser(this.loginController.getUser().getUserName());
             this.userService.saveUser(this.selectedUser);
         } catch (SaveUsersDataException ex) {
+            success = false;
             Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
+            success = false;
             Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
             msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error con este usuario", null);
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
+        getUserDataModel();
+        reqContext.addCallbackParam("success", success);
     }
 
     public void saveAll() {
