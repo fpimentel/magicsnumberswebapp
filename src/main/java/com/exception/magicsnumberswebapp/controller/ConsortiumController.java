@@ -122,13 +122,11 @@ public class ConsortiumController {
             this.selectedConsortium = new Consortium();
             editMode = false;
         } catch (SearchAllBetBankingException ex) {
-            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error buscando las bancas disponibles!", null);
             Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
             FacesContext.getCurrentInstance().addMessage(null, msg);
 
-        } catch (Exception ex) {
-            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {            
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error buscando las bancas disponibles!", null);
             Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
             FacesContext.getCurrentInstance().addMessage(null, msg);

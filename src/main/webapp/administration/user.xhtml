@@ -25,10 +25,12 @@
                             Consulta de Usuarios  
                         </f:facet> 
                         <p:ajax event="rowSelect" listener="#{userController.onRowSelect}"                                
-                                update=":form:tvUser:consortiumPickList :form:tvUser:betBankingPickList :form:tvUser:pUserData :form:messages" oncomplete="userDialog.show()" />  
+                                update=":form:tvUser:consortiumPickList :form:tvUser:betBankingPickList :form:dialog :form:messages" oncomplete="userDialog.show()" 
+                                process="@this" />  
                         <p:ajax event="rowUnselect" listener="#{userController.onRowUnselect}" update=":form:messages"/>  
 
-                        <p:column headerText="Usuario" style="width:8%" sortBy="#{user.userName}" filterBy="#{user.userName}"  filterMatchMode="contains">  
+                        <p:column headerText="Usuario" style="width:8%" sortBy="#{user.userName}" 
+                                  filterBy="#{user.userName}"  filterMatchMode="contains">  
                             #{user.userName }  
                         </p:column>
                         <p:column headerText="Nombre" style="width:8%" sortBy="#{user.firtName}" filterBy="#{user.firtName}"  filterMatchMode="contains">  
@@ -53,7 +55,7 @@
                         <p:tabView id="tvUser" widgetVar="tvUserTab">  
 
                             <p:tab id="tabInfoGeneral"  title="#{labels.General}" >  
-                                <h:panelGrid id="pUserData" columns="2" cellpadding="4" width="100%">                           
+                                <h:panelGrid  columns="2" cellpadding="4" width="100%">                           
                                     <h:outputText value="Nombre Usuario:" />  
                                     <p:inputText id="txtUserName" tabindex="1" required="true" validatorMessage="Nombre usuario requerido" value="#{userController.selectedUser.userName}" />
 
@@ -114,7 +116,10 @@
                                 <p:commandButton  id="btnaddUpdateUser" value="#{labels.register}" 
                                                   actionListener="#{userController.addOrUpdateUser}"  
                                                   oncomplete="handleAddOrUpdateUser(xhr, status, args)" update=":form:dtUsuarios :form:messages" icon="ui-icon-check"/>
-                                <p:commandButton value="#{labels.cancel}"  id="btnCancel"  styleClass="ui-priority-primary" 
+                                <p:commandButton value="#{labels.cancel}"  id="btnCancel"  
+                                                 actionListener="#{userController.cleanComponent}" 
+                                                 update=":form:dialog"
+                                                 styleClass="ui-priority-primary" 
                                                  oncomplete="userDialog.hide()" immediate="true" icon="ui-icon-closethick"/>  
                             </p:outputPanel>                            
                         </f:facet>
@@ -122,9 +127,10 @@
 
                     <p:commandButton id="btnNewUser" value="Agregar usuario" 
                                      actionListener="#{userController.addNewUser}"  
-                                     onclick="userDialog.show();"
-                                     update=":form:dtUsuarios messages"
+                                     oncomplete="userDialog.show();"
+                                     process="@this"
                                      immediate="true"
+                                     update=":form:dialog"
                                      />
 
                 </h:form>
