@@ -9,10 +9,9 @@ package com.exception.magicsnumberswebapp.constants;
  * @author Cristian
  */
 
-public enum  Profile {
-    ADMINISTRATOR (2,"ADMINISTRADOR"),
-    BANKER (3,"BANQUERA"),
-    CONSORTIUMADMIN (4,"ADM.CONSORCIO");
+public enum  StatusType {
+    BASIC (1,"BASICOS"),
+    TICKET (2,"TICKET");
     private int id;
     private String name;
 
@@ -32,7 +31,7 @@ public enum  Profile {
         this.name = name;
     }
     
-    Profile(int id,String name)    {
+    StatusType(int id,String name)    {
         this.id=id;
         this.name = name;
     }

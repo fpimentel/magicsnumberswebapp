@@ -77,5 +77,10 @@ public class UserDaoImpl implements UserDao{
         this.securityEndpoint.saveUser(user);
     }
 
+    @Override
+    public User findUserByUserName(String userName) throws SearchAllUserException {
+        return this.securityEndpoint.findUserByUserName(userName);
+    }
+
 
 }

@@ -1,4 +1,3 @@
-
 package com.exception.magicsnumberswebapp.dao;
 
 import com.exception.magicsnumbersws.entities.User;
@@ -12,8 +11,14 @@ import java.util.Set;
  * @author fpimentel
  */
 public interface UserDao {
-    public List<User> getAllUsers() throws SearchAllUserException;        
-    public User getUserByCredentials(String userName, String pass) throws SearchAllUserException;     
+
+    public List<User> getAllUsers() throws SearchAllUserException;
+
+    public User getUserByCredentials(String userName, String pass) throws SearchAllUserException;
+
     void saveUsersData(List<User> users) throws SaveUsersDataException;
+
     public void saveUser(User user) throws SaveUsersDataException;
+
+    public User findUserByUserName(String userName) throws SearchAllUserException;
 }

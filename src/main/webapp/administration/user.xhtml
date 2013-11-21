@@ -57,16 +57,16 @@
                             <p:tab id="tabInfoGeneral"  title="#{labels.General}" >  
                                 <h:panelGrid  columns="2" cellpadding="4" width="100%">                           
                                     <h:outputText value="Nombre Usuario:" />  
-                                    <p:inputText id="txtUserName" tabindex="1" required="true" validatorMessage="Nombre usuario requerido" value="#{userController.selectedUser.userName}" />
+                                    <p:inputText id="txtUserName" tabindex="1" required="true" requiredMessage="Nombre usuario requerido" value="#{userController.selectedUser.userName}" />
 
                                     <h:outputText value="Nombre:" />  
-                                    <p:inputText id="txtName" tabindex="2" required="true"  validatorMessage="Nombre requerido" value="#{userController.selectedUser.firtName}" />  
+                                    <p:inputText id="txtName" tabindex="2" required="true"  requiredMessage="Nombre requerido" value="#{userController.selectedUser.firtName}" />  
 
                                     <h:outputText value="Apellido:" />  
-                                    <p:inputText id="txtLastName" tabindex="3" required="true" validatorMessage="Apellido requerido" value="#{userController.selectedUser.lastName}" />    
+                                    <p:inputText id="txtLastName" tabindex="3" required="true" requiredMessage="Apellido requerido" value="#{userController.selectedUser.lastName}" />    
 
                                     <h:outputText value="No. Contacto:" />  
-                                    <p:inputText id="txtContactNumber" tabindex="4" required="true" validatorMessage="No. contacto requerido" value="#{userController.selectedUser.contactNumber}" />                              
+                                    <p:inputText id="txtContactNumber" tabindex="4" required="true" requiredMessage="No. contacto requerido" value="#{userController.selectedUser.contactNumber}" />                              
 
                                     <h:outputText value="Clave:" />  
                                     <p:password id="txtPassword" tabindex="5" value="#{userController.selectedUser.password}" feedback="true" /> 
@@ -79,7 +79,7 @@
                                                     itemValue="#{prof}"
                                                     converter="#{profileConverter}"
                                                     required="true"
-                                                    validatorMessage="Perfil requerido"                                            
+                                                    requiredMessage="Perfil es requerido"                                        
                                                     />
                                     <h:outputText value="Estatus: " />  
                                     <p:selectOneMenu id="cbEstatus" tabindex="7" value="#{userController.selectedUser.status}" rendered="#{userController.selectedUser != null}" effect="fade" converter="#{statusConverter}">  

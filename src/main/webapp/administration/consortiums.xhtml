@@ -5,7 +5,7 @@
                  xmlns:f="http://java.sun.com/jsf/core"
                  xmlns:p="http://primefaces.org/ui">
     <ui:define name="title">
-         #{labels.consortiums}
+        #{labels.consortiums}
     </ui:define>
     <ui:define name="center">
         <h:form id="form" >  
@@ -15,11 +15,10 @@
                 <f:facet name="header"  >  
                     #{labels.consortium_title}
                 </f:facet> 
-                <p:ajax event="rowSelect" listener="#{consortiumController.onRowSelect}"   
-                        update=":form:dialog :form:messages" oncomplete="consortiumDialog.show()"  />  
+                <p:ajax event="rowSelect" listener="#{consortiumController.onRowSelect}" update=":form:dialog :form:messages" oncomplete="consortiumDialog.show()" process="@this"/>  
                 <p:ajax event="rowUnselect" listener="#{consortiumController.onRowUnselect}" update=":form:messages"/>  
 
-                <p:column headerText="#{labels.name}" style="width:8%" sortBy="#{consortium.name}" filterBy="#{consortium.name}"  filterMatchMode="contains">  
+                <p:column headerText="#{labels.name}" style="width:8%" sortBy="#{consortium.name}" filterBy="#{consortium.name}" filterMatchMode="contains">  
                     #{consortium.name}  
                 </p:column>
                 <p:column headerText="#{labels.Description}" style="width:8%" sortBy="#{consortium.description}" filterBy="#{consortium.description}"  filterMatchMode="contains">  
@@ -33,17 +32,16 @@
                              actionListener="#{consortiumController.addNewConsortium}"
                              oncomplete="consortiumDialog.show()"
                              update=":form:dialog :form:pSecond" immediate="true" />
-            
+
             <p:dialog id="dialog" header="#{labels.consortium_information}" widgetVar="consortiumDialog" resizable="false"  
-                      showEffect="fade" hideEffect="explode" closable="false" >  
+                      showEffect="fade" hideEffect="explode" closable="false">  
                 <h:panelGrid id="pConsortiumData" columns="2" cellpadding="4">    
-                    <h:outputText value="#{labels.name}" />  
-                    <p:inputText id="txtName" required="true" requiredMessage="Nombre es requerido" value="#{consortiumController.selectedConsortium.name}" />
+                    <h:outputText value="#{labels.name}"/>  
+                    <p:inputText id="txtName" required="true" requiredMessage="Nombre es requerido" value="#{consortiumController.selectedConsortium.name}"/>
 
-                    <h:outputText value=" #{labels.Description}" />  
-                    <p:inputText id="txtDescription" required="true"  requiredMessage="Descripción es requerido" value="#{consortiumController.selectedConsortium.description}" />                             
-
-                    <h:outputText value="#{labels.status}" /> 
+                    <h:outputText value=" #{labels.Description}"/>  
+                    <p:inputText id="txtDescription" required="true"  requiredMessage="Descripción es requerido" value="#{consortiumController.selectedConsortium.description}"/>                             
+                    <h:outputText value="#{labels.status}"/> 
                     <p:selectOneMenu id="cbEstatus" value="#{consortiumController.selectedConsortium.status}" rendered="#{consortiumController.selectedConsortium!= null}" effect="fade" converter="#{statusConverter}">  
                         <f:selectItem itemLabel="Seleccionar" itemValue="" />
                         <f:selectItems value="#{consortiumController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
@@ -52,9 +50,8 @@
                 </h:panelGrid> 
                 <p:panel header="#{labels.associated_banks}">                                                            
                     <h:panelGrid id="pSecond" columns="1" cellpadding="4">                             
-                        <p:pickList id="plBetBanking" value="#{consortiumController.consortiumDualList}" var="consortium" 
-                                    rendered="#{consortiumController.consortiumDualList!=null}"  
-                                    itemValue="#{consortium}" itemLabel="#{consortium.name}" converter="#{consortiumConverter}"                                                                                                       
+                        <p:pickList id="plBetBanking" value="#{consortiumController.consortiumDualList}" var="betBanking"    
+                                    itemValue="#{betBanking}" itemLabel="#{betBanking.name}" converter="#{betBakingConverter}"                                                                                                       
                                     showSourceControls="true" showTargetControls="true"                                         
                                     showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
 
@@ -78,6 +75,7 @@
             </p:dialog> 
         </h:form>
         <script type="text/javascript">
+
             function handleAddOrUpdateConsortium(xhr, status, args) {
                 if (args.validationFailed || !args.success) {
                     consortiumDialog.jq.effect("shake", {times: 5}, 100);
@@ -86,6 +84,7 @@
                     consortiumDialog.hide();
                 }
             }
+
         </script>
     </ui:define>
 

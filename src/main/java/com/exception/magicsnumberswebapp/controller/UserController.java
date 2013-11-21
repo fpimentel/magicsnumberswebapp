@@ -67,7 +67,7 @@ public class UserController {
     @Autowired
     private ProfileConverter profileConverter;
     private List<SelectItem> categories;
-    private String selection;    
+    private String selection;
 
     public UserController() {
         updatedUsers = new ArrayList<User>();
@@ -321,7 +321,8 @@ public class UserController {
 
     public List<Status> getStatus() {
         if (status == null) {
-            status = statusService.getStatus();
+            int statusTypeBasicId = com.exception.magicsnumberswebapp.constants.StatusType.BASIC.getId();
+            status = statusService.getStatusByStatusType(statusTypeBasicId);
         }
         return status;
     }
@@ -346,6 +347,7 @@ public class UserController {
     }
 
     public void addNewUser() {
+        this.editMode = false;
         cleanComponent();
         loadAssignedAndAvailableConsortiumActive();
     }
@@ -374,6 +376,7 @@ public class UserController {
     }
 
     public void cleanComponent() {
+        this.editMode = false;
         this.selectedUser = null;
 
         if (this.consortiumDualList.getTarget() != null) {
@@ -388,7 +391,6 @@ public class UserController {
         if (this.betBankingDualList.getTarget() != null) {
             this.betBankingDualList.getTarget().clear();
         }
-
     }
 
     public void onRowSelect(SelectEvent event) {
@@ -406,14 +408,42 @@ public class UserController {
     public void addOrUpdateUser(ActionEvent event) {
         boolean success = true;
         FacesMessage msg;
-        RequestContext reqContext = RequestContext.getCurrentInstance();
-        if (userAlreadyExist()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario ya existe", "");
+        if (this.editMode == false) {
+            this.selectedUser.setId(null);
+            if (this.selectedUser.getPassword() == null || this.selectedUser.getPassword().length() < 1 || this.selectedUser.getPassword().isEmpty()) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Clave es requerida!", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+        }
+        //== com.exception.magicsnumberswebapp.constants.Profile.BANKER.getId()
+        if (this.selectedUser.getProfile().getId() == null || this.selectedUser.getProfile().getId() < 1) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Perfil es requerido!", "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return;
         }
-        this.selectedUser.setBetBankings(new HashSet<BetBanking>(this.betBankingDualList.getTarget()));
+        if (this.selectedUser.getProfile().getId() == com.exception.magicsnumberswebapp.constants.Profile.BANKER.getId()) {
+            if (this.betBankingDualList.getTarget() == null || this.betBankingDualList.getTarget().size() < 1) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe Asignar una banca a un usuario con perfil de  banquera!", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+            if (this.betBankingDualList.getTarget().size() > 1) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Para un usuario de perfil banquera solo se puede asignar una banca", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+
+
+        }
+        RequestContext reqContext = RequestContext.getCurrentInstance();
+        if (userAlreadyExist()) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Nombre Usuario: " + this.selectedUser.getUserName() + " ya existe! en el sistema ", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            return;
+        }
         this.selectedUser.setConsortiums(new HashSet<Consortium>(this.consortiumDualList.getTarget()));
+        this.selectedUser.setBetBankings(new HashSet<BetBanking>(this.betBankingDualList.getTarget()));
         try {
             this.selectedUser.setCreationUser(this.loginController.getUser().getUserName());
             this.userService.saveUser(this.selectedUser);
@@ -428,6 +458,7 @@ public class UserController {
         }
         loadUsers();
         reqContext.addCallbackParam("success", success);
+        this.editMode = false;
     }
 
     public void saveAll() {
@@ -453,21 +484,23 @@ public class UserController {
     }
 
     private boolean userAlreadyExist() {
-        List<User> users = userDataModel.getUsers();
-        boolean userExist = true;
-        for (User currUser : users) {
-            if (editMode) {
-                if (!currUser.equals(selectedUser)) {
-                    if (currUser.getUserName().equals(selectedUser.getUserName())) {
-                        return userExist;
+        Boolean exist = false;
+        try {
+            User users = userService.findUserByUserName(this.selectedUser.getUserName());
+            if (users != null) {
+                if (editMode) {
+                    if (this.selectedUser.getId() != users.getId()) {
+                        exist = true;
                     }
-                }
-            } else {
-                if (currUser.getUserName().equals(selectedUser.getUserName())) {
-                    return userExist;
+                } else {
+                    exist = true;
                 }
             }
+        } catch (SearchAllUserException ex) {
+            Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return !userExist;
+        return exist;
     }
 }

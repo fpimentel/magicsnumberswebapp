@@ -55,5 +55,10 @@ public class UserServiceImpl implements UserService{
     public void saveUser(User user) throws SaveUsersDataException {
          this.userDao.saveUser(user);
     }
+
+    @Override
+    public User findUserByUserName(String userName) throws SearchAllUserException {
+        return this.userDao.findUserByUserName(userName);
+    }
     
 }

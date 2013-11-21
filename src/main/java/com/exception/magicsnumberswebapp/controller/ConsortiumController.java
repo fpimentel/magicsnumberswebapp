@@ -1,4 +1,3 @@
-
 package com.exception.magicsnumberswebapp.controller;
 
 import com.exception.magicsnumberswebapp.datamodel.ConsortiumDataModel;
@@ -58,6 +57,9 @@ public class ConsortiumController {
     }
 
     public DualListModel<BetBanking> getConsortiumDualList() {
+        if (this.consortiumDualList == null) {
+            this.consortiumDualList = new DualListModel<BetBanking>();
+        }
         return consortiumDualList;
     }
 
@@ -126,7 +128,7 @@ public class ConsortiumController {
             Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
             FacesContext.getCurrentInstance().addMessage(null, msg);
 
-        } catch (Exception ex) {            
+        } catch (Exception ex) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error buscando las bancas disponibles!", null);
             Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -141,8 +143,7 @@ public class ConsortiumController {
             this.consortiumDataModel = new ConsortiumDataModel(consortiumService.findAll(loggedUser.getId()));
         } catch (SearchAllConsortiumException ex) {
             Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, "refreshDataModel() in ConsortiumController", ex);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, "refreshDataModel() in ConsortiumController", ex);
         }
     }
@@ -176,7 +177,7 @@ public class ConsortiumController {
         }
     }
 
-    public void onRowUnselect(UnselectEvent event) {        
+    public void onRowUnselect(UnselectEvent event) {
         FacesMessage msg = new FacesMessage("Consorcio", ((Consortium) event.getObject()).getName());
 
         FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -202,9 +203,9 @@ public class ConsortiumController {
                 this.consortiumDataModel.getConsortiums().set(selectedConsortiumIndex, this.selectedConsortium);
 
             } else {
-                this.selectedConsortium.setId(this.consortiumDataModel.nextConsortiumId()); 
+                this.selectedConsortium.setId(this.consortiumDataModel.nextConsortiumId());
                 this.consortiumDataModel.getConsortiums().add(this.selectedConsortium);
-                
+
             }
         } catch (SaveConsortiumDataException ex) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error registrando los consorcios!", null);
