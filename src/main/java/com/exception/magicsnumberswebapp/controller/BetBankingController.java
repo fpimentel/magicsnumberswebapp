@@ -139,7 +139,7 @@ public class BetBankingController {
     }
 
     public BetBlockingNumberDataModel getBlockingNumberDataModel() {
-        if(this.blockingNumberDataModel == null){
+        if (this.blockingNumberDataModel == null) {
             this.blockingNumberDataModel = new BetBlockingNumberDataModel(new ArrayList<BlockingNumberBetBanking>());
         }
         return this.blockingNumberDataModel;
@@ -202,7 +202,7 @@ public class BetBankingController {
     }
 
     public BetLimitDataModel getBetBankingBetLimitDataModel() {
-        if(this.betBankingBetLimitDataModel== null){
+        if (this.betBankingBetLimitDataModel == null) {
             this.betBankingBetLimitDataModel = new BetLimitDataModel(new ArrayList<BetBankingBetLimit>());
         }
         return this.betBankingBetLimitDataModel;
@@ -270,7 +270,9 @@ public class BetBankingController {
 
     public List<Status> getStatus() {
         if (this.status == null) {
-            this.status = this.statusService.getStatus();
+            int statusTypeBasicId = com.exception.magicsnumberswebapp.constants.StatusType.BASIC.getId();
+            this.status = statusService.getStatusByStatusType(statusTypeBasicId);
+            
         }
         return this.status;
     }

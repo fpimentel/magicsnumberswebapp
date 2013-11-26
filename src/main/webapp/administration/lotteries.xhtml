@@ -1,0 +1,116 @@
+<ui:composition  template="../masterpage.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://xmlns.jcp.org/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets" 
+                 xmlns:f="http://java.sun.com/jsf/core"
+                 xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title">
+        #{labels.lottery_title}
+    </ui:define>
+    <ui:define name="center">
+        <h:form id="form" >  
+            <p:growl id="messages" showDetail="true"/>  
+            <p:dataTable id="dtLottery" var="lottery" value="#{lotteryController.lotteryDataModel}" paginator="true" rows="10"  
+                         selection="#{lotteryController.selectedLottery}" selectionMode="single" >  
+                <f:facet name="header"  >  
+                    #{labels.lottery_title}
+                </f:facet> 
+                <p:ajax event="rowSelect" listener="#{lotteryController.onRowSelect}"   
+                        update=":form:dialog :form:messages" oncomplete="lotteryDialog.show()"  />  
+                <p:ajax event="rowUnselect" listener="#{betBankingController.onRowUnselect}" update=":form:messages"/>  
+                <p:column headerText="#{labels.name}" style="width:8%" sortBy="#{lottery.name}" filterBy="#{lottery.name}"  filterMatchMode="contains">  
+                    #{lottery.name}  
+                </p:column>                
+                <p:column headerText="#{labels.status}" style="width:8%" sortBy="#{lottery.status.name}" filterBy="#{lottery.status.name}"  filterMatchMode="contains">  
+                    #{lottery.status.name}  
+                </p:column>             
+            </p:dataTable>  
+
+            <p:commandButton process="@this" id="btnNewLottery" value="#{labels.add_lottery}" 
+                             actionListener="#{lotteryController.addNewLottery}"
+                             oncomplete="lotteryDialog.show()"
+                             update=":form:dialog " immediate="true" />
+
+            <p:dialog id="dialog" header="#{labels.betBanking_information}" widgetVar="lotteryDialog" resizable="false"  
+                      showEffect="fade" hideEffect="explode" closable="false" position="top" >  
+                <p:tabView id="tvLottery" widgetVar="tvLotteryTab">  
+                    <p:tab id="tabInfoGeneral"  title="#{labels.General}" >  
+                        <h:panelGrid  columns="2" cellpadding="5">  
+                            <h:outputText value="#{labels.name}" />  
+                            <p:inputText id="txtName" required="true"  requiredMessage="Nombre es requerido" value="#{lotteryController.selectedLottery.name}" />
+                            <h:outputText value="#{labels.status}" /> 
+                            <p:selectOneMenu id="cbEstatus" required="true" requiredMessage="Estatus es requerido" value="#{lotteryController.selectedLottery.status}" rendered="#{lotteryController.selectedLottery!= null}" effect="fade" converter="#{statusConverter}" style="width:98%" >  
+                                <f:selectItem itemLabel="Seleccionar" itemValue=""  />
+                                <f:selectItems value="#{lotteryController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
+                            </p:selectOneMenu>                                                         
+                        </h:panelGrid>  
+                    </p:tab>    
+                    <p:tab id="tabBlockNumber" title="#{labels.blockNumer}">
+                        <p:panelGrid id="pnBlockNumber" columns="2">  
+                            <f:facet name="header">  
+                                #{labels.numberToBlock} 
+                            </f:facet>  
+                            <h:outputText value="#{labels.number}" /> 
+                            <p:inputText id="txtNumberToBlock"
+                                         required="false" value="#{betBankingController.numberToBlock}" />                            
+                            <f:facet name="footer">  
+                                <p:commandButton id="btnNumberToBlock" 
+                                                 value="#{labels.asociate}" 
+                                                 actionListener="#{betBankingController.addOrUpdateNumberToBlock}"                                                  
+                                                 update="dtBlockNumbers pnBlockNumber :form:messages"   
+                                                 style="margin:0" />  
+
+                                <p:commandButton  process="@this" id="btnCancelBlockNumber" 
+                                                  value="#{labels.cancel}" 
+                                                  actionListener="#{betBankingController.cancelBLockNumber()}"  
+                                                  oncomplete="clearComponent()"
+                                                  update="pnBlockNumber :form:messages"                                                 
+                                                  style="margin:0" />  
+                            </f:facet>  
+                        </p:panelGrid>
+                        <p:spacer height="5px"/>
+                        <p:dataTable id="dtLotteryCloseHour" var="lotteryCloseHour"  widgetVar="lotteryCloseHour"  
+                                     value="#{lotteryController.lotteryCloseHourDataModel}" 
+                                     emptyMessage="No existen Registros" paginator="true" rows="5"    
+                                     selection="#{betBankingController.selectedBlockingNumber}" selectionMode="single">  
+                            <f:facet name="header"  >  
+                                #{labels.numberBlock}
+                            </f:facet> 
+                            <p:column headerText="#{labels.number}">  
+                                #{blockNumber.number}  
+                            </p:column>
+                            <p:column>  
+                                <p:commandButton id="btnDeleteBlockNumber" update="dtBlockNumbers :form:messages"  icon="ui-icon-trash" title="#{labels.delete}">  
+                                    <f:setPropertyActionListener value="#{blockNumber}"  target="#{betBankingController.blockNumberToDelete}" />  
+                                </p:commandButton>  
+                            </p:column>  
+                            <p:ajax event="rowSelect" listener="#{betBankingController.onRowSelectToBlockingNumber}"   
+                                    update=":form:tvBetBanking:pnBlockNumber :form:messages"  
+                                    />  
+                        </p:dataTable>
+                    </p:tab>
+                </p:tabView> 
+                <f:facet name="footer">  
+                    <p:outputPanel style="float:right;">
+                        <p:commandButton  id="btnaddUpdateBetBanking" value="#{labels.register}" 
+                                          actionListener="#{betBankingController.addOrUpdateInfo}"  
+                                          oncomplete="handleAddOrUpdateLottery(xhr, status, args)" update=":form:dtLottery :form:messages" icon="ui-icon-check"/>
+                        <p:commandButton value="#{labels.cancel}"  id="btnCancel"  styleClass="ui-priority-primary" 
+                                         oncomplete=" lotteryDialog.hide()" immediate="true" icon="ui-icon-closethick"/>  
+                    </p:outputPanel>                            
+                </f:facet>
+            </p:dialog> 
+
+        </h:form>
+        <script type="text/javascript">
+            function handleAddOrUpdateLottery(xhr, status, args) {
+                if (args.validationFailed || !args.success) {
+                    lotteryDialog.jq.effect("shake", {times: 5}, 100);
+                }
+                else {
+                    lotteryDialog.hide();
+                }
+            }
+        </script>
+    </ui:define>
+
+</ui:composition>

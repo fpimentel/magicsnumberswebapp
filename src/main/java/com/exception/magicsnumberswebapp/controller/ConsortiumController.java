@@ -93,7 +93,8 @@ public class ConsortiumController {
 
     public List<Status> getStatus() {
         if (this.status == null) {
-            this.status = this.statusService.getStatus();
+            int statusTypeBasicId = com.exception.magicsnumberswebapp.constants.StatusType.BASIC.getId();
+            this.status = statusService.getStatusByStatusType(statusTypeBasicId);
         }
         return this.status;
     }

@@ -3,6 +3,7 @@ package com.exception.magicsnumberswebapp.service.impl;
 import com.exception.magicsnumberswebapp.dao.LotteryDao;
 import com.exception.magicsnumberswebapp.service.LotteryService;
 import com.exception.magicsnumbersws.entities.Lottery;
+import com.exception.magicsnumbersws.entities.LotteryCloseHour;
 import com.exception.magicsnumbersws.entities.Time;
 import com.exception.magicsnumbersws.exception.CloseHourLotteryConfigNotFoundtException;
 import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
@@ -34,6 +35,16 @@ public class LotteryServiceImpl implements LotteryService {
     @Override
     public List<Time> findAvailableTimesByLotteryId(int lotteryId) throws FindLotteryCloseHourException, CloseHourLotteryConfigNotFoundtException {
         return lotteryDao.findAvailableTimesByLotteryId(lotteryId);
+    }
+
+    @Override
+    public List<Lottery> findLotteries() throws FindLotteryException {
+        return this.lotteryDao.findLotteries();
+    }
+
+    @Override
+    public List<LotteryCloseHour> findAvailableCloseHour(int lotteryId) throws FindLotteryCloseHourException {
+        return this.lotteryDao.findAvailableCloseHour(lotteryId);
     }
 
     

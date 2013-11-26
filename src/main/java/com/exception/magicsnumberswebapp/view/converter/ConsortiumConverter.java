@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @FacesConverter("consortiumConverter")
-@Scope("session")
+@Scope("view")
 public class ConsortiumConverter implements Converter {
 
     private static final Logger LOG = Logger.getLogger(ConsortiumConverter.class.getName());
