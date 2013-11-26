@@ -21,4 +21,5 @@ public interface LotteryDao {
     public List<Lottery> findLotteries() throws FindLotteryException;
     public List<LotteryCloseHour> findAvailableCloseHour(int lotteryId) throws FindLotteryCloseHourException;
     
+    
 }

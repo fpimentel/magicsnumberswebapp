@@ -1,4 +1,5 @@
 package com.exception.magicsnumberswebapp.datamodel;
+
 import com.exception.magicsnumbersws.entities.Lottery;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +18,6 @@ public class LotteryDataModel extends ListDataModel<Lottery> implements Selectab
         super(data);
         this.lottery = data;
     }
-
     public List<Lottery> getBetbankings() {
         return this.lottery;
     }
@@ -26,7 +26,6 @@ public class LotteryDataModel extends ListDataModel<Lottery> implements Selectab
         this.lottery = lotteries;
     }
 
-    
     public int nextLotteryId() {
         if (this.lottery == null || this.lottery.isEmpty()) {
             return 0;
@@ -37,12 +36,12 @@ public class LotteryDataModel extends ListDataModel<Lottery> implements Selectab
 
     @Override
     public Object getRowKey(Lottery lottery) {
-        return (lottery.getId() == null ? 0:lottery.getId());
+        return (lottery.getId() == null ? 0 : lottery.getId());
     }
 
     @Override
     public Lottery getRowData(String rowkey) {
-                List<Lottery> lotteries = (List<Lottery>) getWrappedData();
+        List<Lottery> lotteries = (List<Lottery>) getWrappedData();
         for (Lottery lottery : lotteries) {
             if (lottery.getId().toString().equals(rowkey)) {
                 Lottery lotteryCopy = new Lottery();

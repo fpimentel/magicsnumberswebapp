@@ -32,7 +32,7 @@ public class LotteryCloseHourDataModel extends ListDataModel<LotteryCloseHour> i
         if (this.lotteryCloseHour == null || this.lotteryCloseHour.isEmpty()) {
             return 0;
         }
-        LotteryCloseHour lottery = new LotteryCloseHour();//Collections.max(this.lotteryCloseHour);
+        LotteryCloseHour lottery = Collections.max(this.lotteryCloseHour);
         return lottery.getId() + 1;
     }
 

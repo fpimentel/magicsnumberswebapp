@@ -44,48 +44,46 @@
                             </p:selectOneMenu>                                                         
                         </h:panelGrid>  
                     </p:tab>    
-                    <p:tab id="tabBlockNumber" title="#{labels.blockNumer}">
-                        <p:panelGrid id="pnBlockNumber" columns="2">  
+                    <p:tab id="tabLotteryCloseHour" title="#{labels.schedule}">
+                        <p:panelGrid id="pnLotteryCloseHour" columns="2">  
                             <f:facet name="header">  
-                                #{labels.numberToBlock} 
+                                #{labels.betAsociate} 
                             </f:facet>  
-                            <h:outputText value="#{labels.number}" /> 
-                            <p:inputText id="txtNumberToBlock"
-                                         required="false" value="#{betBankingController.numberToBlock}" />                            
-                            <f:facet name="footer">  
-                                <p:commandButton id="btnNumberToBlock" 
-                                                 value="#{labels.asociate}" 
-                                                 actionListener="#{betBankingController.addOrUpdateNumberToBlock}"                                                  
-                                                 update="dtBlockNumbers pnBlockNumber :form:messages"   
-                                                 style="margin:0" />  
-
-                                <p:commandButton  process="@this" id="btnCancelBlockNumber" 
-                                                  value="#{labels.cancel}" 
-                                                  actionListener="#{betBankingController.cancelBLockNumber()}"  
-                                                  oncomplete="clearComponent()"
-                                                  update="pnBlockNumber :form:messages"                                                 
-                                                  style="margin:0" />  
-                            </f:facet>  
+                            <h:outputText value="#{labels.days}" /> 
+                            <p:selectOneMenu id="cbDay" value="#{lotteryController.seletedDay}"  widgetVar="cbDay"   
+                                             effect="fade" converter="#{lotteryConverter}" style="width: 100%" >  
+                                <f:selectItem itemLabel="Seleccionar" itemValue=""   />
+                                <f:selectItems value="#{betBankingController.lotteries}" var="lottery" itemLabel="#{lottery.name}" itemValue="#{lottery}"/>  
+                                <p:ajax event="change" update="cbBet"/>
+                            </p:selectOneMenu> 
+                            <h:outputText value="#{labels.bet}" /> 
+                            <p:selectOneMenu id="cbBet" value="#{betBankingController.selectedBet}" widgetVar="cbBetSelectMenu"  effect="fade" converter="#{betConverter}" style="width: 100%" >  
+                                <f:selectItem itemLabel="Seleccionar" itemValue=""  />
+                                <f:selectItems value="#{betBankingController.bets}" var="bet" itemLabel="#{bet.name}" itemValue="#{bet}"/>  
+                            </p:selectOneMenu>   
                         </p:panelGrid>
-                        <p:spacer height="5px"/>
                         <p:dataTable id="dtLotteryCloseHour" var="lotteryCloseHour"  widgetVar="lotteryCloseHour"  
                                      value="#{lotteryController.lotteryCloseHourDataModel}" 
-                                     emptyMessage="No existen Registros" paginator="true" rows="5"    
-                                     selection="#{betBankingController.selectedBlockingNumber}" selectionMode="single">  
+                                     emptyMessage="No existen Registros" paginator="true" rows="10"     
+                                     selection="#{lotteryController.selectedLotteryCloseHour}" selectionMode="single">  
                             <f:facet name="header"  >  
-                                #{labels.numberBlock}
+                                #{labels.schedule}
                             </f:facet> 
-                            <p:column headerText="#{labels.number}">  
-                                #{blockNumber.number}  
+                            <p:column headerText="#{labels.days}">  
+                                #{lotteryCloseHour.day.name}  
+                            </p:column>
+                             <p:column headerText="#{labels.time}">  
+                                #{lotteryCloseHour.time.name}  
+                            </p:column>
+                             <p:column headerText="#{labels.hour}">  
+                                #{lotteryCloseHour.hour}  
                             </p:column>
                             <p:column>  
-                                <p:commandButton id="btnDeleteBlockNumber" update="dtBlockNumbers :form:messages"  icon="ui-icon-trash" title="#{labels.delete}">  
-                                    <f:setPropertyActionListener value="#{blockNumber}"  target="#{betBankingController.blockNumberToDelete}" />  
+                                <p:commandButton id="btnDeleteBlockNumber" update="dtLotteryCloseHour :form:messages"  icon="ui-icon-trash" title="#{labels.delete}">  
+                                    <f:setPropertyActionListener value="#{lotteryCloseHour}"  target="#{betBankingController.blockNumberToDelete}" />  
                                 </p:commandButton>  
                             </p:column>  
-                            <p:ajax event="rowSelect" listener="#{betBankingController.onRowSelectToBlockingNumber}"   
-                                    update=":form:tvBetBanking:pnBlockNumber :form:messages"  
-                                    />  
+                            <p:ajax event="rowSelect" listener="#{betBankingController.onRowSelectToBlockingNumber}" />  
                         </p:dataTable>
                     </p:tab>
                 </p:tabView> 

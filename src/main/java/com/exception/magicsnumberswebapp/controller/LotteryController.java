@@ -1,8 +1,5 @@
 package com.exception.magicsnumberswebapp.controller;
 
-import com.exception.magicsnumberswebapp.constants.Profile;
-import com.exception.magicsnumberswebapp.datamodel.BetBankingDataModel;
-import com.exception.magicsnumberswebapp.datamodel.BetBlockingNumberDataModel;
 import com.exception.magicsnumberswebapp.datamodel.BetLimitDataModel;
 import com.exception.magicsnumberswebapp.datamodel.LotteryCloseHourDataModel;
 import com.exception.magicsnumberswebapp.datamodel.LotteryDataModel;
@@ -17,25 +14,20 @@ import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.BetBankingBetLimit;
 import com.exception.magicsnumbersws.entities.BlockingNumberBetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
+import com.exception.magicsnumbersws.entities.Day;
 import com.exception.magicsnumbersws.entities.Lottery;
 import com.exception.magicsnumbersws.entities.LotteryCloseHour;
 import com.exception.magicsnumbersws.entities.Status;
 import com.exception.magicsnumbersws.entities.User;
 import com.exception.magicsnumbersws.exception.FindBetLimitException;
-import com.exception.magicsnumbersws.exception.FindBlockingNumberException;
+import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.FindLotteryException;
-import com.exception.magicsnumbersws.exception.SaveBetBankingInfoException;
-import com.exception.magicsnumbersws.exception.SearchAllBetBankingException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import org.springframework.context.annotation.Scope;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -64,7 +56,7 @@ public class LotteryController {
     private BetBankingService betBankingService;
     private BetBanking selectedBetBanking;
     private BetBankingBetLimit selectedBetBankingBetLimit;
-    private BlockingNumberBetBanking selectedBlockingNumber;
+    private LotteryCloseHour selectedLotteryCloseHour;
     private Bet selectedBet;
     private Lottery selectedLottery;
     private double amountLimit;
@@ -83,8 +75,20 @@ public class LotteryController {
     private int commission;
     private BetBankingContainer betBakingContainer;
     private int firstTabIndex = 0;
+    private Day seletedDay;
 
     public LotteryController() {
+    }
+
+    public Day getSeletedDay() {
+        if (this.seletedDay == null) {
+            this.seletedDay = new Day();
+        }
+        return seletedDay;
+    }
+
+    public void setSeletedDay(Day seletedDay) {
+        this.seletedDay = seletedDay;
     }
 
     public Lottery getSelectedLottery() {
@@ -128,15 +132,15 @@ public class LotteryController {
         return NumberToBlock;
     }
 
-    public BlockingNumberBetBanking getSelectedBlockingNumber() {
-        if (this.selectedBlockingNumber == null) {
-            this.selectedBlockingNumber = new BlockingNumberBetBanking();
+    public LotteryCloseHour getSelectedLotteryCloseHour() {
+        if (this.selectedLotteryCloseHour == null) {
+            this.selectedLotteryCloseHour = new LotteryCloseHour();
         }
-        return this.selectedBlockingNumber;
+        return selectedLotteryCloseHour;
     }
 
-    public void setSelectedBlockingNumber(BlockingNumberBetBanking selectedBlockingNumber) {
-        this.selectedBlockingNumber = selectedBlockingNumber;
+    public void setSelectedLotteryCloseHour(LotteryCloseHour selectedLotteryCloseHour) {
+        this.selectedLotteryCloseHour = selectedLotteryCloseHour;
     }
 
     public LotteryCloseHourDataModel getLotteryCloseHourDataModel() {
@@ -300,13 +304,13 @@ public class LotteryController {
     }
 
     private void refreshLotteryCloseHourDataModel() {
-        /*try {
-            this.lotteryCloseHourDataModel = new LotteryCloseHourDataModel(this.bankingService.findBlockNumbersBetBanking(this.selectedBetBanking.getId()));
-        } catch (FindBlockingNumberException ex) {
+        try {
+            this.lotteryCloseHourDataModel = new LotteryCloseHourDataModel(this.lotteryService.findAvailableCloseHour(this.selectedLottery.getId()));
+        } catch (FindLotteryCloseHourException ex) {
             Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, "refreshBlockinNumberDataModel() in BetBankingController", ex);
         } catch (Exception ex) {
             Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, "refreshBlockinNumberDataModel() in BetBankingController", ex);
-        }*/
+        }
     }
 
     private void refreshBetLimitDataModel() {
