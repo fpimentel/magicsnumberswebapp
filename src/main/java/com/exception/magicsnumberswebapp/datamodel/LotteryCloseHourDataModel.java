@@ -19,13 +19,14 @@ public class LotteryCloseHourDataModel extends ListDataModel<LotteryCloseHour> i
         this.lotteryCloseHour = data;
     }
 
-    public List<LotteryCloseHour> getBetbankings() {
-        return this.lotteryCloseHour;
+    public List<LotteryCloseHour> getLotteryCloseHour() {
+        return lotteryCloseHour;
     }
 
-    public void setBetbankings(List<LotteryCloseHour> lotteryCloseHours) {
-        this.lotteryCloseHour = lotteryCloseHours;
+    public void setLotteryCloseHour(List<LotteryCloseHour> lotteryCloseHour) {
+        this.lotteryCloseHour = lotteryCloseHour;
     }
+  
 
     
     public int nextLotteryCloseHourId() {

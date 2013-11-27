@@ -1,8 +1,10 @@
 package com.exception.magicsnumberswebapp.dao.impl;
-import com.exception.magicsnumberswebapp.dao.DaysDao;
+import com.exception.magicsnumberswebapp.dao.TimeDao;
 import com.exception.magicsnumbersws.endpoints.LookupTablesEndpoint;
 import com.exception.magicsnumbersws.entities.Day;
+import com.exception.magicsnumbersws.entities.Time;
 import com.exception.magicsnumbersws.exception.FindDayException;
+import com.exception.magicsnumbersws.exception.FindTimeException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -13,21 +15,24 @@ import org.springframework.stereotype.Repository;
  * @since 12-oct-13
  */
 @Repository
-public class DayDaoImpl implements DaysDao {
+public class TimeDaoImpl implements TimeDao {
 
     @Autowired
     private LookupTablesEndpoint lookupTablesEndpoint;
 
-    public DayDaoImpl() {
+    public TimeDaoImpl() {
     }
 
     @Override
-    public List<Day> findAllDays() throws FindDayException {
-        return this.lookupTablesEndpoint.findAllDays();
+    public List<Time> findAllTimes() throws FindTimeException {
+        return this.lookupTablesEndpoint.findAllTimes();
     }
 
     @Override
-    public Day findDayById(int dayId) throws FindDayException {
-        return this.lookupTablesEndpoint.findDayById(dayId);
+    public Time findTimeById(int timeId) throws FindTimeException {
+        return this.lookupTablesEndpoint.findTimeById(timeId);
     }
+
+
+
 }

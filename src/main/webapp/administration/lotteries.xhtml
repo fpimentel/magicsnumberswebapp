@@ -31,7 +31,7 @@
                              update=":form:dialog " immediate="true" />
 
             <p:dialog id="dialog" header="#{labels.betBanking_information}" widgetVar="lotteryDialog" resizable="false"  
-                      showEffect="fade" hideEffect="explode" closable="false" position="top" >  
+                      showEffect="fade" hideEffect="explode" closable="false" position="top"  >  
                 <p:tabView id="tvLottery" widgetVar="tvLotteryTab">  
                     <p:tab id="tabInfoGeneral"  title="#{labels.General}" >  
                         <h:panelGrid  columns="2" cellpadding="5">  
@@ -44,46 +44,61 @@
                             </p:selectOneMenu>                                                         
                         </h:panelGrid>  
                     </p:tab>    
-                    <p:tab id="tabLotteryCloseHour" title="#{labels.schedule}">
-                        <p:panelGrid id="pnLotteryCloseHour" columns="2">  
+                    <p:tab id="tabLotteryCloseHour" title="#{labels.schedule}" >
+                        <p:panelGrid id="pnLotteryCloseHour" columns="4" style="width: 110px;">  
                             <f:facet name="header">  
-                                #{labels.betAsociate} 
+                                #{labels.scheduleAsociate} 
                             </f:facet>  
-                            <h:outputText value="#{labels.days}" /> 
+                            <h:outputText value="#{labels.days}"  /> 
                             <p:selectOneMenu id="cbDay" value="#{lotteryController.seletedDay}"  widgetVar="cbDay"   
-                                             effect="fade" converter="#{lotteryConverter}" style="width: 100%" >  
-                                <f:selectItem itemLabel="Seleccionar" itemValue=""   />
-                                <f:selectItems value="#{betBankingController.lotteries}" var="lottery" itemLabel="#{lottery.name}" itemValue="#{lottery}"/>  
-                                <p:ajax event="change" update="cbBet"/>
+                                             effect="fade" converter="#{dayConverter}" style="width: 100%" >  
+
+                                <f:selectItems value="#{lotteryController.days}" var="day" itemLabel="#{day.name}" itemValue="#{day}"/>  
+                            </p:selectOneMenu>               
+                            <h:outputText value="#{labels.time}"  /> 
+                            <p:selectOneMenu id="cbTime" value="#{lotteryController.selectedTime}" widgetVar="cbTime"  effect="fade" 
+                                             converter="#{timeConverterUniversal}" style="width: 100%" >  
+
+                                <f:selectItems value="#{lotteryController.times}" var="time" itemLabel="#{time.name}" itemValue="#{time}"/>  
                             </p:selectOneMenu> 
-                            <h:outputText value="#{labels.bet}" /> 
-                            <p:selectOneMenu id="cbBet" value="#{betBankingController.selectedBet}" widgetVar="cbBetSelectMenu"  effect="fade" converter="#{betConverter}" style="width: 100%" >  
-                                <f:selectItem itemLabel="Seleccionar" itemValue=""  />
-                                <f:selectItems value="#{betBankingController.bets}" var="bet" itemLabel="#{bet.name}" itemValue="#{bet}"/>  
-                            </p:selectOneMenu>   
+
+                            <h:outputText value="#{labels.hour}"  /> 
+                            <p:calendar value="#{lotteryController.hour}" pattern="HH:mm" timeOnly="true" id="calendarHour" /> 
+                            <p:commandButton id="btnAddOrUpdateLotteryCloseHour"
+                                             value="#{labels.asociate}" 
+                                             actionListener="#{lotteryController.addOrUpdateLotteryCloseHour}"                                                    
+                                             update=":form:tvLottery:dtLotteryCloseHour :form:tvLottery:calendarHour :form:messages"   
+                                             style="margin:0" />  
+
+                            <p:commandButton process="@this"  id="btnCancelLotteryCloseHour" 
+                                             value="#{labels.cancel}" 
+                                             actionListener="#{betBankingController.cancel}"  
+                                             oncomplete="clearComponent()"                                                
+                                             style="margin:0" />  
                         </p:panelGrid>
                         <p:dataTable id="dtLotteryCloseHour" var="lotteryCloseHour"  widgetVar="lotteryCloseHour"  
-                                     value="#{lotteryController.lotteryCloseHourDataModel}" 
-                                     emptyMessage="No existen Registros" paginator="true" rows="10"     
+                                     value="#{lotteryController.lotteryCloseHourDataModel}"  
+                                     emptyMessage="No existen Registros" paginator="true" rows="5"     
                                      selection="#{lotteryController.selectedLotteryCloseHour}" selectionMode="single">  
                             <f:facet name="header"  >  
                                 #{labels.schedule}
                             </f:facet> 
+                            <p:ajax event="rowSelect" listener="#{lotteryController.onRowSelectCloseHour}"   
+                                    update=":form:tvLottery:cbDay :form:tvLottery:cbTime :form:messages :form:tvLottery:calendarHour"  />
                             <p:column headerText="#{labels.days}">  
                                 #{lotteryCloseHour.day.name}  
                             </p:column>
-                             <p:column headerText="#{labels.time}">  
+                            <p:column headerText="#{labels.time}">  
                                 #{lotteryCloseHour.time.name}  
                             </p:column>
-                             <p:column headerText="#{labels.hour}">  
+                            <p:column headerText="#{labels.hour}">  
                                 #{lotteryCloseHour.hour}  
                             </p:column>
                             <p:column>  
-                                <p:commandButton id="btnDeleteBlockNumber" update="dtLotteryCloseHour :form:messages"  icon="ui-icon-trash" title="#{labels.delete}">  
-                                    <f:setPropertyActionListener value="#{lotteryCloseHour}"  target="#{betBankingController.blockNumberToDelete}" />  
+                                <p:commandButton id="btnDeleteButton" process="@this" update="dtLotteryCloseHour :form:messages"  icon="ui-icon-trash" title="#{labels.delete}">  
+                                    <f:setPropertyActionListener  value="#{lotteryCloseHour}"  target="#{lotteryController.lotteryCloseHourDelete}" />  
                                 </p:commandButton>  
                             </p:column>  
-                            <p:ajax event="rowSelect" listener="#{betBankingController.onRowSelectToBlockingNumber}" />  
                         </p:dataTable>
                     </p:tab>
                 </p:tabView> 

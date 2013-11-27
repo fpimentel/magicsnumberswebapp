@@ -1,33 +1,37 @@
 package com.exception.magicsnumberswebapp.controller;
 
-import com.exception.magicsnumberswebapp.datamodel.BetLimitDataModel;
 import com.exception.magicsnumberswebapp.datamodel.LotteryCloseHourDataModel;
 import com.exception.magicsnumberswebapp.datamodel.LotteryDataModel;
 import com.exception.magicsnumberswebapp.service.BetBankingService;
-import com.exception.magicsnumberswebapp.service.BetService;
+import com.exception.magicsnumberswebapp.service.DayService;
 import com.exception.magicsnumberswebapp.service.LotteryService;
 import com.exception.magicsnumberswebapp.service.StatusService;
+import com.exception.magicsnumberswebapp.service.TimeService;
 import com.exception.magicsnumberswebapp.view.converter.ConsortiumConverter;
-import com.exception.magicsnumbersws.containers.BetBankingContainer;
-import com.exception.magicsnumbersws.entities.Bet;
-import com.exception.magicsnumbersws.entities.BetBanking;
-import com.exception.magicsnumbersws.entities.BetBankingBetLimit;
-import com.exception.magicsnumbersws.entities.BlockingNumberBetBanking;
-import com.exception.magicsnumbersws.entities.Consortium;
+import com.exception.magicsnumbersws.containers.LotteryContainer;
 import com.exception.magicsnumbersws.entities.Day;
 import com.exception.magicsnumbersws.entities.Lottery;
 import com.exception.magicsnumbersws.entities.LotteryCloseHour;
 import com.exception.magicsnumbersws.entities.Status;
-import com.exception.magicsnumbersws.entities.User;
-import com.exception.magicsnumbersws.exception.FindBetLimitException;
+import com.exception.magicsnumbersws.entities.Time;
+import com.exception.magicsnumbersws.exception.FindDayException;
 import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.FindLotteryException;
+import com.exception.magicsnumbersws.exception.FindTimeException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.springframework.context.annotation.Scope;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.event.ValueChangeEvent;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,35 +53,54 @@ public class LotteryController {
     @Autowired
     private LoginController loginController;
     @Autowired
-    private BetService betService;
-    @Autowired
     private LotteryService lotteryService;
     @Autowired
-    private BetBankingService betBankingService;
-    private BetBanking selectedBetBanking;
-    private BetBankingBetLimit selectedBetBankingBetLimit;
+    private DayService dayService;
+    @Autowired
+    private TimeService timeService;
+    private LotteryContainer lotteryContainer;
     private LotteryCloseHour selectedLotteryCloseHour;
-    private Bet selectedBet;
+    private Time selectedTime;
+    private List<Time> times;
     private Lottery selectedLottery;
-    private double amountLimit;
-    private boolean editMode = false;
     private boolean lotteryEditMode = false;
+    private boolean lotteryCloseHourEditMode = false;
     private LotteryDataModel lotteryDataModel;
     private List<Status> status;
     private Status selectedStatus;
-    private List<Bet> bets;
     private List<Lottery> lotteries;
-    private BetLimitDataModel betBankingBetLimitDataModel;
+    private List<Day> days;
     private LotteryCloseHourDataModel lotteryCloseHourDataModel;
-    private BetBankingBetLimit betLimitToDelete;
-    private BlockingNumberBetBanking blockNumberToDelete;
-    private int NumberToBlock;
-    private int commission;
-    private BetBankingContainer betBakingContainer;
-    private int firstTabIndex = 0;
     private Day seletedDay;
+    private Date Hour;
+    private LotteryCloseHour lotteryCloseHourDelete;
 
     public LotteryController() {
+    }
+
+    public LotteryCloseHour getLotteryCloseHourDelete() {
+        return lotteryCloseHourDelete;
+    }
+
+    public LotteryContainer getLotteryContainer() {
+        return lotteryContainer;
+    }
+
+    public void setLotteryContainer(LotteryContainer lotteryContainer) {
+        this.lotteryContainer = lotteryContainer;
+    }
+
+    public void setLotteryCloseHourDelete(LotteryCloseHour lotteryCloseHourDelete) {
+        this.lotteryCloseHourDelete = lotteryCloseHourDelete;
+        this.lotteryCloseHourDataModel.getLotteryCloseHour().remove(lotteryCloseHourDelete);
+    }
+
+    public Date getHour() {
+        return Hour;
+    }
+
+    public void setHour(Date Hour) {
+        this.Hour = Hour;
     }
 
     public Day getSeletedDay() {
@@ -91,6 +114,17 @@ public class LotteryController {
         this.seletedDay = seletedDay;
     }
 
+    public Time getSelectedTime() {
+        if (this.selectedTime == null) {
+            this.selectedTime = new Time();
+        }
+        return selectedTime;
+    }
+
+    public void setSelectedTime(Time selectedTime) {
+        this.selectedTime = selectedTime;
+    }
+
     public Lottery getSelectedLottery() {
         if (this.selectedLottery == null) {
             this.selectedLottery = new Lottery();
@@ -100,36 +134,6 @@ public class LotteryController {
 
     public void setSelectedLottery(Lottery selectedLottery) {
         this.selectedLottery = selectedLottery;
-    }
-
-    public int getFirstTabIndex() {
-        return firstTabIndex;
-    }
-
-    public void getBetsByLotteryOnChange(ValueChangeEvent event) {
-        this.selectedLottery = (Lottery) event.getNewValue();
-        this.bets = new ArrayList(this.selectedLottery.getBets());
-    }
-
-    public void setBetBakingContainer(BetBankingContainer betBakingContainer) {
-        this.betBakingContainer = betBakingContainer;
-    }
-
-    public BlockingNumberBetBanking getBlockNumberToDelete() {
-        if (this.blockNumberToDelete == null) {
-            this.blockNumberToDelete = new BlockingNumberBetBanking();
-        }
-        return blockNumberToDelete;
-    }
-
-    public void setBlockNumberToDelete(BlockingNumberBetBanking blockNumberToDelete) {
-        this.blockNumberToDelete = blockNumberToDelete;
-
-        this.editMode = false;
-    }
-
-    public int getNumberToBlock() {
-        return NumberToBlock;
     }
 
     public LotteryCloseHour getSelectedLotteryCloseHour() {
@@ -154,67 +158,38 @@ public class LotteryController {
         this.lotteryCloseHourDataModel = lotteryCloseHourDataModel;
     }
 
-    public void setNumberToBlock(int NumberToBlock) {
-        this.NumberToBlock = NumberToBlock;
-    }
-
-    public Bet getSelectedBet() {
-        return selectedBet;
-    }
-
-    public int getCommission() {
-        return commission;
-    }
-
-    public void setCommission(int commission) {
-        this.commission = commission;
-    }
-
-    public void setSelectedBet(Bet selectedBet) {
-        this.selectedBet = selectedBet;
-    }
-
-    public double getAmountLimit() {
-        return amountLimit;
-    }
-
-    public void setAmountLimit(double amountLimit) {
-        this.amountLimit = amountLimit;
-    }
-
-    public BetBankingBetLimit getSelectedBetBankingBetLimit() {
-        if (this.selectedBetBankingBetLimit == null) {
-            this.selectedBetBankingBetLimit = new BetBankingBetLimit();
+    public List<Time> getTimes() {
+        if (this.times == null) {
+            try {
+                this.times = this.timeService.findAllTimes();
+            } catch (FindTimeException ex) {
+                Logger.getLogger(LotteryController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(LotteryController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        return selectedBetBankingBetLimit;
+        return times;
     }
 
-    public BetBankingBetLimit getBetLimitToDelete() {
-        if (this.betLimitToDelete == null) {
-            this.betLimitToDelete = new BetBankingBetLimit();
+    public void setTimes(List<Time> times) {
+        this.times = times;
+    }
+
+    public List<Day> getDays() {
+        if (this.days == null) {
+            try {
+                this.days = this.dayService.findAllDays();
+            } catch (FindDayException ex) {
+                Logger.getLogger(LotteryController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(LotteryController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        return betLimitToDelete;
+        return days;
     }
 
-    public void setBetLimitToDelete(BetBankingBetLimit betLimitToDelete) {
-        this.betLimitToDelete = betLimitToDelete;
-        this.betBankingBetLimitDataModel.getBetLimits().remove(betLimitToDelete);
-        this.editMode = false;
-    }
-
-    public void setSelectedBetBankingBetLimit(BetBankingBetLimit selectedBetBankingBetLimit) {
-        this.selectedBetBankingBetLimit = selectedBetBankingBetLimit;
-    }
-
-    public BetLimitDataModel getBetBankingBetLimitDataModel() {
-        if (this.betBankingBetLimitDataModel == null) {
-            this.betBankingBetLimitDataModel = new BetLimitDataModel(new ArrayList<BetBankingBetLimit>());
-        }
-        return this.betBankingBetLimitDataModel;
-    }
-
-    public void setBetBankingBetLimitDataModel(BetLimitDataModel betBankingBetLimitDataModel) {
-        this.betBankingBetLimitDataModel = betBankingBetLimitDataModel;
+    public void setDays(List<Day> days) {
+        this.days = days;
     }
 
     public List<Lottery> getLotteries() {
@@ -234,15 +209,6 @@ public class LotteryController {
         this.lotteries = lotteries;
     }
 
-    public List<Bet> getBets() {
-
-        return this.bets;
-    }
-
-    public void setBets(List<Bet> bets) {
-        this.bets = bets;
-    }
-
     public LotteryDataModel getLotteryDataModel() {
         if (this.lotteryDataModel == null) {
             refreshDataModel();
@@ -252,17 +218,6 @@ public class LotteryController {
 
     public void setLotteryDataModel(LotteryDataModel lotteryDataModel) {
         this.lotteryDataModel = lotteryDataModel;
-    }
-
-    public BetBanking getSelectedBetBanking() {
-        if (this.selectedBetBanking == null) {
-            this.selectedBetBanking = new BetBanking();
-        }
-        return this.selectedBetBanking;
-    }
-
-    public void setSelectedBetBanking(BetBanking selectedBetBanking) {
-        this.selectedBetBanking = selectedBetBanking;
     }
 
     public Status getSelectedStatus() {
@@ -277,7 +232,6 @@ public class LotteryController {
         if (this.status == null) {
             int statusTypeBasicId = com.exception.magicsnumberswebapp.constants.StatusType.BASIC.getId();
             this.status = statusService.getStatusByStatusType(statusTypeBasicId);
-
         }
         return this.status;
     }
@@ -292,7 +246,6 @@ public class LotteryController {
     }
 
     private void refreshDataModel() {
-        User loggedUser = loginController.getUser();
         try {
             this.lotteryDataModel = new LotteryDataModel(this.lotteryService.findLotteries());
 
@@ -313,30 +266,87 @@ public class LotteryController {
         }
     }
 
-    private void refreshBetLimitDataModel() {
-        try {
-            this.betBankingBetLimitDataModel = new BetLimitDataModel(bankingService.findBetLimitsByBetBankingId(this.selectedBetBanking.getId()));
-        } catch (FindBetLimitException ex) {
-            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, "refreshBetLimitDataModel() in BetBankingController", ex);
-        } catch (Exception ex) {
-            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, "refreshBetLimitDataModel() in BetBankingController", ex);
-        }
-    }
-
-    public List<Consortium> getAutoCompleteConsortiums(String query) {
-        List<Consortium> suggestions = new ArrayList<Consortium>();
-        query = query.toUpperCase();
-        for (Consortium consortium : consortiumConverter.getConsortiums()) {
-            if (consortium.getName().toUpperCase().contains(query.toUpperCase())) {
-                suggestions.add(consortium);
-            }
-        }
-        return suggestions;
-    }
-
     public void onRowSelect(SelectEvent event) {
         lotteryEditMode = true;
         /*refreshBetLimitDataModel();*/
         refreshLotteryCloseHourDataModel();
+    }
+
+    public boolean isEmptyRequireField() {
+        return this.Hour == null || this.Hour.getTime() < 1 ? true : false;
+    }
+
+    public void onRowSelectCloseHour() {
+        this.seletedDay = this.selectedLotteryCloseHour.getDay();
+        this.selectedTime = this.selectedLotteryCloseHour.getTime();
+        DateFormat formater = new SimpleDateFormat("HH:mm");
+        try {
+            this.Hour = formater.parse(this.selectedLotteryCloseHour.getHour());
+        } catch (ParseException ex) {
+            Logger.getLogger(LotteryController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void fillData() {
+        //this..setDay(this.seletedDay);
+        this.selectedLotteryCloseHour.setHour(this.Hour.toString());
+        this.selectedLotteryCloseHour.setTime(selectedTime);
+
+    }
+
+    private boolean lotteryCloseHourExist() {
+        List<LotteryCloseHour> lotteryCloseHours = this.lotteryCloseHourDataModel.getLotteryCloseHour();
+        boolean lotteryCloseHourExist = true;
+        for (LotteryCloseHour currLotteryCloseHour : lotteryCloseHours) {
+            if (this.lotteryCloseHourEditMode) {
+                if (!currLotteryCloseHour.equals(this.selectedLotteryCloseHour)) {//No es el que se esta editando
+                    if (currLotteryCloseHour.getDay().getId() == this.selectedLotteryCloseHour.getDay().getId()
+                            && currLotteryCloseHour.getTime().getId() == this.selectedLotteryCloseHour.getTime().getId()) {
+                        return lotteryCloseHourExist;
+                    }
+                }
+            } else {
+                if (currLotteryCloseHour.getDay().getId() == this.selectedLotteryCloseHour.getDay().getId()
+                        && currLotteryCloseHour.getTime().getId() == this.selectedLotteryCloseHour.getTime().getId()) {
+                    return lotteryCloseHourExist;
+                }
+            }
+        }
+        return !lotteryCloseHourExist;
+    }
+
+    public void addOrUpdateLotteryCloseHour(ActionEvent event) {
+        boolean success = true;
+        FacesMessage msg;
+        RequestContext reqContext = RequestContext.getCurrentInstance();
+
+        if (isEmptyRequireField()) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Día , tanda y hora son requeridos!", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            success = false;
+            return;
+        }
+        if (lotteryCloseHourExist()) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Horario ya existe", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            success = false;
+            return;
+        }
+        if (this.lotteryCloseHourEditMode) {
+            int indexToUpdate = this.lotteryCloseHourDataModel.getLotteryCloseHour().indexOf(this.selectedLotteryCloseHour);
+            this.lotteryCloseHourDataModel.getLotteryCloseHour().set(indexToUpdate, this.selectedLotteryCloseHour);            
+        } else {
+            this.selectedLotteryCloseHour = new LotteryCloseHour();
+            this.selectedLotteryCloseHour.setDay(this.seletedDay);
+            this.selectedLotteryCloseHour.setTime(this.selectedTime);
+            
+             final Calendar cal = Calendar.getInstance();
+             cal.setTime(this.Hour);
+             String hourAndMinute = String.format("%02d",cal.get(Calendar.HOUR_OF_DAY)) +":" + String.format("%02d", cal.get(Calendar.MINUTE));
+            this.selectedLotteryCloseHour.setHour(hourAndMinute);
+            this.lotteryCloseHourDataModel.getLotteryCloseHour().add(this.selectedLotteryCloseHour);
+        }
+        this.Hour.setTime(0);
+        reqContext.addCallbackParam("success", success);
     }
 }

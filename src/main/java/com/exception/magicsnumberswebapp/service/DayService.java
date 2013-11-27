@@ -11,5 +11,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface DayService {
   public List<Day> findAllDays() throws FindDayException;
+  public Day findDayById(int dayId) throws FindDayException;
   
 }

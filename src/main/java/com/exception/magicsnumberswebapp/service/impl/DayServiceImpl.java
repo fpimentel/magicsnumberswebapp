@@ -1,7 +1,6 @@
 package com.exception.magicsnumberswebapp.service.impl;
 
 import com.exception.magicsnumberswebapp.dao.DaysDao;
-import com.exception.magicsnumberswebapp.dao.LotteryDao;
 import com.exception.magicsnumberswebapp.service.DayService;
 import com.exception.magicsnumbersws.entities.Day;
 import com.exception.magicsnumbersws.exception.FindDayException;
@@ -23,6 +22,13 @@ public class DayServiceImpl implements DayService {
     public List<Day> findAllDays() throws FindDayException {
         return this.dayDao.findAllDays();
     }
+
+    @Override
+    public Day findDayById(int dayId) throws FindDayException {
+        return this.dayDao.findDayById(dayId);
+    }
+
+
 
 
 

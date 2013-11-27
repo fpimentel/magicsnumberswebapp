@@ -11,7 +11,6 @@ import java.util.List;
  */
 public interface DaysDao {
 
-    
     public List<Day> findAllDays() throws FindDayException;
-    
+    public Day findDayById(int dayId) throws FindDayException;
 }
