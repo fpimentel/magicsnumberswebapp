@@ -38,7 +38,7 @@
                             <h:outputText value="#{labels.name}" />  
                             <p:inputText id="txtName" required="true"  requiredMessage="Nombre es requerido" value="#{lotteryController.selectedLottery.name}" />
                             <h:outputText value="#{labels.status}" /> 
-                            <p:selectOneMenu id="cbEstatus" required="true" requiredMessage="Estatus es requerido" value="#{lotteryController.selectedLottery.status}" rendered="#{lotteryController.selectedLottery!= null}" effect="fade" converter="#{statusConverter}" style="width:98%" >  
+                            <p:selectOneMenu id="cbEstatus" required="true" requiredMessage="Estado es requerido" value="#{lotteryController.selectedLottery.status}" rendered="#{lotteryController.selectedLottery!= null}" effect="fade" converter="#{statusConverter}" style="width:98%" >  
                                 <f:selectItem itemLabel="Seleccionar" itemValue=""  />
                                 <f:selectItems value="#{lotteryController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
                             </p:selectOneMenu>                                                         
@@ -67,13 +67,13 @@
                             <p:commandButton id="btnAddOrUpdateLotteryCloseHour"
                                              value="#{labels.asociate}" 
                                              actionListener="#{lotteryController.addOrUpdateLotteryCloseHour}"                                                    
-                                             update=":form:tvLottery:dtLotteryCloseHour :form:tvLottery:calendarHour :form:messages"   
+                                             update=":form:tvLottery:dtLotteryCloseHour :form:tvLottery:calendarHour :form:tvLottery:cbDay  :form:tvLottery:cbTime    :form:messages"   
                                              style="margin:0" />  
 
                             <p:commandButton process="@this"  id="btnCancelLotteryCloseHour" 
                                              value="#{labels.cancel}" 
-                                             actionListener="#{betBankingController.cancel}"  
-                                             oncomplete="clearComponent()"                                                
+                                             actionListener="#{lotteryController.cClearField()}"  
+                                             update=":form:tvLottery:dtLotteryCloseHour :form:tvLottery:calendarHour :form:tvLottery:cbDay  :form:tvLottery:cbTime"                                              
                                              style="margin:0" />  
                         </p:panelGrid>
                         <p:dataTable id="dtLotteryCloseHour" var="lotteryCloseHour"  widgetVar="lotteryCloseHour"  
@@ -94,7 +94,7 @@
                             <p:column headerText="#{labels.hour}">  
                                 #{lotteryCloseHour.hour}  
                             </p:column>
-                            <p:column>  
+                            <p:column >  
                                 <p:commandButton id="btnDeleteButton" process="@this" update="dtLotteryCloseHour :form:messages"  icon="ui-icon-trash" title="#{labels.delete}">  
                                     <f:setPropertyActionListener  value="#{lotteryCloseHour}"  target="#{lotteryController.lotteryCloseHourDelete}" />  
                                 </p:commandButton>  
@@ -105,7 +105,7 @@
                 <f:facet name="footer">  
                     <p:outputPanel style="float:right;">
                         <p:commandButton  id="btnaddUpdateBetBanking" value="#{labels.register}" 
-                                          actionListener="#{betBankingController.addOrUpdateInfo}"  
+                                          actionListener="#{lotteryController.addOrUpdateInfo}"  
                                           oncomplete="handleAddOrUpdateLottery(xhr, status, args)" update=":form:dtLottery :form:messages" icon="ui-icon-check"/>
                         <p:commandButton value="#{labels.cancel}"  id="btnCancel"  styleClass="ui-priority-primary" 
                                          oncomplete=" lotteryDialog.hide()" immediate="true" icon="ui-icon-closethick"/>  

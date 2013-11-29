@@ -2,12 +2,14 @@ package com.exception.magicsnumberswebapp.service.impl;
 
 import com.exception.magicsnumberswebapp.dao.LotteryDao;
 import com.exception.magicsnumberswebapp.service.LotteryService;
+import com.exception.magicsnumbersws.containers.LotteryContainer;
 import com.exception.magicsnumbersws.entities.Lottery;
 import com.exception.magicsnumbersws.entities.LotteryCloseHour;
 import com.exception.magicsnumbersws.entities.Time;
 import com.exception.magicsnumbersws.exception.CloseHourLotteryConfigNotFoundtException;
 import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.FindLotteryException;
+import com.exception.magicsnumbersws.exception.SaveLotteryException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,14 @@ public class LotteryServiceImpl implements LotteryService {
     public List<LotteryCloseHour> findAvailableCloseHour(int lotteryId) throws FindLotteryCloseHourException {
         return this.lotteryDao.findAvailableCloseHour(lotteryId);
     }
+
+    @Override
+    public void saveLotteryInf(LotteryContainer lotteryContainer) throws SaveLotteryException {
+        this.lotteryDao.saveLotteryInf(lotteryContainer);
+    }
+
+    
+    
 
     
 }

@@ -18,6 +18,7 @@ import com.exception.magicsnumbersws.exception.FindDayException;
 import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.FindLotteryException;
 import com.exception.magicsnumbersws.exception.FindTimeException;
+import com.exception.magicsnumbersws.exception.SaveLotteryException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -242,6 +243,8 @@ public class LotteryController {
 
     public void addNewLottery() {
         this.selectedLottery = new Lottery();
+        cClearField();
+        this.lotteryCloseHourDataModel = new LotteryCloseHourDataModel(new ArrayList<LotteryCloseHour>());
         this.lotteryEditMode = false;
     }
 
@@ -267,7 +270,7 @@ public class LotteryController {
     }
 
     public void onRowSelect(SelectEvent event) {
-        lotteryEditMode = true;
+        this.lotteryEditMode = true;
         /*refreshBetLimitDataModel();*/
         refreshLotteryCloseHourDataModel();
     }
@@ -279,6 +282,7 @@ public class LotteryController {
     public void onRowSelectCloseHour() {
         this.seletedDay = this.selectedLotteryCloseHour.getDay();
         this.selectedTime = this.selectedLotteryCloseHour.getTime();
+        this.lotteryCloseHourEditMode = true;
         DateFormat formater = new SimpleDateFormat("HH:mm");
         try {
             this.Hour = formater.parse(this.selectedLotteryCloseHour.getHour());
@@ -287,11 +291,17 @@ public class LotteryController {
         }
     }
 
-    private void fillData() {
-        //this..setDay(this.seletedDay);
-        this.selectedLotteryCloseHour.setHour(this.Hour.toString());
+    private void fillCloseHourData() {
+        if (!lotteryCloseHourEditMode) {
+            this.selectedLotteryCloseHour = new LotteryCloseHour();
+            this.selectedLotteryCloseHour.setId(this.lotteryCloseHourDataModel.nextLotteryCloseHourId());
+        }
+        this.selectedLotteryCloseHour.setDay(this.seletedDay);
         this.selectedLotteryCloseHour.setTime(selectedTime);
-
+        final Calendar cal = Calendar.getInstance();
+        cal.setTime(this.Hour);
+        String hourAndMinute = String.format("%02d", cal.get(Calendar.HOUR_OF_DAY)) + ":" + String.format("%02d", cal.get(Calendar.MINUTE));
+        this.selectedLotteryCloseHour.setHour(hourAndMinute);
     }
 
     private boolean lotteryCloseHourExist() {
@@ -315,38 +325,93 @@ public class LotteryController {
         return !lotteryCloseHourExist;
     }
 
+    private boolean isMissingLotteryCloseHourFields() {
+        return this.lotteryCloseHourDataModel == null
+                || this.lotteryCloseHourDataModel.getLotteryCloseHour() == null
+                || this.lotteryCloseHourDataModel.getLotteryCloseHour().size() < 1 ? true : false;
+    }
+
     public void addOrUpdateLotteryCloseHour(ActionEvent event) {
+
         boolean success = true;
         FacesMessage msg;
         RequestContext reqContext = RequestContext.getCurrentInstance();
+        try {
+            if (isEmptyRequireField()) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Día , tanda y hora son requeridos!", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                success = false;
+                return;
+            }
+            fillCloseHourData();
+            if (lotteryCloseHourExist()) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Horario ya existe", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                success = false;
+                return;
+            }
 
-        if (isEmptyRequireField()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Día , tanda y hora son requeridos!", "");
+            if (this.lotteryCloseHourEditMode) {
+                int indexToUpdate = this.lotteryCloseHourDataModel.getLotteryCloseHour().indexOf(this.selectedLotteryCloseHour);
+                this.lotteryCloseHourDataModel.getLotteryCloseHour().set(indexToUpdate, this.selectedLotteryCloseHour);
+            } else {
+                this.lotteryCloseHourDataModel.getLotteryCloseHour().add(this.selectedLotteryCloseHour);
+            }
+            cClearField();
+            reqContext.addCallbackParam("success", success);
+        } catch (Exception ex) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error registrando información!", null);
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            success = false;
-            return;
+            Logger.getLogger(LotteryController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (lotteryCloseHourExist()) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Horario ya existe", "");
+
+    }
+
+    public void addOrUpdateInfo(ActionEvent event) {
+        boolean success = true;
+        FacesMessage msg;
+        RequestContext reqContext = RequestContext.getCurrentInstance();
+        try {
+            if (isMissingLotteryCloseHourFields()) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Al menos un horario debe ser configurado", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                return;
+            }
+            LotteryContainer lotteryContainer = new LotteryContainer();
+            if(!this.lotteryEditMode){
+                this.selectedLottery.setId(null);
+            }
+            lotteryContainer.setLottery(this.selectedLottery);
+            lotteryContainer.setLotteryCloseHour(this.lotteryCloseHourDataModel.getLotteryCloseHour());
+            this.lotteryService.saveLotteryInf(lotteryContainer);
+            if (this.lotteryEditMode) {
+                int indexToUpdate = this.lotteryDataModel.getLottery().indexOf(this.selectedLottery);
+                this.lotteryDataModel.getLottery().set(indexToUpdate, this.selectedLottery);
+            } else {
+                refreshDataModel();
+            }
+
+        } catch (SaveLotteryException ex) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error registrando esta loteria!", null);
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            success = false;
-            return;
+            Logger.getLogger(LotteryController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error registrando esta loteria!", null);
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            Logger.getLogger(LotteryController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (this.lotteryCloseHourEditMode) {
-            int indexToUpdate = this.lotteryCloseHourDataModel.getLotteryCloseHour().indexOf(this.selectedLotteryCloseHour);
-            this.lotteryCloseHourDataModel.getLotteryCloseHour().set(indexToUpdate, this.selectedLotteryCloseHour);            
-        } else {
-            this.selectedLotteryCloseHour = new LotteryCloseHour();
-            this.selectedLotteryCloseHour.setDay(this.seletedDay);
-            this.selectedLotteryCloseHour.setTime(this.selectedTime);
-            
-             final Calendar cal = Calendar.getInstance();
-             cal.setTime(this.Hour);
-             String hourAndMinute = String.format("%02d",cal.get(Calendar.HOUR_OF_DAY)) +":" + String.format("%02d", cal.get(Calendar.MINUTE));
-            this.selectedLotteryCloseHour.setHour(hourAndMinute);
-            this.lotteryCloseHourDataModel.getLotteryCloseHour().add(this.selectedLotteryCloseHour);
-        }
-        this.Hour.setTime(0);
+
         reqContext.addCallbackParam("success", success);
+    }
+
+    public void cClearField() {
+        this.Hour = null;
+        this.selectedTime = this.times.get(0);
+        this.seletedDay = this.days.get(0);
+        this.lotteryCloseHourEditMode = false;
+        this.selectedLotteryCloseHour = new LotteryCloseHour();
     }
 }

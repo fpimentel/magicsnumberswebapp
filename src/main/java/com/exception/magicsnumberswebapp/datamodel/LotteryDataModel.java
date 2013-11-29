@@ -18,12 +18,13 @@ public class LotteryDataModel extends ListDataModel<Lottery> implements Selectab
         super(data);
         this.lottery = data;
     }
-    public List<Lottery> getBetbankings() {
-        return this.lottery;
+
+    public List<Lottery> getLottery() {
+        return lottery;
     }
 
-    public void setBetbankings(List<Lottery> lotteries) {
-        this.lottery = lotteries;
+    public void setLottery(List<Lottery> lottery) {
+        this.lottery = lottery;
     }
 
     public int nextLotteryId() {

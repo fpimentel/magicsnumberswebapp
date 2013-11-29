@@ -1,10 +1,12 @@
 package com.exception.magicsnumberswebapp.service;
+import com.exception.magicsnumbersws.containers.LotteryContainer;
 import com.exception.magicsnumbersws.entities.Lottery;
 import com.exception.magicsnumbersws.entities.LotteryCloseHour;
 import com.exception.magicsnumbersws.entities.Time;
 import com.exception.magicsnumbersws.exception.CloseHourLotteryConfigNotFoundtException;
 import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.FindLotteryException;
+import com.exception.magicsnumbersws.exception.SaveLotteryException;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -19,5 +21,6 @@ public interface LotteryService {
   public List<Time> findAvailableTimesByLotteryId( int lotteryId) throws FindLotteryCloseHourException, CloseHourLotteryConfigNotFoundtException;
   public List<Lottery> findLotteries() throws FindLotteryException;
   public List<LotteryCloseHour> findAvailableCloseHour(int lotteryId) throws FindLotteryCloseHourException;
+  public void saveLotteryInf(LotteryContainer lotteryContainer)throws SaveLotteryException; 
   
 }
