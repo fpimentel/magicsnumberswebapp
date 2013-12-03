@@ -157,16 +157,16 @@ public class BetBankingController {
         return selectedBet;
     }
 
+    public void setSelectedBet(Bet selectedBet) {
+        this.selectedBet = selectedBet;
+    }
+
     public int getCommission() {
         return commission;
     }
 
     public void setCommission(int commission) {
         this.commission = commission;
-    }
-
-    public void setSelectedBet(Bet selectedBet) {
-        this.selectedBet = selectedBet;
     }
 
     public double getAmountLimit() {
@@ -272,7 +272,7 @@ public class BetBankingController {
         if (this.status == null) {
             int statusTypeBasicId = com.exception.magicsnumberswebapp.constants.StatusType.BASIC.getId();
             this.status = statusService.getStatusByStatusType(statusTypeBasicId);
-            
+
         }
         return this.status;
     }

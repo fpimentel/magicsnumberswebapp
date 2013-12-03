@@ -2,11 +2,17 @@ package com.exception.magicsnumberswebapp.controller;
 
 import com.exception.magicsnumberswebapp.datamodel.ConsortiumDataModel;
 import com.exception.magicsnumberswebapp.service.ConsortiumService;
+import com.exception.magicsnumberswebapp.service.LotteryService;
 import com.exception.magicsnumberswebapp.service.StatusService;
+import com.exception.magicsnumbersws.entities.Bet;
 import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
+import com.exception.magicsnumbersws.entities.Lottery;
 import com.exception.magicsnumbersws.entities.Status;
+import com.exception.magicsnumbersws.entities.Time;
 import com.exception.magicsnumbersws.entities.User;
+import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
+import com.exception.magicsnumbersws.exception.FindLotteryException;
 import com.exception.magicsnumbersws.exception.SaveConsortiumDataException;
 import com.exception.magicsnumbersws.exception.SearchAllBetBankingException;
 import com.exception.magicsnumbersws.exception.SearchAllConsortiumException;
@@ -20,6 +26,7 @@ import org.springframework.context.annotation.Scope;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -41,6 +48,8 @@ public class ConsortiumController {
     private StatusService statusService;
     @Autowired
     private LoginController loginController;
+    @Autowired
+    private LotteryService lotteryService;
     private List<Consortium> updatedConsortiums;
     private Consortium selectedConsortium;
     private boolean editMode = false;
@@ -50,12 +59,91 @@ public class ConsortiumController {
     private Status selectedStatus;
     private List<BetBanking> availableBetBanking;
     private List<BetBanking> asignedBetBanking;
-
+    private Lottery selectedLottery;
+    private List<Lottery> lotteries;
+    private List<Bet> bets;
+    private Bet selectedBet;
+    private Time selectedTime;
+    private List<Time> times;
+    private float amountLimit;
     public ConsortiumController() {
 
         updatedConsortiums = new ArrayList<Consortium>();
     }
 
+    public float getAmountLimit() {
+        return amountLimit;
+    }
+
+    public void setAmountLimit(float amountLimit) {
+        this.amountLimit = amountLimit;
+    }
+    
+    public List<Time> getTimes() {
+        return times;
+    }
+
+    public void setTimes(List<Time> times) {
+        this.times = times;
+    }
+    
+    public Time getSelectedTime() {
+        return selectedTime;
+    }
+
+    public void setSelectedTime(Time selectedTime) {
+        this.selectedTime = selectedTime;
+    }
+    
+    public Bet getSelectedBet() {
+        return selectedBet;
+    }
+
+    public void setSelectedBet(Bet selectedBet) {
+        this.selectedBet = selectedBet;
+    }
+    
+    public List<Bet> getBets() {
+        return bets;
+    }
+
+    public void setBets(List<Bet> bets) {
+        this.bets = bets;
+    }
+    
+    public List<Lottery> getLotteries() {
+         if (this.lotteries == null) {
+            try {
+                this.lotteries = this.lotteryService.findActiveLottery();
+            } catch (FindLotteryException ex) {
+                Logger.getLogger(BetBankingController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(BetBankingController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return this.lotteries;
+    }
+
+    public void setLotteries(List<Lottery> lotteries) {
+        this.lotteries = lotteries;
+    }
+    
+    public Lottery getSelectedLottery() {
+        return selectedLottery;
+    }
+
+    public void setSelectedLottery(Lottery selectedLottery) {
+        this.selectedLottery = selectedLottery;
+    }
+    public void getBetsByLotteryOnChange(ValueChangeEvent event) { 
+        this.selectedLottery = (Lottery) event.getNewValue();
+        this.bets = new ArrayList(this.selectedLottery.getBets());
+        try {
+            this.times = new ArrayList(this.lotteryService.findTimesByLottery(this.selectedLottery.getId()));
+        } catch (FindLotteryCloseHourException ex) {
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+        }                
+    }
     public DualListModel<BetBanking> getConsortiumDualList() {
         if (this.consortiumDualList == null) {
             this.consortiumDualList = new DualListModel<BetBanking>();

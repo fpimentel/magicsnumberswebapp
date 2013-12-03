@@ -11,6 +11,7 @@ import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.FindLotteryException;
 import com.exception.magicsnumbersws.exception.SaveLotteryException;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,5 +59,10 @@ public class LotteryDaoImpl implements LotteryDao {
     @Override
     public void saveLotteryInf(LotteryContainer lotteryContainer) throws SaveLotteryException {
         this.lookupTablesEndpoint.saveLotteryInf(lotteryContainer);
+    }
+
+    @Override
+    public Set<Time> findTimesByLottery(int LotteryId) throws FindLotteryCloseHourException {
+        return this.lookupTablesEndpoint.findTimesByLottery(LotteryId);
     }
 }

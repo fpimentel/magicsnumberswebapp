@@ -31,37 +31,71 @@
             <p:commandButton process="@this" id="btnNewConsortium" value="#{labels.add_consortium}" 
                              actionListener="#{consortiumController.addNewConsortium}"
                              oncomplete="consortiumDialog.show()"
-                             update=":form:dialog :form:pSecond" immediate="true" />
+                             update=":form:dialog  :form:tvConsortium:pSecond" immediate="true" />
 
             <p:dialog id="dialog" header="#{labels.consortium_information}" widgetVar="consortiumDialog" resizable="false"  
                       showEffect="fade" hideEffect="explode" closable="false">  
-                <h:panelGrid id="pConsortiumData" columns="2" cellpadding="4">    
-                    <h:outputText value="#{labels.name}"/>  
-                    <p:inputText id="txtName" required="true" requiredMessage="Nombre es requerido" value="#{consortiumController.selectedConsortium.name}"/>
+                <p:tabView id="tvConsortium" widgetVar="tvDetailsTab"> 
+                    <p:tab id="tabInfoGeneral"  title="#{labels.General}" >  
+                        <h:panelGrid id="pConsortiumData" columns="2" cellpadding="4">    
+                            <h:outputText value="#{labels.name}"/>  
+                            <p:inputText id="txtName" required="true" requiredMessage="Nombre es requerido" value="#{consortiumController.selectedConsortium.name}"/>
 
-                    <h:outputText value=" #{labels.Description}"/>  
-                    <p:inputText id="txtDescription" required="true"  requiredMessage="Descripción es requerido" value="#{consortiumController.selectedConsortium.description}"/>                             
-                    <h:outputText value="#{labels.status}"/> 
-                    <p:selectOneMenu id="cbEstatus" value="#{consortiumController.selectedConsortium.status}" rendered="#{consortiumController.selectedConsortium!= null}" effect="fade" converter="#{statusConverter}">  
-                        <f:selectItem itemLabel="Seleccionar" itemValue="" />
-                        <f:selectItems value="#{consortiumController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
-                    </p:selectOneMenu>                                                         
+                            <h:outputText value=" #{labels.Description}"/>  
+                            <p:inputText id="txtDescription" required="true"  requiredMessage="Descripción es requerido" value="#{consortiumController.selectedConsortium.description}"/>                             
+                            <h:outputText value="#{labels.status}"/> 
+                            <p:selectOneMenu id="cbEstatus" value="#{consortiumController.selectedConsortium.status}" rendered="#{consortiumController.selectedConsortium!= null}" effect="fade" converter="#{statusConverter}">  
+                                <f:selectItem itemLabel="Seleccionar" itemValue="" />
+                                <f:selectItems value="#{consortiumController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>  
+                            </p:selectOneMenu>                                                         
 
-                </h:panelGrid> 
-                <p:panel header="#{labels.associated_banks}">                                                            
-                    <h:panelGrid id="pSecond" columns="1" cellpadding="4">                             
-                        <p:pickList id="plBetBanking" value="#{consortiumController.consortiumDualList}" var="betBanking"    
-                                    itemValue="#{betBanking}" itemLabel="#{betBanking.name}" converter="#{betBakingConverter}"                                                                                                       
-                                    showSourceControls="true" showTargetControls="true"                                         
-                                    showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
+                        </h:panelGrid> 
+                        <p:panel header="#{labels.associated_banks}">                                                            
+                            <h:panelGrid id="pSecond" columns="1" cellpadding="4">                             
+                                <p:pickList id="plBetBanking" value="#{consortiumController.consortiumDualList}" var="betBanking"    
+                                            itemValue="#{betBanking}" itemLabel="#{betBanking.name}" converter="#{betBakingConverter}"                                                                                                       
+                                            showSourceControls="true" showTargetControls="true"                                         
+                                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
 
-                            <f:facet name="sourceCaption">#{labels.availables}</f:facet>  
-                            <f:facet name="targetCaption">#{labels.assigned}</f:facet>  
+                                    <f:facet name="sourceCaption">#{labels.availables}</f:facet>  
+                                    <f:facet name="targetCaption">#{labels.assigned}</f:facet>  
 
-                        </p:pickList>                             
-                    </h:panelGrid> 
-                </p:panel>
+                                </p:pickList>                             
+                            </h:panelGrid> 
+                        </p:panel>
 
+
+                    </p:tab>
+                    <p:tab id="tabConsortiumLimit" title="#{labels.Consortium_Limit_General}">
+                        <p:panelGrid id="pnConsortiumLimitGeneral" columns="2">  
+                            <f:facet name="header">  
+                                #{labels.limit_asociate} 
+                            </f:facet>  
+                            <h:outputText value="#{labels.lottery}" /> 
+                            <p:selectOneMenu id="cbLottery" value="#{consortiumController.selectedLottery}" valueChangeListener="#{consortiumController.getBetsByLotteryOnChange}" widgetVar="cbLotterySelectMenu"   
+                                             effect="fade" converter="#{lotteryConverter}" style="width: 100%" >  
+                                <f:selectItem itemLabel="Seleccionar" itemValue=""   />
+                                <f:selectItems value="#{consortiumController.lotteries}" var="lottery" itemLabel="#{lottery.name}" itemValue="#{lottery}"/>  
+                                <p:ajax event="change" update=":form:tvConsortium:cbBet :form:tvConsortium:cbTime :form:tvConsortium:txtAmountLimit"/>
+                            </p:selectOneMenu> 
+                            <h:outputText value="#{labels.bet}" /> 
+                            <p:selectOneMenu id="cbBet" value="#{consortiumController.selectedBet}" widgetVar="cbBetSelectMenu"  effect="fade" converter="#{betConverter}" style="width: 100%" >  
+                                <f:selectItem itemLabel="Seleccionar" itemValue=""  />
+                                <f:selectItems value="#{consortiumController.bets}" var="bet" itemLabel="#{bet.name}" itemValue="#{bet}"/>  
+                            </p:selectOneMenu>
+                            <h:outputText value="#{labels.upper_turn}" /> 
+                            <p:selectOneMenu id="cbTime" value="#{consortiumController.selectedTime}" widgetVar="cbTimeSelectMenu"  effect="fade" 
+                                             converter="#{timeConverter}" >                                    
+                                <f:selectItem itemLabel="#{labels.upper_turn}" itemValue=""/>
+                                <f:selectItems value="#{consortiumController.times}" var="time" itemLabel="#{time.name}" itemValue="#{time}"/>  
+                            </p:selectOneMenu>
+                            <h:outputText value="#{labels.limit_amount}" /> 
+                            <p:inputText id="txtAmountLimit" required="true"  requiredMessage="Monto Limite requerido" value="#{betBankingController.amountLimit}" />                             
+                        </p:panelGrid>
+                        <p:spacer height="5px"/>
+
+                    </p:tab>    
+                </p:tabView> 
                 <f:facet name="footer">  
                     <p:outputPanel style="float:right;">
                         <p:commandButton id="btnaddUpdateConsortium" value="#{labels.register}" 

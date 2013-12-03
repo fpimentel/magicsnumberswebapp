@@ -11,6 +11,7 @@ import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.FindLotteryException;
 import com.exception.magicsnumbersws.exception.SaveLotteryException;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,11 @@ public class LotteryServiceImpl implements LotteryService {
     @Override
     public void saveLotteryInf(LotteryContainer lotteryContainer) throws SaveLotteryException {
         this.lotteryDao.saveLotteryInf(lotteryContainer);
+    }
+
+    @Override
+    public Set<Time> findTimesByLottery(int LotteryId) throws FindLotteryCloseHourException {
+        return this.lotteryDao.findTimesByLottery(LotteryId);
     }
 
     
