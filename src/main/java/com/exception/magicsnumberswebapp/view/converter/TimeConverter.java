@@ -33,19 +33,24 @@ public class TimeConverter implements Converter {
     public List<Time> getTimes(int lotteryId) {
         return ticketSaleController.getTimes();
     }
+
     public void setTimes(List<Time> times) {
         this.times = times;
     }
+
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String submittedValue) {
         int id = 0;
         try {
-            id = Integer.parseInt(submittedValue);
-            for (Time currTime : getTimes(id)) {
-                if (currTime.getId() == id) {
-                    return currTime;
+            if (submittedValue.length() > 0) {
+                id = Integer.parseInt(submittedValue);
+                for (Time currTime : getTimes(id)) {
+                    if (currTime.getId() == id) {
+                        return currTime;
+                    }
                 }
             }
+
         } catch (Exception ex) {
             LOG.info("Problema configurando las jugadas: " + ex);
         }

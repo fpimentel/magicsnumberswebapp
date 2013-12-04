@@ -1,16 +1,19 @@
 package com.exception.magicsnumberswebapp.controller;
 
 import com.exception.magicsnumberswebapp.datamodel.ConsortiumDataModel;
+import com.exception.magicsnumberswebapp.datamodel.ConsortiumGeneralLimitDataModel;
 import com.exception.magicsnumberswebapp.service.ConsortiumService;
 import com.exception.magicsnumberswebapp.service.LotteryService;
 import com.exception.magicsnumberswebapp.service.StatusService;
 import com.exception.magicsnumbersws.entities.Bet;
 import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
+import com.exception.magicsnumbersws.entities.ConsortiumGeneralLimit;
 import com.exception.magicsnumbersws.entities.Lottery;
 import com.exception.magicsnumbersws.entities.Status;
 import com.exception.magicsnumbersws.entities.Time;
 import com.exception.magicsnumbersws.entities.User;
+import com.exception.magicsnumbersws.exception.FindConsortiumGeneralLimitException;
 import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.FindLotteryException;
 import com.exception.magicsnumbersws.exception.SaveConsortiumDataException;
@@ -53,22 +56,97 @@ public class ConsortiumController {
     private List<Consortium> updatedConsortiums;
     private Consortium selectedConsortium;
     private boolean editMode = false;
+    private boolean editConsortiumMode = false;
     private ConsortiumDataModel consortiumDataModel;
+    private ConsortiumGeneralLimitDataModel consortiumGeneralLimitDataModel;
     private List<Status> status;
     private DualListModel<BetBanking> consortiumDualList;
     private Status selectedStatus;
     private List<BetBanking> availableBetBanking;
     private List<BetBanking> asignedBetBanking;
     private Lottery selectedLottery;
+    private ConsortiumGeneralLimit selectedConsortiumGeneralLimit;
     private List<Lottery> lotteries;
     private List<Bet> bets;
     private Bet selectedBet;
     private Time selectedTime;
     private List<Time> times;
     private float amountLimit;
+    private ConsortiumGeneralLimit consortiumGeneralLimitToDelete;
+
+    public ConsortiumGeneralLimit getSelectedConsortiumGeneralLimit() {
+        if (this.selectedConsortiumGeneralLimit == null) {
+            this.selectedConsortiumGeneralLimit = new ConsortiumGeneralLimit();
+        }
+        return selectedConsortiumGeneralLimit;
+    }
+
+    public void setSelectedConsortiumGeneralLimit(ConsortiumGeneralLimit selectedConsortiumGeneralLimit) {
+        this.selectedConsortiumGeneralLimit = selectedConsortiumGeneralLimit;
+    }
+
     public ConsortiumController() {
 
         updatedConsortiums = new ArrayList<Consortium>();
+    }
+
+    public ConsortiumGeneralLimit getConsortiumGeneralLimitToDelete() {
+        if (this.consortiumGeneralLimitToDelete == null) {
+            this.consortiumGeneralLimitToDelete = new ConsortiumGeneralLimit();
+        }
+        return consortiumGeneralLimitToDelete;
+    }
+
+    public void setConsortiumGeneralLimitToDelete(ConsortiumGeneralLimit consortiumToDelete) {
+        this.consortiumGeneralLimitToDelete = consortiumToDelete;
+        this.consortiumGeneralLimitDataModel.getConsortiumGeneralLimits().remove(this.consortiumGeneralLimitToDelete);
+        this.editConsortiumMode = false;
+    }
+
+    public void onRowSelectToConsortiumGeneralLimit(SelectEvent event) {
+        editConsortiumMode = true;
+
+        setConsortiumLimitsFields();
+    }
+
+    public void setConsortiumLimitsFields() {
+
+        try {
+            this.selectedLottery = this.selectedConsortiumGeneralLimit.getLottery();
+
+            this.bets = new ArrayList(this.selectedLottery.getBets());
+            this.times = new ArrayList(this.lotteryService.findTimesByLottery(this.selectedLottery.getId()));
+            this.selectedTime = this.selectedConsortiumGeneralLimit.getTime();
+            this.selectedBet = this.selectedConsortiumGeneralLimit.getBet();
+            this.amountLimit = this.selectedConsortiumGeneralLimit.getAmount();
+        } catch (FindLotteryCloseHourException ex) {
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private void refreshConsortiumGeneralLimitDataModel() {
+        try {
+            this.consortiumGeneralLimitDataModel = new ConsortiumGeneralLimitDataModel(this.consortiumService.findConsortiumLimitByConsortiumId(this.selectedConsortium.getId()));
+        } catch (FindConsortiumGeneralLimitException ex) {
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, "refreshConsortiumGeneralLimitDataModel() in ConsortiumController", ex);
+        } catch (Exception ex) {
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, "refreshConsortiumGeneralLimitDataModel() in ConsortiumController", ex);
+        }
+
+    }
+
+    public ConsortiumGeneralLimitDataModel getConsortiumGeneralLimitDataModel() {
+        if (this.consortiumGeneralLimitDataModel == null) {
+            this.consortiumGeneralLimitDataModel = new ConsortiumGeneralLimitDataModel(new ArrayList<ConsortiumGeneralLimit>());
+        }
+        return consortiumGeneralLimitDataModel;
+    }
+
+    public void setConsortiumGeneralLimitDataModel(ConsortiumGeneralLimitDataModel consortiumGeneralLimitDataModel) {
+        this.consortiumGeneralLimitDataModel = consortiumGeneralLimitDataModel;
     }
 
     public float getAmountLimit() {
@@ -78,7 +156,7 @@ public class ConsortiumController {
     public void setAmountLimit(float amountLimit) {
         this.amountLimit = amountLimit;
     }
-    
+
     public List<Time> getTimes() {
         return times;
     }
@@ -86,7 +164,7 @@ public class ConsortiumController {
     public void setTimes(List<Time> times) {
         this.times = times;
     }
-    
+
     public Time getSelectedTime() {
         return selectedTime;
     }
@@ -94,7 +172,7 @@ public class ConsortiumController {
     public void setSelectedTime(Time selectedTime) {
         this.selectedTime = selectedTime;
     }
-    
+
     public Bet getSelectedBet() {
         return selectedBet;
     }
@@ -102,7 +180,7 @@ public class ConsortiumController {
     public void setSelectedBet(Bet selectedBet) {
         this.selectedBet = selectedBet;
     }
-    
+
     public List<Bet> getBets() {
         return bets;
     }
@@ -110,9 +188,9 @@ public class ConsortiumController {
     public void setBets(List<Bet> bets) {
         this.bets = bets;
     }
-    
+
     public List<Lottery> getLotteries() {
-         if (this.lotteries == null) {
+        if (this.lotteries == null) {
             try {
                 this.lotteries = this.lotteryService.findActiveLottery();
             } catch (FindLotteryException ex) {
@@ -127,7 +205,7 @@ public class ConsortiumController {
     public void setLotteries(List<Lottery> lotteries) {
         this.lotteries = lotteries;
     }
-    
+
     public Lottery getSelectedLottery() {
         return selectedLottery;
     }
@@ -135,15 +213,17 @@ public class ConsortiumController {
     public void setSelectedLottery(Lottery selectedLottery) {
         this.selectedLottery = selectedLottery;
     }
-    public void getBetsByLotteryOnChange(ValueChangeEvent event) { 
+
+    public void getBetsByLotteryOnChange(ValueChangeEvent event) {
         this.selectedLottery = (Lottery) event.getNewValue();
         this.bets = new ArrayList(this.selectedLottery.getBets());
         try {
             this.times = new ArrayList(this.lotteryService.findTimesByLottery(this.selectedLottery.getId()));
         } catch (FindLotteryCloseHourException ex) {
             Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
-        }                
+        }
     }
+
     public DualListModel<BetBanking> getConsortiumDualList() {
         if (this.consortiumDualList == null) {
             this.consortiumDualList = new DualListModel<BetBanking>();
@@ -253,7 +333,9 @@ public class ConsortiumController {
             consortiumDualList = new DualListModel<BetBanking>(this.availableBetBanking, this.asignedBetBanking);
             msg = new FacesMessage("Consorcio ", ((Consortium) event.getObject()).getName());
             this.editMode = true;
+            refreshConsortiumGeneralLimitDataModel();
             FacesContext.getCurrentInstance().addMessage(null, msg);
+
         } catch (SearchAllBetBankingException ex) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error en la seleccion de un consorcio!", null);
             Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
@@ -328,5 +410,56 @@ public class ConsortiumController {
             }
         }
         return !consortiumExist;
+    }
+
+    public void cancelConsortiumGeneralLimit() {
+        FacesMessage msg;
+        try {
+            this.selectedLottery = new Lottery();
+            this.selectedTime = new Time();
+            this.selectedBet = new Bet();
+            this.amountLimit = 0;
+            this.editConsortiumMode = false;
+        } catch (Exception ex) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error cancelando esta acción", null);
+            Logger.getLogger(ConsortiumController.class.getName()).log(Level.SEVERE, null, ex);
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+
+
+    }
+
+    public void addOrUpdateConsortiumGeneralLimit(ActionEvent event) {
+        /* boolean success = true;
+         FacesMessage msg;
+
+         if (editMode) {
+         this.selectedBlockingNumber.setNumber(NumberToBlock);
+         if (blockNumberBetBankingExists()) {
+         msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Numero a bloquear: " + this.selectedBlockingNumber.getNumber() + "  ya existe!", "");
+         FacesContext.getCurrentInstance().addMessage(null, msg);
+         success = false;
+         return;
+         }
+         int indexToUpdate = this.blockingNumberDataModel.getBetBlockingNumbers().indexOf(this.selectedBlockingNumber);
+         this.blockingNumberDataModel.getBetBlockingNumbers().set(indexToUpdate, this.selectedBlockingNumber);
+         cancelBLockNumber();
+         } else {
+
+         this.selectedBlockingNumber = new BlockingNumberBetBanking();
+         this.selectedBlockingNumber.setCreationUser(loginController.getUserName());
+         this.selectedBlockingNumber.setId(this.blockingNumberDataModel.nextBlockingId());
+         this.selectedBlockingNumber.setNumber(NumberToBlock);
+         this.selectedBlockingNumber.setBetBanking(this.selectedBetBanking);
+         if (blockNumberBetBankingExists()) {
+         msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Numero a bloquear: " + this.selectedBlockingNumber.getNumber() + "  ya existe!", "");
+         FacesContext.getCurrentInstance().addMessage(null, msg);
+         success = false;
+         return;
+         }
+         this.blockingNumberDataModel.getBetBlockingNumbers().add(this.selectedBlockingNumber);
+
+         cancelBLockNumber();
+         }*/
     }
 }

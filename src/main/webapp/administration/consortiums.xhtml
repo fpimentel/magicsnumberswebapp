@@ -67,32 +67,75 @@
 
                     </p:tab>
                     <p:tab id="tabConsortiumLimit" title="#{labels.Consortium_Limit_General}">
-                        <p:panelGrid id="pnConsortiumLimitGeneral" columns="2">  
+                        <p:panelGrid id="pnConsortiumLimitGeneral" columns="4">  
                             <f:facet name="header">  
                                 #{labels.limit_asociate} 
                             </f:facet>  
                             <h:outputText value="#{labels.lottery}" /> 
                             <p:selectOneMenu id="cbLottery" value="#{consortiumController.selectedLottery}" valueChangeListener="#{consortiumController.getBetsByLotteryOnChange}" widgetVar="cbLotterySelectMenu"   
-                                             effect="fade" converter="#{lotteryConverter}" style="width: 100%" >  
+                                             effect="fade" converter="#{lotteryConverter}" style="width: 115px;" >  
                                 <f:selectItem itemLabel="Seleccionar" itemValue=""   />
                                 <f:selectItems value="#{consortiumController.lotteries}" var="lottery" itemLabel="#{lottery.name}" itemValue="#{lottery}"/>  
                                 <p:ajax event="change" update=":form:tvConsortium:cbBet :form:tvConsortium:cbTime :form:tvConsortium:txtAmountLimit"/>
                             </p:selectOneMenu> 
                             <h:outputText value="#{labels.bet}" /> 
-                            <p:selectOneMenu id="cbBet" value="#{consortiumController.selectedBet}" widgetVar="cbBetSelectMenu"  effect="fade" converter="#{betConverter}" style="width: 100%" >  
+                            <p:selectOneMenu id="cbBet" value="#{consortiumController.selectedBet}" widgetVar="cbBetSelectMenu"  
+                                             effect="fade" converter="#{betConverter}" style="width: 115px;"  >  
                                 <f:selectItem itemLabel="Seleccionar" itemValue=""  />
                                 <f:selectItems value="#{consortiumController.bets}" var="bet" itemLabel="#{bet.name}" itemValue="#{bet}"/>  
                             </p:selectOneMenu>
                             <h:outputText value="#{labels.upper_turn}" /> 
                             <p:selectOneMenu id="cbTime" value="#{consortiumController.selectedTime}" widgetVar="cbTimeSelectMenu"  effect="fade" 
-                                             converter="#{timeConverter}" >                                    
+                                             converter="#{timeConverter}"  style="width: 115px;">                                    
                                 <f:selectItem itemLabel="#{labels.upper_turn}" itemValue=""/>
                                 <f:selectItems value="#{consortiumController.times}" var="time" itemLabel="#{time.name}" itemValue="#{time}"/>  
                             </p:selectOneMenu>
                             <h:outputText value="#{labels.limit_amount}" /> 
-                            <p:inputText id="txtAmountLimit" required="true"  requiredMessage="Monto Limite requerido" value="#{betBankingController.amountLimit}" />                             
+                            <p:inputText id="txtAmountLimit" required="true"  requiredMessage="Monto Limite requerido" value="#{consortiumController.amountLimit}" />
+                            <f:facet name="footer">  
+                                <p:commandButton id="btnConsortiumGeneralLimit" 
+                                                 value="#{labels.asociate}" 
+                                                 actionListener="#{consortiumController.addOrUpdateConsortiumGeneralLimit}"                                                  
+                                                 update=":form:messages"   
+                                                 style="margin:0" />  
+
+                                <p:commandButton  process="@this" id="btnCancelConsortiumGeneralLimit" 
+                                                  value="#{labels.cancel}" 
+                                                  actionListener="#{consortiumController.cancelConsortiumGeneralLimit}"  
+                                                  update=":form:tvConsortium:cbLottery :form:tvConsortium:cbTime :form:tvConsortium:cbBet :form:tvConsortium:txtAmountLimit :form:messages"                                                 
+                                                  style="margin:0" />  
+                            </f:facet> 
                         </p:panelGrid>
-                        <p:spacer height="5px"/>
+                        <p:dataTable id="dtConsortiumLimit" var="consortiumLimit"  widgetVar="dtConsortiumLimit"  
+                                     value="#{consortiumController.consortiumGeneralLimitDataModel}" 
+                                     emptyMessage="No existen Registros" paginator="true" rows="5"    
+                                     selection="#{consortiumController.selectedConsortiumGeneralLimit}" selectionMode="single">  
+                            <f:facet name="header"  >  
+                                #{labels.Consortium_Limit_General}
+                            </f:facet> 
+                            <p:column headerText="#{labels.lottery}">  
+                                #{consortiumLimit.lottery.name}  
+                            </p:column>
+                            <p:column headerText="#{labels.upper_turn}">  
+                                #{consortiumLimit.time.name}  
+                            </p:column>
+                            <p:column headerText="#{labels.upper_bet}">  
+                                #{consortiumLimit.bet.name}  
+                            </p:column>
+                            <p:column headerText="#{labels.upper_bet}">  
+                                #{consortiumLimit.amount}  
+                            </p:column>
+                            <p:column>  
+                                <p:commandButton id="btnDeleteConsortiumGeneralLimit" update=":form:tvConsortium:dtConsortiumLimit :form:messages"  icon="ui-icon-trash" title="#{labels.delete}">  
+                                    <f:setPropertyActionListener value="#{consortiumLimit}"  target="#{consortiumController.consortiumGeneralLimitToDelete}" />  
+                                </p:commandButton>  
+                            </p:column>  
+
+                            <p:ajax event="rowSelect" listener="#{consortiumController.onRowSelectToConsortiumGeneralLimit}"   
+                                    update=":form:tvConsortium:cbLottery :form:tvConsortium:cbTime :form:tvConsortium:cbBet :form:tvConsortium:txtAmountLimit :form:messages"  
+                                    />  
+
+                        </p:dataTable>
 
                     </p:tab>    
                 </p:tabView> 

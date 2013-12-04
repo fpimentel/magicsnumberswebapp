@@ -4,6 +4,8 @@ import com.exception.magicsnumberswebapp.dao.ConsortiumDao;
 import com.exception.magicsnumbersws.endpoints.LookupTablesEndpoint;
 import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
+import com.exception.magicsnumbersws.entities.ConsortiumGeneralLimit;
+import com.exception.magicsnumbersws.exception.FindConsortiumGeneralLimitException;
 import com.exception.magicsnumbersws.exception.SaveConsortiumDataException;
 import com.exception.magicsnumbersws.exception.SearchAllBetBankingException;
 import com.exception.magicsnumbersws.exception.SearchAllConsortiumException;
@@ -52,5 +54,10 @@ public class ConsortiumDaoImpl implements ConsortiumDao {
     @Override
     public List<Consortium> findAll() throws SearchAllConsortiumException {
         return this.lookupTableEndpoint.findActiveConsortium();
+    }
+
+    @Override
+    public List<ConsortiumGeneralLimit> findConsortiumLimitByConsortiumId(int consortiumId) throws FindConsortiumGeneralLimitException {
+        return this.lookupTableEndpoint.findConsortiumLimitByConsortiumId(consortiumId);
     }
 }
