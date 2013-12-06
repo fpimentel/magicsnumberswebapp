@@ -206,6 +206,7 @@ public class ConsortiumController {
     public void setLotteries(List<Lottery> lotteries) {
         this.lotteries = lotteries;
     }
+    
 
     public Lottery getSelectedLottery() {
         return selectedLottery;
