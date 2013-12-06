@@ -394,12 +394,12 @@ public class ConsortiumController {
             return;
         }
         cancelConsortiumGeneralLimit();
-    
-        
+
+
         this.selectedConsortium = null;
         reqContext.addCallbackParam("success", success);
     }
-    
+
     private boolean consortiumAlreadyExist() {
         List<Consortium> consortiums = consortiumDataModel.getConsortiums();
         boolean consortiumExist = true;
@@ -422,9 +422,9 @@ public class ConsortiumController {
     public void cancelConsortiumGeneralLimit() {
         FacesMessage msg;
         try {
-            this.selectedLottery = new Lottery();
-            this.selectedTime = new Time();
-            this.selectedBet = new Bet();
+            this.selectedLottery = null;
+            this.selectedTime = null;
+            this.selectedBet = null;
             this.amountLimit = 0;
             this.editConsortiumMode = false;
         } catch (Exception ex) {
@@ -449,7 +449,7 @@ public class ConsortiumController {
                     }
                 }
             } else {
-                if (currConsortiumGeneralLimit.getLottery().getId()== this.selectedConsortiumGeneralLimit.getLottery().getId()
+                if (currConsortiumGeneralLimit.getLottery().getId() == this.selectedConsortiumGeneralLimit.getLottery().getId()
                         && currConsortiumGeneralLimit.getBet().getId() == this.selectedConsortiumGeneralLimit.getBet().getId()
                         && currConsortiumGeneralLimit.getTime().getId() == this.selectedConsortiumGeneralLimit.getTime().getId()) {
                     return consortiumGeneralLimitExist;
@@ -469,7 +469,7 @@ public class ConsortiumController {
         this.selectedConsortiumGeneralLimit.setBet(this.selectedBet);
         this.selectedConsortiumGeneralLimit.setTime(this.selectedTime);
         this.selectedConsortiumGeneralLimit.setAmount(this.amountLimit);
-        
+
     }
 
     public void addOrUpdateConsortiumGeneralLimit(ActionEvent event) {

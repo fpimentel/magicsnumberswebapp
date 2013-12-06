@@ -27,16 +27,17 @@ public class betConverter implements Converter {
     private List<Bet> bets;
     private static final Logger LOG = Logger.getLogger(betConverter.class.getName());
 
-    public List<Bet> getBets() {        
-            try {
-                this.bets = this.betService.findActiveBets();
-            } catch (FindBetException ex) {
-                LOG.log(Level.SEVERE, "Error obteniendo las jugadas metodo :getBets in betConverter", ex);
+    public List<Bet> getBets() {
+        try {
+            this.bets = this.betService.findActiveBets();
+        } catch (FindBetException ex) {
+            LOG.log(Level.SEVERE, "Error obteniendo las jugadas metodo :getBets in betConverter", ex);
 
-            }
-        
+        }
+
         return bets;
     }
+
     public void setBets(List<Bet> bets) {
         this.bets = bets;
     }
@@ -45,10 +46,12 @@ public class betConverter implements Converter {
     public Object getAsObject(FacesContext fc, UIComponent uic, String submittedValue) {
         int id = 0;
         try {
-            id = Integer.parseInt(submittedValue);
-            for (Bet bet : getBets()) {
-                if (bet.getId() == id) {
-                    return bet;
+            if (submittedValue.length() > 0) {
+                id = Integer.parseInt(submittedValue);
+                for (Bet bet : getBets()) {
+                    if (bet.getId() == id) {
+                        return bet;
+                    }
                 }
             }
         } catch (Exception ex) {

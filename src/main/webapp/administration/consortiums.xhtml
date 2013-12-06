@@ -78,7 +78,7 @@
                                              effect="fade" converter="#{lotteryConverter}" style="width: 115px;" >  
                                 <f:selectItem itemLabel="Seleccionar" itemValue=""   />
                                 <f:selectItems value="#{consortiumController.lotteries}" var="lottery" itemLabel="#{lottery.name}" itemValue="#{lottery}"/>  
-                                <p:ajax event="change" update=":form:tvConsortium:cbBet :form:tvConsortium:cbTime :form:tvConsortium:txtAmountLimit"/>
+                                <p:ajax event="change" update=":form:tvConsortium:cbBet :form:tvConsortium:cbTime"/>
                             </p:selectOneMenu> 
                             <h:outputText value="#{labels.bet}" /> 
                             <p:selectOneMenu id="cbBet" value="#{consortiumController.selectedBet}" required="true" 
@@ -97,7 +97,8 @@
                             <h:outputText value="#{labels.limit_amount}" /> 
                             <p:inputText id="txtAmountLimit" required="true"  requiredMessage="Monto Limite requerido" value="#{consortiumController.amountLimit}" />
                             <f:facet name="footer">  
-                                <p:commandButton id="btnConsortiumGeneralLimit" 
+                                <p:commandButton id="btnConsortiumGeneralLimit"
+                                                 process="@this :form:tvConsortium:dtConsortiumLimit :form:tvConsortium:cbLottery :form:tvConsortium:cbTime :form:tvConsortium:cbBet :form:tvConsortium:txtAmountLimit"
                                                  value="#{labels.asociate}" 
                                                  actionListener="#{consortiumController.addOrUpdateConsortiumGeneralLimit}"                                                  
                                                  update=":form:tvConsortium:dtConsortiumLimit :form:tvConsortium:cbLottery :form:tvConsortium:cbTime :form:tvConsortium:cbBet :form:tvConsortium:txtAmountLimit :form:messages"   
