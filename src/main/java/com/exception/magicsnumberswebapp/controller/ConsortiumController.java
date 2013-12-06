@@ -5,6 +5,7 @@ import com.exception.magicsnumberswebapp.datamodel.ConsortiumGeneralLimitDataMod
 import com.exception.magicsnumberswebapp.service.ConsortiumService;
 import com.exception.magicsnumberswebapp.service.LotteryService;
 import com.exception.magicsnumberswebapp.service.StatusService;
+import com.exception.magicsnumbersws.containers.ConsortiumContainer;
 import com.exception.magicsnumbersws.entities.Bet;
 import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
@@ -368,7 +369,10 @@ public class ConsortiumController {
             this.selectedConsortium.setCreationUser(loggedUser.getUserName());
             Set<BetBanking> asignedBetBankings = new HashSet<BetBanking>(consortiumDualList.getTarget());
             this.selectedConsortium.setBetBankings(asignedBetBankings);
-            consortiumService.saveConsortiumData(this.selectedConsortium);
+            ConsortiumContainer consortiumContainer = new ConsortiumContainer();
+            consortiumContainer.setConsortium(this.selectedConsortium);
+            consortiumContainer.setConsortiumGeneralLimit(this.consortiumGeneralLimitDataModel.getConsortiumGeneralLimits());
+            consortiumService.saveConsortiumData(consortiumContainer);
             if (editMode) {
                 int selectedConsortiumIndex = this.consortiumDataModel.getConsortiums().indexOf(this.selectedConsortium);
                 this.consortiumDataModel.getConsortiums().set(selectedConsortiumIndex, this.selectedConsortium);
@@ -389,10 +393,13 @@ public class ConsortiumController {
             FacesContext.getCurrentInstance().addMessage(null, msg);
             return;
         }
+        cancelConsortiumGeneralLimit();
+    
+        
         this.selectedConsortium = null;
         reqContext.addCallbackParam("success", success);
     }
-
+    
     private boolean consortiumAlreadyExist() {
         List<Consortium> consortiums = consortiumDataModel.getConsortiums();
         boolean consortiumExist = true;
@@ -429,37 +436,66 @@ public class ConsortiumController {
 
     }
 
+    private boolean consortiumGeneralLimitExists() {
+        List<ConsortiumGeneralLimit> consortiumGeneralLimits = this.consortiumGeneralLimitDataModel.getConsortiumGeneralLimits();
+        boolean consortiumGeneralLimitExist = true;
+        for (ConsortiumGeneralLimit currConsortiumGeneralLimit : consortiumGeneralLimits) {
+            if (editConsortiumMode) {
+                if (!currConsortiumGeneralLimit.equals(this.selectedConsortiumGeneralLimit)) {//No es el que se esta editando
+                    if (currConsortiumGeneralLimit.getLottery().getId() == this.selectedConsortiumGeneralLimit.getLottery().getId()
+                            && currConsortiumGeneralLimit.getBet().getId() == this.selectedConsortiumGeneralLimit.getBet().getId()
+                            && currConsortiumGeneralLimit.getTime().getId() == this.selectedConsortiumGeneralLimit.getTime().getId()) {
+                        return consortiumGeneralLimitExist;
+                    }
+                }
+            } else {
+                if (currConsortiumGeneralLimit.getLottery().getId()== this.selectedConsortiumGeneralLimit.getLottery().getId()
+                        && currConsortiumGeneralLimit.getBet().getId() == this.selectedConsortiumGeneralLimit.getBet().getId()
+                        && currConsortiumGeneralLimit.getTime().getId() == this.selectedConsortiumGeneralLimit.getTime().getId()) {
+                    return consortiumGeneralLimitExist;
+                }
+            }
+        }
+        return !consortiumGeneralLimitExist;
+    }
+
+    private void fillDataToSelectedConsortiumGeneralLimit() {
+        if (editConsortiumMode == false) {
+            this.selectedConsortiumGeneralLimit = new ConsortiumGeneralLimit();
+            this.selectedConsortiumGeneralLimit.setId(this.consortiumGeneralLimitDataModel.nextConsortiumGeneralLimitId());
+            this.selectedConsortiumGeneralLimit.setCreationUser(this.loginController.getUserName());
+        }
+        this.selectedConsortiumGeneralLimit.setLottery(this.selectedLottery);
+        this.selectedConsortiumGeneralLimit.setBet(this.selectedBet);
+        this.selectedConsortiumGeneralLimit.setTime(this.selectedTime);
+        this.selectedConsortiumGeneralLimit.setAmount(this.amountLimit);
+        
+    }
+
     public void addOrUpdateConsortiumGeneralLimit(ActionEvent event) {
-        /* boolean success = true;
-         FacesMessage msg;
+        boolean success = true;
+        FacesMessage msg;
+        fillDataToSelectedConsortiumGeneralLimit();
+        if (this.editConsortiumMode) {
 
-         if (editMode) {
-         this.selectedBlockingNumber.setNumber(NumberToBlock);
-         if (blockNumberBetBankingExists()) {
-         msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Numero a bloquear: " + this.selectedBlockingNumber.getNumber() + "  ya existe!", "");
-         FacesContext.getCurrentInstance().addMessage(null, msg);
-         success = false;
-         return;
-         }
-         int indexToUpdate = this.blockingNumberDataModel.getBetBlockingNumbers().indexOf(this.selectedBlockingNumber);
-         this.blockingNumberDataModel.getBetBlockingNumbers().set(indexToUpdate, this.selectedBlockingNumber);
-         cancelBLockNumber();
-         } else {
-
-         this.selectedBlockingNumber = new BlockingNumberBetBanking();
-         this.selectedBlockingNumber.setCreationUser(loginController.getUserName());
-         this.selectedBlockingNumber.setId(this.blockingNumberDataModel.nextBlockingId());
-         this.selectedBlockingNumber.setNumber(NumberToBlock);
-         this.selectedBlockingNumber.setBetBanking(this.selectedBetBanking);
-         if (blockNumberBetBankingExists()) {
-         msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Numero a bloquear: " + this.selectedBlockingNumber.getNumber() + "  ya existe!", "");
-         FacesContext.getCurrentInstance().addMessage(null, msg);
-         success = false;
-         return;
-         }
-         this.blockingNumberDataModel.getBetBlockingNumbers().add(this.selectedBlockingNumber);
-
-         cancelBLockNumber();
-         }*/
+            if (consortiumGeneralLimitExists()) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Limite general ya existe", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                success = false;
+                return;
+            }
+            int indexToUpdate = this.consortiumGeneralLimitDataModel.getConsortiumGeneralLimits().indexOf(this.selectedConsortiumGeneralLimit);
+            this.consortiumGeneralLimitDataModel.getConsortiumGeneralLimits().set(indexToUpdate, this.selectedConsortiumGeneralLimit);
+            cancelConsortiumGeneralLimit();
+        } else {
+            if (consortiumGeneralLimitExists()) {
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Limite general ya existe", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+                success = false;
+                return;
+            }
+            this.consortiumGeneralLimitDataModel.getConsortiumGeneralLimits().add(this.selectedConsortiumGeneralLimit);
+            cancelConsortiumGeneralLimit();
+        }
     }
 }

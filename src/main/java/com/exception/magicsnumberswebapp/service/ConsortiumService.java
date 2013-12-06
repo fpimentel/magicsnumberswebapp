@@ -1,5 +1,6 @@
 package com.exception.magicsnumberswebapp.service;
 
+import com.exception.magicsnumbersws.containers.ConsortiumContainer;
 import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
 import com.exception.magicsnumbersws.entities.ConsortiumGeneralLimit;
@@ -27,6 +28,6 @@ public interface ConsortiumService {
 
     public List<BetBanking> findBetBankingAsignedToConsortium(int consortiumId) throws SearchAllBetBankingException;
 
-    public void saveConsortiumData(Consortium consortium) throws SaveConsortiumDataException;
+    public void saveConsortiumData(ConsortiumContainer consortium) throws SaveConsortiumDataException;
     public List<ConsortiumGeneralLimit> findConsortiumLimitByConsortiumId(int consortiumId) throws FindConsortiumGeneralLimitException;
 }

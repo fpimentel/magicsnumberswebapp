@@ -42,7 +42,7 @@
                             <p:inputText id="txtName" required="true" requiredMessage="Nombre es requerido" value="#{consortiumController.selectedConsortium.name}"/>
 
                             <h:outputText value=" #{labels.Description}"/>  
-                            <p:inputText id="txtDescription" required="true"  requiredMessage="Descripción es requerido" value="#{consortiumController.selectedConsortium.description}"/>                             
+                            <p:inputText id="txtDescription" required="true"  requiredMessage="Descripción es requerido" value="#{consortiumController.selectedConsortium.description}"  style="width: 100%"/>                             
                             <h:outputText value="#{labels.status}"/> 
                             <p:selectOneMenu id="cbEstatus" value="#{consortiumController.selectedConsortium.status}" rendered="#{consortiumController.selectedConsortium!= null}" effect="fade" converter="#{statusConverter}">  
                                 <f:selectItem itemLabel="Seleccionar" itemValue="" />
@@ -72,21 +72,25 @@
                                 #{labels.limit_asociate} 
                             </f:facet>  
                             <h:outputText value="#{labels.lottery}" /> 
-                            <p:selectOneMenu id="cbLottery" value="#{consortiumController.selectedLottery}" valueChangeListener="#{consortiumController.getBetsByLotteryOnChange}" widgetVar="cbLotterySelectMenu"   
+                            <p:selectOneMenu id="cbLottery" value="#{consortiumController.selectedLottery}"  required="true" 
+                                             requiredMessage="Loteria es requida" valueChangeListener="#{consortiumController.getBetsByLotteryOnChange}" 
+                                             widgetVar="cbLotterySelectMenu"   
                                              effect="fade" converter="#{lotteryConverter}" style="width: 115px;" >  
                                 <f:selectItem itemLabel="Seleccionar" itemValue=""   />
                                 <f:selectItems value="#{consortiumController.lotteries}" var="lottery" itemLabel="#{lottery.name}" itemValue="#{lottery}"/>  
                                 <p:ajax event="change" update=":form:tvConsortium:cbBet :form:tvConsortium:cbTime :form:tvConsortium:txtAmountLimit"/>
                             </p:selectOneMenu> 
                             <h:outputText value="#{labels.bet}" /> 
-                            <p:selectOneMenu id="cbBet" value="#{consortiumController.selectedBet}" widgetVar="cbBetSelectMenu"  
+                            <p:selectOneMenu id="cbBet" value="#{consortiumController.selectedBet}" required="true" 
+                                             requiredMessage="Jugada es requerida" widgetVar="cbBetSelectMenu"  
                                              effect="fade" converter="#{betConverter}" style="width: 115px;"  >  
                                 <f:selectItem itemLabel="Seleccionar" itemValue=""  />
                                 <f:selectItems value="#{consortiumController.bets}" var="bet" itemLabel="#{bet.name}" itemValue="#{bet}"/>  
                             </p:selectOneMenu>
                             <h:outputText value="#{labels.upper_turn}" /> 
-                            <p:selectOneMenu id="cbTime" value="#{consortiumController.selectedTime}" widgetVar="cbTimeSelectMenu"  effect="fade" 
-                                             converter="#{timeConverter}"  style="width: 115px;">                                    
+                            <p:selectOneMenu id="cbTime" value="#{consortiumController.selectedTime}" 
+                                             required="true" requiredMessage="Turno es requerido" widgetVar="cbTimeSelectMenu"  effect="fade" 
+                                             converter="#{timeConverterUniversal}"  style="width: 115px;">                                    
                                 <f:selectItem itemLabel="#{labels.upper_turn}" itemValue=""/>
                                 <f:selectItems value="#{consortiumController.times}" var="time" itemLabel="#{time.name}" itemValue="#{time}"/>  
                             </p:selectOneMenu>
@@ -96,7 +100,7 @@
                                 <p:commandButton id="btnConsortiumGeneralLimit" 
                                                  value="#{labels.asociate}" 
                                                  actionListener="#{consortiumController.addOrUpdateConsortiumGeneralLimit}"                                                  
-                                                 update=":form:messages"   
+                                                 update=":form:tvConsortium:dtConsortiumLimit :form:tvConsortium:cbLottery :form:tvConsortium:cbTime :form:tvConsortium:cbBet :form:tvConsortium:txtAmountLimit :form:messages"   
                                                  style="margin:0" />  
 
                                 <p:commandButton  process="@this" id="btnCancelConsortiumGeneralLimit" 
@@ -122,7 +126,7 @@
                             <p:column headerText="#{labels.upper_bet}">  
                                 #{consortiumLimit.bet.name}  
                             </p:column>
-                            <p:column headerText="#{labels.upper_bet}">  
+                            <p:column headerText="#{labels.limit_amount}">  
                                 #{consortiumLimit.amount}  
                             </p:column>
                             <p:column>  
@@ -141,9 +145,10 @@
                 </p:tabView> 
                 <f:facet name="footer">  
                     <p:outputPanel style="float:right;">
-                        <p:commandButton id="btnaddUpdateConsortium" value="#{labels.register}" 
+                        <p:commandButton id="btnaddUpdateConsortium" value="#{labels.register}"
+                                         process="@this :form:tvConsortium:plBetBanking :form:tvConsortium:txtName :form:tvConsortium:txtDescription :form:tvConsortium:cbEstatus"
                                          actionListener="#{consortiumController.addOrUpdateConsortium}"   
-                                         oncomplete="handleAddOrUpdateConsortium(xhr, status, args)" update=":form:dtConsortium :form:messages"/>
+                                         oncomplete="handleAddOrUpdateConsortium(xhr, status, args)" update=":form:dtConsortium  :form:messages"/>
 
                         <p:commandButton value="#{labels.cancel}"  id="btnCancel"  styleClass="ui-priority-primary"
                                          oncomplete=" consortiumDialog.hide()" immediate="true"/>  

@@ -1,7 +1,5 @@
 package com.exception.magicsnumberswebapp.view.converter;
 
-import com.exception.magicsnumberswebapp.controller.TicketSaleController;
-import com.exception.magicsnumberswebapp.service.LotteryService;
 import com.exception.magicsnumberswebapp.service.TimeService;
 import com.exception.magicsnumbersws.entities.Time;
 import com.exception.magicsnumbersws.exception.FindTimeException;

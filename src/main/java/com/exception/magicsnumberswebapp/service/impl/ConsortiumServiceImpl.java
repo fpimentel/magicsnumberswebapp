@@ -1,6 +1,7 @@
 package com.exception.magicsnumberswebapp.service.impl;
 import com.exception.magicsnumberswebapp.dao.ConsortiumDao;
 import com.exception.magicsnumberswebapp.service.ConsortiumService;
+import com.exception.magicsnumbersws.containers.ConsortiumContainer;
 import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
 import com.exception.magicsnumbersws.entities.ConsortiumGeneralLimit;
@@ -60,7 +61,7 @@ public class ConsortiumServiceImpl implements ConsortiumService {
     }
 
     @Override
-    public void saveConsortiumData(Consortium consortium) throws SaveConsortiumDataException {
+    public void saveConsortiumData(ConsortiumContainer consortium) throws SaveConsortiumDataException {
         this.consortiumDao.saveConsortiumData(consortium);
     }
 

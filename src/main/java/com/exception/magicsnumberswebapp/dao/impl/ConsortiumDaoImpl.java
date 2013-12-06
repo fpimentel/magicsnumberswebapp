@@ -1,6 +1,7 @@
 package com.exception.magicsnumberswebapp.dao.impl;
 
 import com.exception.magicsnumberswebapp.dao.ConsortiumDao;
+import com.exception.magicsnumbersws.containers.ConsortiumContainer;
 import com.exception.magicsnumbersws.endpoints.LookupTablesEndpoint;
 import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
@@ -47,7 +48,7 @@ public class ConsortiumDaoImpl implements ConsortiumDao {
     }
 
     @Override
-    public void saveConsortiumData(Consortium consortium) throws SaveConsortiumDataException {
+    public void saveConsortiumData(ConsortiumContainer consortium) throws SaveConsortiumDataException {
         this.lookupTableEndpoint.saveConsortiumData(consortium);
     }
 
