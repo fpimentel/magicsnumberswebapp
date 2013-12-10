@@ -30,7 +30,7 @@
                              oncomplete="lotteryDialog.show()"
                              update=":form:dialog " immediate="true" />
 
-            <p:dialog id="dialog" header="#{labels.betBanking_information}" widgetVar="lotteryDialog" resizable="false"  
+            <p:dialog id="dialog" header="#{labels.lottery_information}" widgetVar="lotteryDialog" resizable="false"  
                       showEffect="fade" hideEffect="explode" closable="false" position="top"  >  
                 <p:tabView id="tvLottery" widgetVar="tvLotteryTab">  
                     <p:tab id="tabInfoGeneral"  title="#{labels.General}" >  
@@ -100,6 +100,21 @@
                                 </p:commandButton>  
                             </p:column>  
                         </p:dataTable>
+                    </p:tab>
+                     <p:tab id="tabBets"  title="#{labels.bets}" >  
+                        <p:panel header="#{labels.associated_bets}">                                                            
+                            <h:panelGrid id="pSecond" columns="1" cellpadding="4">                             
+                                <p:pickList id="plBet" value="#{lotteryController.betList}" var="bets"    
+                                            itemValue="#{bets}" itemLabel="#{bets.name}" converter="#{betConverter}"                                                                                                       
+                                            showSourceControls="true" showTargetControls="true"                                         
+                                            showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" >  
+
+                                    <f:facet name="sourceCaption">#{labels.availables}</f:facet>  
+                                    <f:facet name="targetCaption">#{labels.assigned}</f:facet>  
+
+                                </p:pickList>                             
+                            </h:panelGrid> 
+                        </p:panel>
                     </p:tab>
                 </p:tabView> 
                 <f:facet name="footer">  

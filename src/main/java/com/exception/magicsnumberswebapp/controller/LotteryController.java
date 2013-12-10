@@ -3,17 +3,20 @@ package com.exception.magicsnumberswebapp.controller;
 import com.exception.magicsnumberswebapp.datamodel.LotteryCloseHourDataModel;
 import com.exception.magicsnumberswebapp.datamodel.LotteryDataModel;
 import com.exception.magicsnumberswebapp.service.BetBankingService;
+import com.exception.magicsnumberswebapp.service.BetService;
 import com.exception.magicsnumberswebapp.service.DayService;
 import com.exception.magicsnumberswebapp.service.LotteryService;
 import com.exception.magicsnumberswebapp.service.StatusService;
 import com.exception.magicsnumberswebapp.service.TimeService;
 import com.exception.magicsnumberswebapp.view.converter.ConsortiumConverter;
 import com.exception.magicsnumbersws.containers.LotteryContainer;
+import com.exception.magicsnumbersws.entities.Bet;
 import com.exception.magicsnumbersws.entities.Day;
 import com.exception.magicsnumbersws.entities.Lottery;
 import com.exception.magicsnumbersws.entities.LotteryCloseHour;
 import com.exception.magicsnumbersws.entities.Status;
 import com.exception.magicsnumbersws.entities.Time;
+import com.exception.magicsnumbersws.exception.FindBetException;
 import com.exception.magicsnumbersws.exception.FindDayException;
 import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.FindLotteryException;
@@ -25,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import org.springframework.context.annotation.Scope;
 import java.util.logging.Level;
@@ -34,6 +38,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.DualListModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -56,6 +61,8 @@ public class LotteryController {
     @Autowired
     private LotteryService lotteryService;
     @Autowired
+    private BetService betService;
+    @Autowired
     private DayService dayService;
     @Autowired
     private TimeService timeService;
@@ -70,6 +77,10 @@ public class LotteryController {
     private List<Status> status;
     private Status selectedStatus;
     private List<Lottery> lotteries;
+    private DualListModel<Bet> betList;
+    private List<Bet> availableBets;
+    private List<Bet> asignedBets;
+    private List<Bet> activeBets;
     private List<Day> days;
     private LotteryCloseHourDataModel lotteryCloseHourDataModel;
     private Day seletedDay;
@@ -77,6 +88,34 @@ public class LotteryController {
     private LotteryCloseHour lotteryCloseHourDelete;
 
     public LotteryController() {
+        this.availableBets = new ArrayList<Bet>();
+    }
+
+    public List<Bet> getAvailableBets() {
+        return availableBets;
+    }
+
+    public void setAvailableBets(List<Bet> availableBets) {
+        this.availableBets = availableBets;
+    }
+
+    public List<Bet> getAsignedBets() {
+        return asignedBets;
+    }
+
+    public void setAsignedBets(List<Bet> asignedBets) {
+        this.asignedBets = asignedBets;
+    }
+
+    public DualListModel<Bet> getBetList() {
+        if (this.betList == null) {
+            this.betList = new DualListModel<Bet>();
+        }
+        return betList;
+    }
+
+    public void setBetList(DualListModel<Bet> betList) {
+        this.betList = betList;
     }
 
     public LotteryCloseHour getLotteryCloseHourDelete() {
@@ -269,9 +308,28 @@ public class LotteryController {
         }
     }
 
+    public void fillAvailableBets() {
+        for (Bet currBet : this.activeBets) {
+            if (!this.asignedBets.contains(currBet)) {
+                this.availableBets.add(currBet);
+            }
+        }
+
+    }
+
     public void onRowSelect(SelectEvent event) {
         this.lotteryEditMode = true;
-        /*refreshBetLimitDataModel();*/
+        this.asignedBets = new ArrayList(this.selectedLottery.getBets());
+        this.availableBets = new ArrayList<Bet>();
+        if (this.activeBets == null) {
+            try {
+                this.activeBets = betService.findActiveBets();
+            } catch (FindBetException ex) {
+            } catch (Exception ex) {
+            }
+        }
+        fillAvailableBets();
+        this.betList = new DualListModel<Bet>(this.availableBets, this.asignedBets);
         refreshLotteryCloseHourDataModel();
     }
 
@@ -379,9 +437,10 @@ public class LotteryController {
                 return;
             }
             LotteryContainer lotteryContainer = new LotteryContainer();
-            if(!this.lotteryEditMode){
+            if (!this.lotteryEditMode) {
                 this.selectedLottery.setId(null);
             }
+            this.selectedLottery.setBets(new HashSet(this.betList.getTarget()));
             lotteryContainer.setLottery(this.selectedLottery);
             lotteryContainer.setLotteryCloseHour(this.lotteryCloseHourDataModel.getLotteryCloseHour());
             this.lotteryService.saveLotteryInf(lotteryContainer);

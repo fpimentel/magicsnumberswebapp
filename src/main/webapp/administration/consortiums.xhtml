@@ -94,7 +94,7 @@
                                 <f:selectItem itemLabel="#{labels.upper_turn}" itemValue=""/>
                                 <f:selectItems value="#{consortiumController.times}" var="time" itemLabel="#{time.name}" itemValue="#{time}"/>  
                             </p:selectOneMenu>
-                            <h:outputText value="#{labels.limit_amount}" /> 
+                            <h:outputText value="#{labels.limit_asociate}"/> 
                             <p:inputText id="txtAmountLimit" required="true"  requiredMessage="Monto Limite requerido" value="#{consortiumController.amountLimit}" />
                             <f:facet name="footer">  
                                 <p:commandButton id="btnConsortiumGeneralLimit"
@@ -127,11 +127,11 @@
                             <p:column headerText="#{labels.upper_bet}">  
                                 #{consortiumLimit.bet.name}  
                             </p:column>
-                            <p:column headerText="#{labels.limit_amount}">  
+                            <p:column headerText="#{labels.limit_asociate}">  
                                 #{consortiumLimit.amount}  
                             </p:column>
                             <p:column>  
-                                <p:commandButton id="btnDeleteConsortiumGeneralLimit" update=":form:tvConsortium:dtConsortiumLimit :form:messages"  icon="ui-icon-trash" title="#{labels.delete}">  
+                                <p:commandButton id="btnDeleteConsortiumGeneralLimit"  process="@this" update=":form:tvConsortium:dtConsortiumLimit :form:messages"  icon="ui-icon-trash" title="#{labels.delete}">  
                                     <f:setPropertyActionListener value="#{consortiumLimit}"  target="#{consortiumController.consortiumGeneralLimitToDelete}" />  
                                 </p:commandButton>  
                             </p:column>  

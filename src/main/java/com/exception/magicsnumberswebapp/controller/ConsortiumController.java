@@ -206,7 +206,6 @@ public class ConsortiumController {
     public void setLotteries(List<Lottery> lotteries) {
         this.lotteries = lotteries;
     }
-    
 
     public Lottery getSelectedLottery() {
         return selectedLottery;
@@ -287,6 +286,8 @@ public class ConsortiumController {
     public void addNewConsortium() {
         FacesMessage msg;
         try {
+            cancelConsortiumGeneralLimit();
+            this.consortiumGeneralLimitDataModel = new ConsortiumGeneralLimitDataModel(new ArrayList<ConsortiumGeneralLimit>());
             this.availableBetBanking = this.consortiumService.findBetBankingAvailable();
             this.asignedBetBanking = new ArrayList<BetBanking>();
             this.consortiumDualList = new DualListModel<BetBanking>(this.availableBetBanking, this.asignedBetBanking);
@@ -419,7 +420,9 @@ public class ConsortiumController {
         }
         return !consortiumExist;
     }
-
+    public void clearComponent(){
+    
+    }
     public void cancelConsortiumGeneralLimit() {
         FacesMessage msg;
         try {
