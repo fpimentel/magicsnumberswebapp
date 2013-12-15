@@ -26,12 +26,9 @@
                     <h:graphicImage value="/resources/images/magichat.png" style="border-radius:12px; position: fixed; margin: 0px; top:0px; bottom: 0px; left:2px; right: 0px; width: 99.5%;"/>
                     <div style="float: right;margin-bottom:-90%; left: 0; ">
                         <h:form>
-                            <p:menuButton value="CPIMENTEL">  
-                                <p:menuitem value="Save"   icon="ui-icon-disk"/>  
-                                <p:menuitem value="Update" icon="ui-icon-arrowrefresh-1-w"/>  
-                                <p:menuitem value="Delete" icon="ui-icon-close" ajax="false"/>  
-                                <p:separator />  
-                                <p:menuitem value="Homepage" url="http://www.primefaces.org" icon="ui-icon-extlink"/>  
+                            <p:menuButton value="#{masterPageController.userName}">  
+                                <p:menuitem value="#{labels.change_password}" action="#{masterPageController.forwardToChangePass()}" icon="ui-icon-locked"/>  
+                                <p:menuitem value="#{labels.exit_system}" action ="#{masterPageController.logout()}" icon="ui-icon-closethick"/>                                                                  
                             </p:menuButton>
                         </h:form>
                     </div>

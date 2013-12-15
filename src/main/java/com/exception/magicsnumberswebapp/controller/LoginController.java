@@ -70,7 +70,7 @@ public class LoginController {
         FacesMessage msg;
         try {
             user = userService.getUserByCredentials(this.userName, this.password);
-            if (user != null) {
+            if (user != null && user.getId()!=null) {
                 actionToExcecute = HOME_PAGE;
             } else {
                 msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Usuario invalido", "");

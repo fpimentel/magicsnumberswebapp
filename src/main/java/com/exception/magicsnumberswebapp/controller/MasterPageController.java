@@ -4,13 +4,14 @@ import com.exception.magicsnumbersws.entities.Category;
 import com.exception.magicsnumbersws.entities.Profile;
 import com.exception.magicsnumbersws.entities.SystemOption;
 import com.exception.magicsnumbersws.entities.User;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import org.primefaces.component.submenu.Submenu;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Controller;
 public class MasterPageController {
 
     private MenuModel model;
+    private String userName;
     @Autowired
     private LoginController loginController;
     private static final Logger LOG = Logger.getLogger(MasterPageController.class.getName());
@@ -42,6 +44,26 @@ public class MasterPageController {
         this.loginController = loginController;
     }
 
+    public String getUserName() {
+        this.userName = loginController.getUserName();
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void logout() throws IOException {
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        ec.invalidateSession();
+        ec.redirect(ec.getRequestContextPath() + "/faces/login.xhtml");        
+    }
+
+    public void forwardToChangePass() throws IOException {
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();        
+        ec.redirect(ec.getRequestContextPath() + "/faces/changePassword.xhtml");        
+    }
+    
     private void generateModelMenu() {
         model = new DefaultMenuModel();
         try {
@@ -73,51 +95,12 @@ public class MasterPageController {
                     subMenu.getChildren().add(menuItem);
                 }
             }
-
-
         } catch (Exception ex) {
             FacesMessage msg;
-            msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error generando el menu","");
+            msg = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error generando el menu", "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
             LOG.log(Level.SEVERE, "Error generando menu principal: " + ex);
         }
-
-        /*
-         //Submenu submenu = new Submenu();
-         //submenu.setLabel("Administration");
-         //MenuItem menuItem = new MenuItem();
-         //menuItem.setId("m11");
-         //menuItem.setValue("Home");
-         //menuItem.setUrl("/home"); 
-         //submenu.getChildren().add(menuItem);
-        
-        
-        
-        
-        
-        
-            
-         //OPTIONS             
-         /*
-                            
-                
-         //CATEGORIES                                                
-         for(Category currCategory : categories){
-         List<UIComponent>components =  model.getContents();
-         if(!menuHasSubMenu(currCategory, components)){
-         submenu = new Submenu();
-         submenu.setLabel(currCategory.getName());                         
-         }
-                       
-         if(submenu.getChildren().size()>0){
-         model.addSubmenu(submenu);
-         model.
-         }            
-         }
-                                
-         }            
-         }        
-         * */
     }
 
     private Submenu getCategoryItem(String categoryName) {
@@ -148,7 +131,6 @@ public class MasterPageController {
                 optionMenu.setId(option.getName());
                 optionMenu.setValue(option.getName());
                 optionMenu.setUrl(option.getUrl());
-                //optionMenu.setOutcome(option.getUrl());
                 subMenu.getChildren().add(optionMenu);
             }
         } else {
@@ -159,23 +141,10 @@ public class MasterPageController {
 
     public MenuModel getModel() {
         generateModelMenu();
-        /*
-         MenuItem menuItem = new MenuItem();
-         menuItem.setId("m11");
-         menuItem.setValue("Home");
-         menuItem.setUrl("/home");        
-         submenu.getChildren().add(menuItem);
-         menuItem = new MenuItem();
-         menuItem.setValue("Page d'accueil");
-         menuItem.setUrl("/accueil");
-         submenu.getChildren().add(menuItem);
-         model.addSubmenu(submenu);      
-         model.addSubmenu(submenu);*/
         return model;
     }
 
     public void setModel(MenuModel model) {
-
         this.model = model;
     }
 }
