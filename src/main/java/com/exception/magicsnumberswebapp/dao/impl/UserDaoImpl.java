@@ -82,5 +82,8 @@ public class UserDaoImpl implements UserDao{
         return this.securityEndpoint.findUserByUserName(userName);
     }
 
-
+    @Override
+    public void updateUserPassword(int idUser, String newPassword) throws SaveUsersDataException {
+       this.securityEndpoint.updateUserPassword(idUser, newPassword);
+    }
 }

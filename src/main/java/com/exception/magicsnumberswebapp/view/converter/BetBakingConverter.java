@@ -3,7 +3,6 @@ package com.exception.magicsnumberswebapp.view.converter;
 import com.exception.magicsnumberswebapp.service.BetBankingService;
 import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.exception.SearchAllBetBankingException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.component.UIComponent;
@@ -11,7 +10,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,12 +24,15 @@ public class BetBakingConverter implements Converter {
     private BetBankingService betBankingService;
     private BetBanking betbanking;
     private static final Logger LOG = Logger.getLogger(BetBakingConverter.class.getName());
-    
 
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String submittedValue) {
-        int id = Integer.parseInt(submittedValue);
-        return getBetbanking(id);
+        BetBanking betBanking = new BetBanking();
+        if (submittedValue.length() > 0) {
+            int id = Integer.parseInt(submittedValue);
+            betBanking = getBetbanking(id);
+        }
+        return betBanking;
     }
 
     public BetBanking getBetbanking(int id) {
@@ -39,10 +40,10 @@ public class BetBakingConverter implements Converter {
             betbanking = this.betBankingService.findById(id);
         } catch (SearchAllBetBankingException ex) {
             LOG.log(Level.SEVERE, "getBetbanking in BetBankingConverter".concat(ex.getMessage()));
-        } catch(Exception ex){
+        } catch (Exception ex) {
             LOG.log(Level.SEVERE, "getBetbanking in BetBankingConverter".concat(ex.getMessage()));
         }
-        
+
         return this.betbanking;
     }
 

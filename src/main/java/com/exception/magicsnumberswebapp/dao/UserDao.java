@@ -4,7 +4,6 @@ import com.exception.magicsnumbersws.entities.User;
 import com.exception.magicsnumbersws.exception.SaveUsersDataException;
 import com.exception.magicsnumbersws.exception.SearchAllUserException;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -21,4 +20,6 @@ public interface UserDao {
     public void saveUser(User user) throws SaveUsersDataException;
 
     public User findUserByUserName(String userName) throws SearchAllUserException;
+    
+    public void updateUserPassword(int idUser,String newPassword) throws SaveUsersDataException;
 }

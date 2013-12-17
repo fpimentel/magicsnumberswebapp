@@ -9,28 +9,73 @@
     <ui:define name="center">   
         <h:form id="form">  
             <p:growl id="messages" showDetail="true"/>  
-            
-                <p:fieldset legend="Parametros de Busqueda" >
-                    <table >
-                        <tr>
-                            <td >
-                                <h:outputText value="#{labels.consortium}" /> 
-                            </td>
-                            <td >
-                                <p:selectOneMenu id="cbConsortium" value="#{ticketReportController.selectedConsortium}" 
-                                                 valueChangeListener="#{ticketReportController.getBetBankingByConsortiumOnChange}" 
-                                                 widgetVar="cbConsortiumSelectMenu" effect="fade" converter="#{consortiumConverter}">  
+
+            <p:fieldset legend="Parametros de Busqueda" style="width:50%">
+                <table >
+                    <tr>
+                        <td >
+                            <h:outputText value="#{labels.consortium}" /> 
+                        </td>
+                        <td >
+                            <p:selectOneMenu id="cbConsortium" value="#{ticketReportController.selectedConsortium}" valueChangeListener="#{ticketReportController.getBetBankingByConsortiumOnChange}" 
+                                             widgetVar="cbConsortiumSelectMenu" effect="fade" converter="#{consortiumConverter}">  
                                 <f:selectItem itemLabel="Seleccionar" itemValue=""   />
                                 <f:selectItems value="#{ticketReportController.consortiums}" var="consortium" itemLabel="#{consortium.name}" itemValue="#{consortium}"/>  
-                                <!--<p:ajax event="change" update="cbBetBanking"/>                             -->   
+                                <p:ajax event="change" update="cbBetBanking"/>                             
                             </p:selectOneMenu>
-                            </td>
-                        </tr>                                                                              
-                    </table>    
-                </p:fieldset>
-                
-            
+                        </td>
+                        <td >
+                            <h:outputText value="#{labels.betbankings}"  /> 
+                        </td>
+                        <td >
+                            <p:selectOneMenu id="cbBetBanking" value="#{ticketReportController.selectedBetBanking}"                                               
+                                             valueChangeListener="#{ticketReportController.getLotteriesByBetBankingOnChange}" 
+                                             widgetVar="cbBetBankingSelectMenu" effect="fade" converter="#{betBakingConverter}">  
+                                <f:selectItem itemLabel="Seleccionar" itemValue=""   />
+                                <f:selectItems value="#{ticketReportController.betBankings}" var="betBanking" itemLabel="#{betBanking.name}" itemValue="#{betBanking}"/>  
+                                <p:ajax event="change" update="cbLottery"/>               
+                            </p:selectOneMenu>
+                        </td>
+                        <td >
+                            <h:outputText value="#{labels.lower_lottery}"  /> 
+                        </td>
+                        <td>
+                            <p:selectOneMenu id="cbLottery" value="#{ticketReportController.selectedLottery}"                                               
+                                             valueChangeListener="#{ticketReportController.getBetsByLotteryOnChange}" 
+                                             widgetVar="cbLotteryMenu" effect="fade" converter="#{lotteryConverter}">  
+                                <f:selectItem itemLabel="Seleccionar" itemValue=""   />
+                                <f:selectItems value="#{ticketReportController.lotteries}" var="lottery" itemLabel="#{lottery.name}" itemValue="#{lottery}"/>  
+                                <p:ajax event="change" update="cbBets"/>
+                            </p:selectOneMenu>
+                        </td>
+                    </tr> 
+                    <tr>
+                        <td >
+                            <h:outputText value="#{labels.turn}"  /> 
+                        </td>
+                        <td>
+                            <p:selectOneMenu id="cbTime" value="#{ticketReportController.selectedTime}"                                               
+                                             widgetVar="cbTimeMenu" effect="fade" converter="#{timeConverterUniversal}">  
+                                <f:selectItem itemLabel="Seleccionar" itemValue=""   />
+                                <f:selectItems value="#{ticketReportController.times}" var="time" itemLabel="#{time.name}" itemValue="#{time}"/>                                  
+                            </p:selectOneMenu>
+                        </td>
+                        <td >
+                            <h:outputText value="#{labels.bet}"  /> 
+                        </td>
+                        <td>
+                            <p:selectOneMenu id="cbBets" value="#{ticketReportController.selectedBet}"                                               
+                                             widgetVar="cbBetsMenu" effect="fade" converter="#{betConverter}">  
+                                <f:selectItem itemLabel="Seleccionar" itemValue=""   />
+                                <f:selectItems value="#{ticketReportController.bets}" var="bet" itemLabel="#{bet.name}" itemValue="#{bet}"/>                                  
+                            </p:selectOneMenu>
+                        </td>
+                    </tr>   
+                </table>    
+            </p:fieldset>
+
+
         </h:form>
-        
+
     </ui:define>
 </ui:composition>

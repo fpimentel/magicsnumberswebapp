@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 public class ConsortiumConverter implements Converter {
 
     private static final Logger LOG = Logger.getLogger(ConsortiumConverter.class.getName());
-    @Autowired    
+    @Autowired
     private ConsortiumService consortiumService;
     private List<Consortium> consortiums;
     @Autowired
@@ -58,13 +58,15 @@ public class ConsortiumConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String submittedValue) {
-        int id = Integer.parseInt(submittedValue);
-        for (Consortium currConsortium : getConsortiums()) {
-            if (currConsortium.getId() == id) {
-                return currConsortium;
+        if (submittedValue.length() > 0) {
+            int id = Integer.parseInt(submittedValue);
+            for (Consortium currConsortium : getConsortiums()) {
+                if (currConsortium.getId() == id) {
+                    return currConsortium;
+                }
             }
         }
-        return null;
+        return new Consortium();
     }
 
     @Override

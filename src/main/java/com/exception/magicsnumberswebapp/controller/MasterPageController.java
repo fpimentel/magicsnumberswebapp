@@ -1,5 +1,7 @@
 package com.exception.magicsnumberswebapp.controller;
 
+import com.exception.magicsnumberswebapp.constants.URL;
+import com.exception.magicsnumberswebapp.util.Security;
 import com.exception.magicsnumbersws.entities.Category;
 import com.exception.magicsnumbersws.entities.Profile;
 import com.exception.magicsnumbersws.entities.SystemOption;
@@ -54,9 +56,8 @@ public class MasterPageController {
     }
 
     public void logout() throws IOException {
-        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-        ec.invalidateSession();
-        ec.redirect(ec.getRequestContextPath() + "/faces/login.xhtml");        
+        Security.logoutSession();
+        Security.forward(URL.LOGIN_PAGE.getPath());
     }
 
     public void forwardToChangePass() throws IOException {

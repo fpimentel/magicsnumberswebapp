@@ -60,5 +60,9 @@ public class UserServiceImpl implements UserService{
     public User findUserByUserName(String userName) throws SearchAllUserException {
         return this.userDao.findUserByUserName(userName);
     }
-    
+
+    @Override
+    public void updateUserPassword(int idUser, String newPassword) throws SaveUsersDataException {
+        this.userDao.updateUserPassword(idUser, newPassword);
+    }    
 }
