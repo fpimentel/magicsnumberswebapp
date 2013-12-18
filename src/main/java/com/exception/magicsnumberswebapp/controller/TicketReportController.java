@@ -3,16 +3,24 @@ package com.exception.magicsnumberswebapp.controller;
 import com.exception.magicsnumberswebapp.constants.Profile;
 import com.exception.magicsnumberswebapp.service.BetBankingService;
 import com.exception.magicsnumberswebapp.service.ConsortiumService;
+import com.exception.magicsnumberswebapp.service.LotteryService;
+import com.exception.magicsnumberswebapp.service.StatusService;
 import com.exception.magicsnumbersws.entities.Bet;
 import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
 import com.exception.magicsnumbersws.entities.Lottery;
+import com.exception.magicsnumbersws.entities.Status;
 import com.exception.magicsnumbersws.entities.Time;
+import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.SearchAllConsortiumException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -20,7 +28,7 @@ import org.springframework.stereotype.Controller;
 
 /**
  *
- * @author cpimentel
+ * @author fpimentel
  */
 @Controller
 @Scope("view")
@@ -33,16 +41,23 @@ public class TicketReportController {
     private ConsortiumService consortiumService;
     @Autowired
     private BetBankingService betBankingService;
+    @Autowired
+    private StatusService statusService;
+    private LotteryService lotteryService;
     private Consortium selectedConsortium;
     private BetBanking selectedBetBanking;
     private Bet selectedBet;
     private Lottery selectedLottery;
     private Time selectedTime;
+    private Status selectedStatus;
     private List<Consortium> consortiums;
     private List<BetBanking> betBankings;
     private List<Lottery> lotteries;
     private List<Bet> bets;
-    private List<Time> times;
+    private Set<Time> times;
+    private List<Status> status;
+    private Date startingDate;
+    private Date finishDate;
 
     public TicketReportController() {
     }
@@ -111,12 +126,48 @@ public class TicketReportController {
         this.selectedTime = selectedTime;
     }
 
-    public List<Time> getTimes() {
+    public Set<Time> getTimes() {
         return times;
     }
 
-    public void setTimes(List<Time> times) {
+    public void setTimes(Set<Time> times) {
         this.times = times;
+    }
+
+    public Status getSelectedStatus() {
+        return selectedStatus;
+    }
+
+    public void setSelectedStatus(Status selectedStatus) {
+        this.selectedStatus = selectedStatus;
+    }
+
+    public Date getStartingDate() {
+        return startingDate;
+    }
+
+    public void setStartingDate(Date startingDate) {
+        this.startingDate = startingDate;
+    }
+
+    public Date getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFinishDate(Date finishDate) {
+        this.finishDate = finishDate;
+    }   
+    
+    public List<Status> getStatus() {
+        if (this.status == null) {
+            int statusTypeBasicId = com.exception.magicsnumberswebapp.constants.StatusType.TICKET.getId();
+            this.status = statusService.getStatusByStatusType(statusTypeBasicId);
+        }
+        return this.status;
+    }
+
+    public void setStatus(List<Status> status) {
+        this.status = status;
     }
         
     public List<Consortium> getConsortiums() {
@@ -158,10 +209,22 @@ public class TicketReportController {
         }
     }
 
-    public void getBetsByLotteryOnChange(ValueChangeEvent event) {
+    public void getDataByLotteryOnChange(ValueChangeEvent event) {
         this.selectedLottery = (Lottery) event.getNewValue();
+        FacesMessage msg;
         if (this.selectedLottery != null) {
             this.bets = new ArrayList<Bet>(this.selectedLottery.getBets());
-        }
+            try {
+                times = lotteryService.findTimesByLottery(selectedLottery.getId());
+            } catch (FindLotteryCloseHourException ex) {
+                Logger.getLogger(TicketReportController.class.getName()).log(Level.SEVERE, null, ex);
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error buscando las tandas!", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }catch (Exception ex){
+                Logger.getLogger(TicketReportController.class.getName()).log(Level.SEVERE, null, ex);                
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error buscando las tandas!", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+        }        
     }
 }

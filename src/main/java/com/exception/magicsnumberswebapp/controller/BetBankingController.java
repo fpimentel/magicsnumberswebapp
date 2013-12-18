@@ -272,7 +272,6 @@ public class BetBankingController {
         if (this.status == null) {
             int statusTypeBasicId = com.exception.magicsnumberswebapp.constants.StatusType.BASIC.getId();
             this.status = statusService.getStatusByStatusType(statusTypeBasicId);
-
         }
         return this.status;
     }

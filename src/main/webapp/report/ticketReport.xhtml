@@ -10,10 +10,10 @@
         <h:form id="form">  
             <p:growl id="messages" showDetail="true"/>  
 
-            <p:fieldset legend="Parametros de Busqueda" style="width:50%">
+            <p:fieldset legend="Parámetros de búsqueda" style="width:65%">
                 <table >
                     <tr>
-                        <td >
+                        <td style="width:100px">
                             <h:outputText value="#{labels.consortium}" /> 
                         </td>
                         <td >
@@ -41,16 +41,16 @@
                         </td>
                         <td>
                             <p:selectOneMenu id="cbLottery" value="#{ticketReportController.selectedLottery}"                                               
-                                             valueChangeListener="#{ticketReportController.getBetsByLotteryOnChange}" 
+                                             valueChangeListener="#{ticketReportController.getDataByLotteryOnChange}" 
                                              widgetVar="cbLotteryMenu" effect="fade" converter="#{lotteryConverter}">  
                                 <f:selectItem itemLabel="Seleccionar" itemValue=""   />
                                 <f:selectItems value="#{ticketReportController.lotteries}" var="lottery" itemLabel="#{lottery.name}" itemValue="#{lottery}"/>  
-                                <p:ajax event="change" update="cbBets"/>
+                                <p:ajax event="change" update="cbBets cbTime"/>
                             </p:selectOneMenu>
                         </td>
                     </tr> 
                     <tr>
-                        <td >
+                        <td style="width:100px">
                             <h:outputText value="#{labels.turn}"  /> 
                         </td>
                         <td>
@@ -70,12 +70,33 @@
                                 <f:selectItems value="#{ticketReportController.bets}" var="bet" itemLabel="#{bet.name}" itemValue="#{bet}"/>                                  
                             </p:selectOneMenu>
                         </td>
-                    </tr>   
+                        <td>
+                            <h:outputText value="#{labels.status}"  /> 
+                        </td>
+                        <td>
+                            <p:selectOneMenu id="cbEstatus" value="#{ticketReportController.selectedStatus}"                                               
+                                             widgetVar="cbStatusMenu" effect="fade" converter="#{statusConverter}">  
+                                <f:selectItem itemLabel="Seleccionar" itemValue=""   />
+                                <f:selectItems value="#{ticketReportController.status}" var="status" itemLabel="#{status.name}" itemValue="#{status}"/>                                  
+                            </p:selectOneMenu>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:100px">
+                            <h:outputText value="#{labels.starting_date}"  /> 
+                        </td>
+                        <td>
+                            <p:calendar value="#{ticketReportController.startingDate}" pattern="dd/MM/yyyy" />
+                        </td>
+                        <td>
+                            <h:outputText value="#{labels.finish_date}"  /> 
+                        </td>
+                        <td>
+                            <p:calendar value="#{ticketReportController.finishDate}" pattern="dd/MM/yyyy" />
+                        </td>
+                    </tr>                                        
                 </table>    
             </p:fieldset>
-
-
         </h:form>
-
     </ui:define>
 </ui:composition>
