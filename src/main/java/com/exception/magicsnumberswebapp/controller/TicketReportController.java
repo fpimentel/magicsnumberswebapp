@@ -1,6 +1,7 @@
 package com.exception.magicsnumberswebapp.controller;
 
 import com.exception.magicsnumberswebapp.constants.Profile;
+import com.exception.magicsnumberswebapp.datamodel.TicketDataModel;
 import com.exception.magicsnumberswebapp.service.BetBankingService;
 import com.exception.magicsnumberswebapp.service.ConsortiumService;
 import com.exception.magicsnumberswebapp.service.LotteryService;
@@ -10,6 +11,7 @@ import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
 import com.exception.magicsnumbersws.entities.Lottery;
 import com.exception.magicsnumbersws.entities.Status;
+import com.exception.magicsnumbersws.entities.Ticket;
 import com.exception.magicsnumbersws.entities.Time;
 import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.SearchAllConsortiumException;
@@ -58,8 +60,12 @@ public class TicketReportController {
     private List<Status> status;
     private Date startingDate;
     private Date finishDate;
-
+    private TicketDataModel ticketDataModel;
+    private Ticket selectedTicket;
+    
     public TicketReportController() {
+        this.startingDate = new Date();
+        this.finishDate = new Date();
     }
 
     public Consortium getSelectedConsortium() {
@@ -157,7 +163,15 @@ public class TicketReportController {
     public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
     }   
-    
+
+    public TicketDataModel getTicketDataModel() {
+        return ticketDataModel;
+    }
+
+    public void setTicketDataModel(TicketDataModel ticketDataModel) {
+        this.ticketDataModel = ticketDataModel;
+    }    
+        
     public List<Status> getStatus() {
         if (this.status == null) {
             int statusTypeBasicId = com.exception.magicsnumberswebapp.constants.StatusType.TICKET.getId();
@@ -169,7 +183,17 @@ public class TicketReportController {
     public void setStatus(List<Status> status) {
         this.status = status;
     }
+
+    public Ticket getSelectedTicket() {
+        return selectedTicket;
+    }
+
+    public void setSelectedTicket(Ticket selectedTicket) {
+        this.selectedTicket = selectedTicket;
+    }
         
+    
+    
     public List<Consortium> getConsortiums() {
         if (this.consortiums == null) {
             try {
