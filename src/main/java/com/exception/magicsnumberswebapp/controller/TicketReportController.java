@@ -259,7 +259,7 @@ public class TicketReportController {
 
     public void findTickets(ActionEvent event) {
         FacesMessage msg;
-       // String fromDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+        // String fromDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
         //String toDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
         final int betBankingId = this.selectedBetBanking.getId();
         final Date fromDate = this.startingDate;
