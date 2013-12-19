@@ -6,6 +6,8 @@ import com.exception.magicsnumberswebapp.service.BetBankingService;
 import com.exception.magicsnumberswebapp.service.ConsortiumService;
 import com.exception.magicsnumberswebapp.service.LotteryService;
 import com.exception.magicsnumberswebapp.service.StatusService;
+import com.exception.magicsnumberswebapp.service.TicketService;
+import com.exception.magicsnumbersws.containers.TicketReportContainer;
 import com.exception.magicsnumbersws.entities.Bet;
 import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
@@ -14,7 +16,9 @@ import com.exception.magicsnumbersws.entities.Status;
 import com.exception.magicsnumbersws.entities.Ticket;
 import com.exception.magicsnumbersws.entities.Time;
 import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
+import com.exception.magicsnumbersws.exception.FindTicketException;
 import com.exception.magicsnumbersws.exception.SearchAllConsortiumException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -45,6 +50,8 @@ public class TicketReportController {
     private BetBankingService betBankingService;
     @Autowired
     private StatusService statusService;
+    @Autowired
+    private TicketService ticketService;
     private LotteryService lotteryService;
     private Consortium selectedConsortium;
     private BetBanking selectedBetBanking;
@@ -62,7 +69,7 @@ public class TicketReportController {
     private Date finishDate;
     private TicketDataModel ticketDataModel;
     private Ticket selectedTicket;
-    
+
     public TicketReportController() {
         this.startingDate = new Date();
         this.finishDate = new Date();
@@ -162,7 +169,7 @@ public class TicketReportController {
 
     public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
-    }   
+    }
 
     public TicketDataModel getTicketDataModel() {
         return ticketDataModel;
@@ -170,8 +177,8 @@ public class TicketReportController {
 
     public void setTicketDataModel(TicketDataModel ticketDataModel) {
         this.ticketDataModel = ticketDataModel;
-    }    
-        
+    }
+
     public List<Status> getStatus() {
         if (this.status == null) {
             int statusTypeBasicId = com.exception.magicsnumberswebapp.constants.StatusType.TICKET.getId();
@@ -191,9 +198,7 @@ public class TicketReportController {
     public void setSelectedTicket(Ticket selectedTicket) {
         this.selectedTicket = selectedTicket;
     }
-        
-    
-    
+
     public List<Consortium> getConsortiums() {
         if (this.consortiums == null) {
             try {
@@ -223,11 +228,11 @@ public class TicketReportController {
     }
 
     public void getLotteriesByBetBankingOnChange(ValueChangeEvent event) {
-        for(BetBanking currBetBanking : betBankings){
-            if(currBetBanking.getId() == ((BetBanking) event.getNewValue()).getId()){
+        for (BetBanking currBetBanking : betBankings) {
+            if (currBetBanking.getId() == ((BetBanking) event.getNewValue()).getId()) {
                 this.selectedBetBanking = currBetBanking;
             }
-        }        
+        }
         if (this.selectedBetBanking != null) {
             this.lotteries = new ArrayList<Lottery>(this.selectedBetBanking.getLotteries());
         }
@@ -244,11 +249,33 @@ public class TicketReportController {
                 Logger.getLogger(TicketReportController.class.getName()).log(Level.SEVERE, null, ex);
                 msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error buscando las tandas!", "");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
-            }catch (Exception ex){
-                Logger.getLogger(TicketReportController.class.getName()).log(Level.SEVERE, null, ex);                
+            } catch (Exception ex) {
+                Logger.getLogger(TicketReportController.class.getName()).log(Level.SEVERE, null, ex);
                 msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error buscando las tandas!", "");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
             }
-        }        
+        }
+    }
+
+    public void findTickets(ActionEvent event) {
+        FacesMessage msg;
+       // String fromDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+        //String toDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+        final int betBankingId = this.selectedBetBanking.getId();
+        final Date fromDate = this.startingDate;
+        final Date toDate = this.finishDate;
+        TicketReportContainer ticketReporContainer = new TicketReportContainer();
+        ticketReporContainer.setBetBankingId(betBankingId);
+        ticketReporContainer.setFromDate(fromDate);
+        ticketReporContainer.setToDate(toDate);
+        try {
+            this.ticketDataModel.setTickets(this.ticketService.findTickets(ticketReporContainer));
+        } catch (FindTicketException ex) {
+            Logger.getLogger(TicketReportController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(TicketReportController.class.getName()).log(Level.SEVERE, null, ex);
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Error buscando los ticket!", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
     }
 }

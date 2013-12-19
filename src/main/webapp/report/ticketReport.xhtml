@@ -9,8 +9,7 @@
     <ui:define name="center">   
         <h:form id="form">  
             <p:growl id="messages" showDetail="true"/>  
-
-            <p:fieldset legend="Parámetros de búsqueda" style="width:50%">
+            <p:fieldset legend="Parámetros de búsqueda" style="width:45%">
                 <table >
                     <tr>
                         <td style="width:100px">
@@ -50,34 +49,66 @@
                             <p:calendar value="#{ticketReportController.finishDate}" pattern="dd/MM/yyyy" />
                         </td>
                         <td>
-                            <p:commandButton process="@this" id="btnNewBetBanking" value="#{labels.search}"                             
-                              immediate="true" />
+                            <p:commandButton id="btnSearchTickets" 
+                                             value="#{labels.search}"                             
+                                             actionListener="#{ticketReportController.findTickets}" 
+                                             update="dtTickets :form:messages"
+                                             />                            
                         </td>                         
                     </tr>                                        
                 </table>    
             </p:fieldset>
-            <p:dataTable id="dtTicket" var="ticket" value="#{ticketReportController.ticketDataModel}" paginator="true" rows="10"  
-                         selection="#{ticketReportController.selectedTicket}" selectionMode="single" >  
-                <f:facet name="header"  >  
-                    #{labels.betBanking_title}
-                </f:facet> 
-                <p:ajax event="rowSelect" listener="#{betBankingController.onRowSelect}"   
-                        update=":form:dialog :form:messages" oncomplete="betBankingDialog.show()"  />  
-                <p:ajax event="rowUnselect" listener="#{betBankingController.onRowUnselect}" update=":form:messages"/>  
+            <div>
+                <p:fieldset legend="Vendidos" style="width:10%; float:left" >                
+                    <table>   
+                        <tr>
+                            <td>
+                                Monto:                                
+                            </td>    
+                        </tr>
+                        <tr>
+                            <td>
+                                Cantidad:
+                            </td>    
+                        </tr>
+                    </table>
+                </p:fieldset> 
 
-                <p:column headerText="#{labels.name}" style="width:8%" sortBy="#{ticket.creationDate}" filterBy="#{ticket.creationDate}"  filterMatchMode="contains">  
+
+
+                <p:fieldset style="width:20%" legend="Ganados"> 
+                    <table>   
+                        <tr>
+                            <td>
+                                Monto:                                
+                            </td>    
+                        </tr>
+                        <tr>
+                            <td>
+                                Cantidad:
+                            </td>    
+                        </tr>
+                    </table>
+                </p:fieldset> 
+            </div>
+            <br/>
+            <p:dataTable id="dtTickets" style="width:50%"  var="ticket" value="#{ticketReportController.ticketDataModel}" paginator="true" rows="10">  
+                <f:facet name="header"  >  
+                    #{labels.ticket_title}
+                </f:facet> 
+                <p:column headerText="#{labels.upper_date}" style="width:8%" sortBy="#{ticket.creationDate}" filterBy="#{ticket.creationDate}"  filterMatchMode="contains">  
                     #{ticket.creationDate}  
                 </p:column>
-                <p:column headerText="#{labels.name}" style="width:8%" sortBy="#{ticket.id}" filterBy="#{ticket.id}"  filterMatchMode="contains">  
+                <p:column headerText="#{labels.ticke_id}" style="width:8%" sortBy="#{ticket.id}" filterBy="#{ticket.id}"  filterMatchMode="contains">  
                     #{ticket.id}  
                 </p:column>
-                <p:column headerText="#{labels.name}" style="width:8%" sortBy="#{ticket.creationDate}" filterBy="#{ticket.creationDate}"  filterMatchMode="contains">  
-                    #{ticket.creationDate}  
+                <p:column headerText="#{labels.amount}" style="width:8%" sortBy="#{ticket.totalBetAmount}" filterBy="#{ticket.totalBetAmount}"  filterMatchMode="contains">  
+                    #{ticket.totalBetAmount}  
                 </p:column>
-                <p:column headerText="#{labels.status}" style="width:8%" sortBy="#{betBanking.status.name}" filterBy="#{betBanking.status.name}"  filterMatchMode="contains">  
-                    #{betBanking.status.name}  
+                <p:column headerText="#{labels.status}" style="width:8%" sortBy="#{ticket.status.name}" filterBy="#{ticket.status.name}"  filterMatchMode="contains">  
+                    #{ticket.status.name}  
                 </p:column>             
-            </p:dataTable>  
+            </p:dataTable>               
         </h:form>
     </ui:define>
 </ui:composition>
