@@ -271,11 +271,11 @@ public class TicketSaleController {
         FacesMessage msg;
         this.editMode = false;
         try {
-
             this.ticket = new Ticket();
-            this.ticket.setCreationUser(this.loginController.getUser().getUserName());
+            this.ticket.setCreationUser(this.loginController.getUser().getUserName());                        
             this.ticket.setTicketDetails(new HashSet<TicketDetail>(this.ticketDetailsDataModel.getTicketDetails()));
-            
+            BetBanking betBankingBanker = (BetBanking) this.loginController.getUser().getBetBankings().toArray()[0];
+            this.ticket.setBetBanking(betBankingBanker);
             if (ticketDetailsDataModel.getTicketDetails().size() < 1) {
                 setIsValidFields(false);
                 msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe agregar al menos una jugada ",null);
@@ -283,11 +283,7 @@ public class TicketSaleController {
                 return;
             }           
             this.ticketService.saveTicket(this.ticket);                      
-            this.ticketDetailsDataModel = new TicketDetailDataModel(new ArrayList<TicketDetail>());
-           /* this.selectedLottery = new Lottery();
-            this.selectedBet = new Bet();
-            this.selectedTime = new Time();
-            * */
+            this.ticketDetailsDataModel = new TicketDetailDataModel(new ArrayList<TicketDetail>());           
             this.ticketTotalAmount = new BigDecimal(0);
             this.quantityToPlaySelectedBet = 0;
 
