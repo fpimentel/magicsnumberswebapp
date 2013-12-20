@@ -259,17 +259,12 @@ public class TicketReportController {
 
     public void findTickets(ActionEvent event) {
         FacesMessage msg;
-        // String fromDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
-        //String toDate = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+        String fromDate = new SimpleDateFormat("dd-MM-yyyy").format(this.startingDate);
+        String toDate = new SimpleDateFormat("dd-MM-yyyy").format(this.finishDate);
         final int betBankingId = this.selectedBetBanking.getId();
-        final Date fromDate = this.startingDate;
-        final Date toDate = this.finishDate;
-        TicketReportContainer ticketReporContainer = new TicketReportContainer();
-        ticketReporContainer.setBetBankingId(betBankingId);
-        ticketReporContainer.setFromDate(fromDate);
-        ticketReporContainer.setToDate(toDate);
+        
         try {
-            this.ticketDataModel.setTickets(this.ticketService.findTickets(ticketReporContainer));
+            this.ticketDataModel.setTickets(this.ticketService.findTickets(betBankingId, fromDate, toDate));
         } catch (FindTicketException ex) {
             Logger.getLogger(TicketReportController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {

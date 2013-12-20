@@ -2,7 +2,6 @@ package com.exception.magicsnumberswebapp.service.impl;
 
 import com.exception.magicsnumberswebapp.dao.TicketDao;
 import com.exception.magicsnumberswebapp.service.TicketService;
-import com.exception.magicsnumbersws.containers.TicketReportContainer;
 import com.exception.magicsnumbersws.entities.Ticket;
 import com.exception.magicsnumbersws.exception.FindBetLimitException;
 import com.exception.magicsnumbersws.exception.FindBlockingNumberException;
@@ -39,7 +38,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Ticket> findTickets(TicketReportContainer ticketReportContainer) throws FindTicketException {
-        return this.ticketDao.findTickets(ticketReportContainer);
+    public List<Ticket> findTickets(int betBankingId, String fromDate, String toDate) throws FindTicketException {
+        return this.ticketDao.findTickets(betBankingId, fromDate, toDate);
     }
 }
