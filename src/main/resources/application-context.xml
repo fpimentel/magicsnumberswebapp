@@ -11,19 +11,24 @@
           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
     
+    
     <bean id="securityEndpoint" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean">
         <property name="serviceInterface" value="com.exception.magicsnumbersws.endpoints.SecurityEndPoint"/>                                                 
-        <property name="baseUri" value="http://localhost:8085/magicsnumbersws/" />                                                                                   
-    </bean>
-    
+        <property name="baseUri" value="http://localhost:8081/MagicsNumbersWS/" />                                                                                   
+    </bean>    
     <bean id="lookupTablesEndpoint" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean">              
         <property name="serviceInterface" value="com.exception.magicsnumbersws.endpoints.LookupTablesEndpoint"/>                                                 
-        <property name="baseUri" value="http://localhost:8085/magicsnumbersws/" />                                                                                   
+        <property name="baseUri" value="http://localhost:8081/MagicsNumbersWS/" />                                                                                   
     </bean>
     <bean id="businessEndpoint" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean">              
         <property name="serviceInterface" value="com.exception.magicsnumbersws.endpoints.BusinessEndpoint"/>                                                 
-        <property name="baseUri" value="http://localhost:8085/magicsnumbersws/" />                                                                                   
+        <property name="baseUri" value="http://localhost:8081/MagicsNumbersWS/" />                                                                                   
     </bean>
+    <bean id="reportsEndpoint" class="org.jboss.resteasy.client.spring.RestClientProxyFactoryBean">              
+        <property name="serviceInterface" value="com.exception.magicsnumbersws.endpoints.ReportsEndpoint"/>                                                 
+        <property name="baseUri" value="http://localhost:8081/MagicsNumbersWS/" />                                                                                   
+    </bean>
+    
     <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
         <property name="scopes">
             <map>
