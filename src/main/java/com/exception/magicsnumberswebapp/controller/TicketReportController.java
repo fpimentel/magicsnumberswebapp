@@ -7,7 +7,6 @@ import com.exception.magicsnumberswebapp.service.ConsortiumService;
 import com.exception.magicsnumberswebapp.service.LotteryService;
 import com.exception.magicsnumberswebapp.service.StatusService;
 import com.exception.magicsnumberswebapp.service.TicketService;
-import com.exception.magicsnumbersws.containers.TicketReportContainer;
 import com.exception.magicsnumbersws.entities.Bet;
 import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Consortium;
