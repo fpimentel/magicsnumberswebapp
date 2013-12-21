@@ -28,6 +28,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -68,8 +69,13 @@ public class TicketReportController {
     private Date finishDate;
     private TicketDataModel ticketDataModel;
     private Ticket selectedTicket;
+    private float totalSellTicketAmount;
+    private int totalSellTicketQty;
+    private float totalWinTicketAmount;
+    private int totalWinTicketQty;
 
     public TicketReportController() {
+        ticketDataModel = new TicketDataModel(new ArrayList<Ticket>());
         this.startingDate = new Date();
         this.finishDate = new Date();
     }
@@ -190,12 +196,47 @@ public class TicketReportController {
         this.status = status;
     }
 
+    public void onRowSelect(SelectEvent event) {
+    }
+
     public Ticket getSelectedTicket() {
         return selectedTicket;
     }
 
     public void setSelectedTicket(Ticket selectedTicket) {
         this.selectedTicket = selectedTicket;
+    }
+
+    public float getTotalSellTicketAmount() {
+        return totalSellTicketAmount;
+    }
+
+    public void setTotalSellTicketAmount(float totalSellTicketAmount) {
+        this.totalSellTicketAmount = totalSellTicketAmount;
+    }
+
+    public int getTotalSellTicketQty() {
+        return totalSellTicketQty;
+    }
+
+    public void setTotalSellTicketQty(int totalSellTicketQty) {
+        this.totalSellTicketQty = totalSellTicketQty;
+    }
+
+    public float getTotalWinTicketAmount() {
+        return totalWinTicketAmount;
+    }
+
+    public void setTotalWinTicketAmount(float totalWinTicketAmount) {
+        this.totalWinTicketAmount = totalWinTicketAmount;
+    }
+
+    public int getTotalWinTicketQty() {
+        return totalWinTicketQty;
+    }
+
+    public void setTotalWinTicketQty(int totalWinTicketQty) {
+        this.totalWinTicketQty = totalWinTicketQty;
     }
 
     public List<Consortium> getConsortiums() {
@@ -256,14 +297,37 @@ public class TicketReportController {
         }
     }
 
+    private void sumTickets() {
+        this.totalSellTicketAmount = 0.0f;
+        this.totalSellTicketQty = 0;
+        this.totalWinTicketAmount = 0.0f;
+        this.totalWinTicketQty = 0;
+
+        List<Ticket> tickets = this.ticketDataModel.getTickets();
+        if (tickets != null) {
+            for (Ticket currTicket : tickets) {
+                this.totalSellTicketAmount += currTicket.getTotalBetAmount();
+                this.totalSellTicketQty += 1;
+                if (currTicket.getStatus() != null) {
+                    final int WIN_TICKET_STATUS = com.exception.magicsnumberswebapp.constants.Status.WIN.getId();
+                    if (currTicket.getStatus().getId() == WIN_TICKET_STATUS) {
+                        this.totalWinTicketAmount += currTicket.getTotalWinAmount();
+                        this.totalWinTicketQty += 1;
+                    }
+                }
+            }
+        }
+    }
+
     public void findTickets(ActionEvent event) {
         FacesMessage msg;
         String fromDate = new SimpleDateFormat("dd-MM-yyyy").format(this.startingDate);
         String toDate = new SimpleDateFormat("dd-MM-yyyy").format(this.finishDate);
         final int betBankingId = this.selectedBetBanking.getId();
-        
+
         try {
-            this.ticketDataModel.setTickets(this.ticketService.findTickets(betBankingId, fromDate, toDate));
+            this.ticketDataModel = new TicketDataModel(this.ticketService.findTickets(betBankingId, fromDate, toDate));            
+            sumTickets();
         } catch (FindTicketException ex) {
             Logger.getLogger(TicketReportController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {

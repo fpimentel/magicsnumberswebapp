@@ -16,7 +16,11 @@
                             <h:outputText value="#{labels.consortium}" /> 
                         </td>
                         <td >
-                            <p:selectOneMenu id="cbConsortium" value="#{ticketReportController.selectedConsortium}" valueChangeListener="#{ticketReportController.getBetBankingByConsortiumOnChange}" 
+                            <p:selectOneMenu id="cbConsortium" 
+                                             value="#{ticketReportController.selectedConsortium}" 
+                                             required="true"  
+                                             requiredMessage="Consorcio es requerido"
+                                             valueChangeListener="#{ticketReportController.getBetBankingByConsortiumOnChange}" 
                                              widgetVar="cbConsortiumSelectMenu" effect="fade" converter="#{consortiumConverter}">  
                                 <f:selectItem itemLabel="Seleccionar" itemValue=""   />
                                 <f:selectItems value="#{ticketReportController.consortiums}" var="consortium" itemLabel="#{consortium.name}" itemValue="#{consortium}"/>  
@@ -27,8 +31,10 @@
                             <h:outputText value="#{labels.betbankings}"  /> 
                         </td>
                         <td >
-                            <p:selectOneMenu id="cbBetBanking" value="#{ticketReportController.selectedBetBanking}"                                               
+                            <p:selectOneMenu id="cbBetBanking" 
+                                             value="#{ticketReportController.selectedBetBanking}"                                               
                                              valueChangeListener="#{ticketReportController.getLotteriesByBetBankingOnChange}" 
+                                             required="true"  requiredMessage="Banca es requerida"
                                              widgetVar="cbBetBankingSelectMenu" effect="fade" converter="#{betBakingConverter}">  
                                 <f:selectItem itemLabel="Seleccionar" itemValue=""   />
                                 <f:selectItems value="#{ticketReportController.betBankings}" var="betBanking" itemLabel="#{betBanking.name}" itemValue="#{betBanking}"/>                                  
@@ -40,35 +46,49 @@
                             <h:outputText value="#{labels.starting_date}"  /> 
                         </td>
                         <td>
-                            <p:calendar value="#{ticketReportController.startingDate}" pattern="dd/MM/yyyy" />
+                            <p:calendar  id="txtStatingDate" 
+                                         required="true"  
+                                         requiredMessage="Fecha inicial requerida"
+                                         value="#{ticketReportController.startingDate}" pattern="dd/MM/yyyy" />
                         </td>
                         <td>
                             <h:outputText value="#{labels.finish_date}"  /> 
                         </td>
                         <td>
-                            <p:calendar value="#{ticketReportController.finishDate}" pattern="dd/MM/yyyy" />
+                            <p:calendar id="txtFinishDate" 
+                                        value="#{ticketReportController.finishDate}" 
+                                        required="true"  
+                                        requiredMessage="Fecha fin requerida"
+                                        pattern="dd/MM/yyyy" />
                         </td>
                         <td>
                             <p:commandButton id="btnSearchTickets" 
+                                             process="@this :form:cbConsortium form:cbBetBanking :form:txtStatingDate :form:txtFinishDate"
                                              value="#{labels.search}"                             
-                                             actionListener="#{ticketReportController.findTickets}" 
-                                             update="dtTickets :form:messages"
+                                             actionListener="#{ticketReportController.findTickets}"                                             
+                                             update=":form:dtTickets 
+                                                     :form:lblTotalSellTickeAmount
+                                                     :form:lblTotalSellTickeQty
+                                                     :form:lblTotalWinTickeAmount
+                                                     :form:lblTotalWinTicketQty
+                                                     :form:messages"
                                              />                            
                         </td>                         
                     </tr>                                        
                 </table>    
             </p:fieldset>
+            <br/>
             <div>
                 <p:fieldset legend="Vendidos" style="width:10%; float:left" >                
                     <table>   
                         <tr>
                             <td>
-                                Monto:                                
+                                Monto: <h:outputText id="lblTotalSellTickeAmount" value="#{ticketReportController.totalSellTicketAmount}"/>                                 
                             </td>    
                         </tr>
                         <tr>
                             <td>
-                                Cantidad:
+                                Cantidad: <h:outputText id="lblTotalSellTickeQty" value="#{ticketReportController.totalSellTicketQty}"/>  
                             </td>    
                         </tr>
                     </table>
@@ -76,39 +96,44 @@
 
 
 
-                <p:fieldset style="width:20%" legend="Ganados"> 
+                <p:fieldset style="width:10%" legend="Ganados"> 
                     <table>   
                         <tr>
                             <td>
-                                Monto:                                
+                                Monto: <h:outputText id="lblTotalWinTickeAmount" value="#{ticketReportController.totalWinTicketAmount}"/>  
                             </td>    
                         </tr>
                         <tr>
                             <td>
-                                Cantidad:
+                                Cantidad: <h:outputText id="lblTotalWinTicketQty" value="#{ticketReportController.totalWinTicketQty}"/> 
                             </td>    
                         </tr>
                     </table>
                 </p:fieldset> 
             </div>
             <br/>
-            <p:dataTable id="dtTickets" style="width:50%"  var="ticket" value="#{ticketReportController.ticketDataModel}" paginator="true" rows="10">  
+            <p:dataTable  id="dtTickets" style="width:63%"  var="ticket" value="#{ticketReportController.ticketDataModel}" paginator="true" rows="10">          
                 <f:facet name="header"  >  
                     #{labels.ticket_title}
                 </f:facet> 
-                <p:column headerText="#{labels.upper_date}" style="width:8%" sortBy="#{ticket.creationDate}" filterBy="#{ticket.creationDate}"  filterMatchMode="contains">  
-                    #{ticket.creationDate}  
+                <p:column headerText="#{labels.upper_date}"  style="width:6%" sortBy="#{ticket.creationDate}" filterBy="#{ticket.creationDate}"  filterMatchMode="contains">                                          
+                    <h:outputText value="#{ticket.creationDate}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" type="date" dateStyle="short" />
+                    </h:outputText>                    
                 </p:column>
-                <p:column headerText="#{labels.ticke_id}" style="width:8%" sortBy="#{ticket.id}" filterBy="#{ticket.id}"  filterMatchMode="contains">  
+                <p:column headerText="#{labels.id}" style="width:2%" sortBy="#{ticket.id}" filterBy="#{ticket.id}"  filterMatchMode="contains">  
                     #{ticket.id}  
                 </p:column>
-                <p:column headerText="#{labels.amount}" style="width:8%" sortBy="#{ticket.totalBetAmount}" filterBy="#{ticket.totalBetAmount}"  filterMatchMode="contains">  
+                <p:column headerText="#{labels.bet_amount}" style="width:6%" sortBy="#{ticket.totalBetAmount}" filterBy="#{ticket.totalBetAmount}"  filterMatchMode="contains">  
                     #{ticket.totalBetAmount}  
                 </p:column>
-                <p:column headerText="#{labels.status}" style="width:8%" sortBy="#{ticket.status.name}" filterBy="#{ticket.status.name}"  filterMatchMode="contains">  
+                <p:column headerText="#{labels.amount_to_win}" style="width:6%" sortBy="#{ticket.totalWinAmount}" filterBy="#{ticket.totalWinAmount}"  filterMatchMode="contains">  
+                    #{ticket.totalWinAmount}  
+                </p:column>
+                <p:column headerText="#{labels.upper_status}" style="width:6%" sortBy="#{ticket.status.name}" filterBy="#{ticket.status.name}"  filterMatchMode="contains">  
                     #{ticket.status.name}  
-                </p:column>             
-            </p:dataTable>               
+                </p:column> 
+            </p:dataTable>                          
         </h:form>
     </ui:define>
 </ui:composition>
