@@ -1,0 +1,221 @@
+<ui:composition  template="../masterpage.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://xmlns.jcp.org/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets" 
+                 xmlns:f="http://java.sun.com/jsf/core"
+                 xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title">
+        #{labels.close_box}
+    </ui:define>
+    <ui:define name="center"> 
+        <h:body>            
+            <h:form id="form" >  
+                <p:fieldset legend="#{labels.close_box}">
+                    <table width="100%">
+                        <tr>
+                            <td align="center">
+                                <p:clock pattern="dd/MMM/yyyy hh:mm:ss a" mode="server"/>
+                            </td>
+                        </tr>
+                    </table>                    
+                    <div id="divContainer" style="margin:0 auto;">
+                        <div width="50%" style="float:left">
+                            <p:fieldset legend="#{labels.cash}" style="width:20%">
+                                <table>
+                                    <tr>
+                                        <td align="center">                                        
+                                            <h:outputText value="#{labels.bills_of}"/>
+                                        </td>
+                                        <td align="center">
+                                            <h:outputText value="#{labels.quatity}"/>
+                                        </td>
+                                        <td align="center">
+                                            <h:outputText value="#{labels.values}"/>
+                                        </td>
+                                    </tr>                        
+                                    <tr>
+                                        <td align="right">                                        
+                                            <h:outputText value="#{labels.two_thousand}"/>
+                                        </td>
+                                        <td>
+                                            <p:inputText id="txtTwoThousand" style="width:30px" value="#{closeBoxController.twoThousandQty}"/>  
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.twoThousandLabelAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">                                        
+                                            <h:outputText value="#{labels.two_thousand}"/>
+                                        </td>
+                                        <td>
+                                            <p:inputText id="txtOneThousand" style="width:30px" value="#{closeBoxController.oneThousandQty}"/>  
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.oneThousandLabelAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">                                        
+                                            <h:outputText value="#{labels.five_hundred}"/>
+                                        </td>
+                                        <td>
+                                            <p:inputText id="txtFiveThousand" style="width:30px" value="#{closeBoxController.fiveHundredQty}"/>  
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.fiveHundredLabelAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">                                        
+                                            <h:outputText value="#{labels.thow_hundred}"/>
+                                        </td>
+                                        <td>
+                                            <p:inputText id="txtTwoHundred" style="width:30px" value="#{closeBoxController.twoHundredQty}"/>  
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.twoHundredLabelAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">                                        
+                                            <h:outputText value="#{labels.one_hundred}"/>
+                                        </td>
+                                        <td>
+                                            <p:inputText id="txtOneHundred" style="width:30px" value="#{closeBoxController.oneHundredQty}"/>  
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.oneHundredLabelAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">                                        
+                                            <h:outputText value="#{labels.fifty}"/>
+                                        </td>
+                                        <td>
+                                            <p:inputText id="txtFifty" style="width:30px" value="#{closeBoxController.fiftyQty}"/>  
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.fiftyLabelAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">                                        
+                                            <h:outputText value="#{labels.twenty_five}"/>
+                                        </td>
+                                        <td>
+                                            <p:inputText id="txtTwentyFive" style="width:30px" value="#{closeBoxController.twentyFiveQty}"/>  
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.twentyFiveLabelAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">                                        
+                                            <h:outputText value="#{labels.twenty}"/>
+                                        </td>
+                                        <td>
+                                            <p:inputText id="txtTwenty" style="width:30px" value="#{closeBoxController.twentyQty}"/>  
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.twentyLabelAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">                           
+                                            <h:outputText value="#{labels.ten}"/>
+                                        </td>
+                                        <td>
+                                            <p:inputText id="txtTen" style="width:30px" value="#{closeBoxController.tenQty}"/>  
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.tenLabelAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">                                        
+                                            <h:outputText value="#{labels.five}"/>
+                                        </td>
+                                        <td>
+                                            <p:inputText id="txtFive" style="width:30px" value="#{closeBoxController.fiveQty}"/>  
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.fiveLabelAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">                           
+                                            <h:outputText value="#{labels.one}"/>
+                                        </td>
+                                        <td>
+                                            <p:inputText id="txtOne" style="width:30px" value="#{closeBoxController.oneQty}"/>  
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.oneLabelAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">                           
+                                            
+                                        </td>
+                                        <td>
+                                            <b><h:outputText value="Total"/>:</b>
+                                        </td>
+                                        <td align="right" style="border-top:solid 1px">
+                                            <b><h:outputText value="#{closeBoxController.totalAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </p:fieldset>                            
+                        </div>
+                        <div width="50%">
+                            <p:fieldset legend="#{labels.resumen}" style="width:20%">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <h:outputText value="#{labels.total_sell_amount}"/>:
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.totalSellTicketAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText value="#{labels.total_payed}"/>:
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.totalPayedTicket}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText value="#{labels.total_in_box}"/>:
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.totalInBoxAmountt}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText value="#{labels.total_in_cash}"/>:
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.totalInCashAmountt}"/></b>
+                                        </td>
+                                    </tr>                                
+                                    <tr>
+                                        <td>
+                                            <h:outputText value="#{labels.difference}"/>:
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText value="#{closeBoxController.differenceAmount}"/></b>
+                                        </td>
+                                    </tr>                                    
+                                </table>
+                            </p:fieldset>                            
+                        </div>                        
+                    </div>                    
+                </p:fieldset>
+            </h:form>        
+        </h:body>
+    </ui:define>
+</ui:composition>
