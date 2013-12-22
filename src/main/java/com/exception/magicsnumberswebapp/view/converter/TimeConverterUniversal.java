@@ -51,8 +51,10 @@ public class TimeConverterUniversal implements Converter {
     public Object getAsObject(FacesContext fc, UIComponent uic, String submittedValue) {
         int id = 0;
         try {
-            id = Integer.parseInt(submittedValue);
-            return getTimes(id);
+            if (submittedValue != "") {
+                id = Integer.parseInt(submittedValue);
+                return getTimes(id);
+            }
         } catch (Exception ex) {
             LOG.info("Problema configurando las jugadas: " + ex);
         }
