@@ -8,7 +8,6 @@ import com.exception.magicsnumbersws.exception.FindBetLimitException;
 import com.exception.magicsnumbersws.exception.FindBlockingNumberException;
 import com.exception.magicsnumbersws.exception.FindTicketException;
 import com.exception.magicsnumbersws.exception.SaveTicketException;
-import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -44,4 +43,9 @@ public class TicketDaoImpl implements TicketDao {
     public List<Ticket> findTickets(int betBankingId, String fromDate, String toDate) throws FindTicketException {
         return this.reportsEndpoint.findTicket(betBankingId, toDate, toDate);
     }    
+
+    @Override
+    public List<Ticket> findTodayTicketByUserName(String userName) throws FindTicketException {
+        return this.businessEndpoint.findTodayTicketByUserName(userName);
+    }
 }

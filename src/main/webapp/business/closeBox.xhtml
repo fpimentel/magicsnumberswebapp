@@ -7,7 +7,7 @@
         #{labels.close_box}
     </ui:define>
     <ui:define name="center"> 
-        <h:body>            
+        <h:body>              
             <h:form id="form" >  
                 <p:fieldset legend="#{labels.close_box}">
                     <table width="100%">
@@ -17,7 +17,7 @@
                             </td>
                         </tr>
                     </table>                    
-                    <div id="divContainer" style="margin:0 auto;">
+                    <div id="divContainer" style="margin:0 auto; alignment-adjust:central">
                         <div width="50%" style="float:left">
                             <p:fieldset legend="#{labels.cash}" style="width:20%">
                                 <table>
@@ -34,134 +34,182 @@
                                     </tr>                        
                                     <tr>
                                         <td align="right">                                        
-                                            <h:outputText value="#{labels.two_thousand}"/>
-                                        </td>
-                                        <td>
-                                            <p:inputText id="txtTwoThousand" style="width:30px" value="#{closeBoxController.twoThousandQty}"/>  
+                                            <h:outputText value="#{labels.two_thousand}"/> 
                                         </td>
                                         <td align="right">
-                                            <b><h:outputText value="#{closeBoxController.twoThousandLabelAmount}"/></b>
+                                            <p:inputText id="txtTwoThousand" tabindex="1" style="width:30px" value="#{closeBoxController.twoThousandQty}">  
+                                                <p:ajax event="blur" update=":form:lbltwoThousand :form:lblTotalAmount :form:lblDifference"/> 
+                                            </p:inputText>    
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText id="lbltwoThousand" value="#{closeBoxController.twoThousandLabelAmount}"/></b>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td align="right">                                        
-                                            <h:outputText value="#{labels.two_thousand}"/>
-                                        </td>
-                                        <td>
-                                            <p:inputText id="txtOneThousand" style="width:30px" value="#{closeBoxController.oneThousandQty}"/>  
+                                            <h:outputText value="#{labels.one_thousand}"/>
                                         </td>
                                         <td align="right">
-                                            <b><h:outputText value="#{closeBoxController.oneThousandLabelAmount}"/></b>
+                                            <p:inputText id="txtOneThousand" tabindex="2" style="width:30px" value="#{closeBoxController.oneThousandQty}">  
+                                                <p:ajax event="blur" update=":form:lblOneThousand :form:lblTotalAmount :form:lblDifference"/> 
+                                            </p:inputText>
+                                        </td>
+                                        <td align="right">
+                                            <b><h:outputText id="lblOneThousand" value="#{closeBoxController.oneThousandLabelAmount}"/></b>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td align="right">                                        
                                             <h:outputText value="#{labels.five_hundred}"/>
                                         </td>
-                                        <td>
-                                            <p:inputText id="txtFiveThousand" style="width:30px" value="#{closeBoxController.fiveHundredQty}"/>  
+                                        <td align="right">
+                                            <p:inputText id="txtFiveThousand" tabindex="3" style="width:30px" value="#{closeBoxController.fiveHundredQty}">  
+                                                <p:ajax event="blur" update=":form:lblFiveHundred :form:lblTotalAmount :form:lblDifference"/> 
+                                            </p:inputText>
                                         </td>
                                         <td align="right">
-                                            <b><h:outputText value="#{closeBoxController.fiveHundredLabelAmount}"/></b>
+                                            <b><h:outputText id="lblFiveHundred" value="#{closeBoxController.fiveHundredLabelAmount}"/></b>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td align="right">                                        
                                             <h:outputText value="#{labels.thow_hundred}"/>
                                         </td>
-                                        <td>
-                                            <p:inputText id="txtTwoHundred" style="width:30px" value="#{closeBoxController.twoHundredQty}"/>  
+                                        <td align="right">
+                                            <p:inputText id="txtTwoHundred" tabindex="4" style="width:30px" value="#{closeBoxController.twoHundredQty}">
+                                                <p:ajax event="blur" update=":form:lblTwoHundred :form:lblTotalAmount :form:lblDifference"/>
+                                            </p:inputText>    
                                         </td>
                                         <td align="right">
-                                            <b><h:outputText value="#{closeBoxController.twoHundredLabelAmount}"/></b>
+                                            <b><h:outputText id="lblTwoHundred" value="#{closeBoxController.twoHundredLabelAmount}"/></b>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td align="right">                                        
                                             <h:outputText value="#{labels.one_hundred}"/>
                                         </td>
-                                        <td>
-                                            <p:inputText id="txtOneHundred" style="width:30px" value="#{closeBoxController.oneHundredQty}"/>  
+                                        <td align="right">
+                                            <p:inputText id="txtOneHundred" tabindex="5" style="width:30px" value="#{closeBoxController.oneHundredQty}">  
+                                                <p:ajax event="blur" update=":form:lblOneHundred :form:lblTotalAmount :form:lblDifference"/>
+                                            </p:inputText>
                                         </td>
                                         <td align="right">
-                                            <b><h:outputText value="#{closeBoxController.oneHundredLabelAmount}"/></b>
+                                            <b><h:outputText id="lblOneHundred" value="#{closeBoxController.oneHundredLabelAmount}"/></b>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td align="right">                                        
                                             <h:outputText value="#{labels.fifty}"/>
                                         </td>
-                                        <td>
-                                            <p:inputText id="txtFifty" style="width:30px" value="#{closeBoxController.fiftyQty}"/>  
+                                        <td align="right">
+                                            <p:inputText id="txtFifty" tabindex="6" style="width:30px" value="#{closeBoxController.fiftyQty}">
+                                                <p:ajax event="blur" update=":form:lblFifty :form:lblTotalAmount :form:lblDifference"/>
+                                            </p:inputText>    
                                         </td>
                                         <td align="right">
-                                            <b><h:outputText value="#{closeBoxController.fiftyLabelAmount}"/></b>
+                                            <b><h:outputText id="lblFifty" value="#{closeBoxController.fiftyLabelAmount}"/></b>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td align="right">                                        
                                             <h:outputText value="#{labels.twenty_five}"/>
                                         </td>
-                                        <td>
-                                            <p:inputText id="txtTwentyFive" style="width:30px" value="#{closeBoxController.twentyFiveQty}"/>  
+                                        <td align="right">
+                                            <p:inputText id="txtTwentyFive" tabindex="7" style="width:30px" value="#{closeBoxController.twentyFiveQty}">  
+                                                <p:ajax event="blur" update=":form:lblTwentyFive :form:lblTotalAmount :form:lblDifference"/>
+                                            </p:inputText>    
                                         </td>
                                         <td align="right">
-                                            <b><h:outputText value="#{closeBoxController.twentyFiveLabelAmount}"/></b>
+                                            <b><h:outputText id="lblTwentyFive" value="#{closeBoxController.twentyFiveLabelAmount}"/></b>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td align="right">                                        
                                             <h:outputText value="#{labels.twenty}"/>
                                         </td>
-                                        <td>
-                                            <p:inputText id="txtTwenty" style="width:30px" value="#{closeBoxController.twentyQty}"/>  
+                                        <td align="right">
+                                            <p:inputText id="txtTwenty" tabindex="8" style="width:30px" value="#{closeBoxController.twentyQty}">
+                                                <p:ajax event="blur" update=":form:lblTwenty :form:lblTotalAmount :form:lblDifference"/>
+                                            </p:inputText>
                                         </td>
                                         <td align="right">
-                                            <b><h:outputText value="#{closeBoxController.twentyLabelAmount}"/></b>
+                                            <b><h:outputText id="lblTwenty" value="#{closeBoxController.twentyLabelAmount}"/></b>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td align="right">                           
                                             <h:outputText value="#{labels.ten}"/>
                                         </td>
-                                        <td>
-                                            <p:inputText id="txtTen" style="width:30px" value="#{closeBoxController.tenQty}"/>  
+                                        <td align="right">
+                                            <p:inputText id="txtTen" tabindex="9" style="width:30px" value="#{closeBoxController.tenQty}">
+                                                <p:ajax event="blur" update=":form:lblTen :form:lblTotalAmount :form:lblDifference"/>
+                                            </p:inputText>                                                    
                                         </td>
                                         <td align="right">
-                                            <b><h:outputText value="#{closeBoxController.tenLabelAmount}"/></b>
+                                            <b><h:outputText id="lblTen" value="#{closeBoxController.tenLabelAmount}"/></b>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td align="right">                                        
                                             <h:outputText value="#{labels.five}"/>
                                         </td>
-                                        <td>
-                                            <p:inputText id="txtFive" style="width:30px" value="#{closeBoxController.fiveQty}"/>  
+                                        <td align="right">
+                                            <p:inputText id="txtFive" tabindex="10" style="width:30px" value="#{closeBoxController.fiveQty}">
+                                                <p:ajax event="blur" update=":form:lblFive :form:lblTotalAmount :form:lblDifference"/>
+                                            </p:inputText>    
                                         </td>
                                         <td align="right">
-                                            <b><h:outputText value="#{closeBoxController.fiveLabelAmount}"/></b>
+                                            <b><h:outputText id="lblFive" value="#{closeBoxController.fiveLabelAmount}"/></b>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td align="right">                           
                                             <h:outputText value="#{labels.one}"/>
                                         </td>
-                                        <td>
-                                            <p:inputText id="txtOne" style="width:30px" value="#{closeBoxController.oneQty}"/>  
+                                        <td align="right">
+                                            <p:inputText id="txtOne" tabindex="11" style="width:30px" value="#{closeBoxController.oneQty}">
+                                                <p:ajax event="blur" update=":form:lblOne :form:lblTotalAmount :form:lblDifference"/>
+                                            </p:inputText>    
                                         </td>
                                         <td align="right">
-                                            <b><h:outputText value="#{closeBoxController.oneLabelAmount}"/></b>
+                                            <b><h:outputText id="lblOne" value="#{closeBoxController.oneLabelAmount}"/></b>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td align="right">                           
-                                            
+
                                         </td>
                                         <td>
                                             <b><h:outputText value="Total"/>:</b>
                                         </td>
                                         <td align="right" style="border-top:solid 1px">
-                                            <b><h:outputText value="#{closeBoxController.totalAmount}"/></b>
+                                            <b><h:outputText id ="lblTotalAmount" value="#{closeBoxController.totalAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">                           
+
+                                        </td>
+                                        <td>
+                                            <b><h:outputText value="Diferencia"/>:</b>
+                                        </td>
+                                        <td align="right" style="border-top:solid 1px">
+                                            <b><h:outputText id ="lblDifference2" value="#{closeBoxController.differenceAmount}"/></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right">                           
+
+                                        </td>
+                                        <td>
+                                            <p:commandButton process="@this" id="btnOK" value="#{labels.ok}" />
+                                        </td>
+                                        <td align="right" style="border-top:solid 1px">
+                                            <p:commandButton id="btnCancel" 
+                                                             value="#{labels.cancel}" 
+                                                             actionListener="#{closeBoxController.cancel}" 
+                                                             update=":form"
+                                                             />
                                         </td>
                                     </tr>
                                 </table>
@@ -207,7 +255,7 @@
                                             <h:outputText value="#{labels.difference}"/>:
                                         </td>
                                         <td align="right">
-                                            <b><h:outputText value="#{closeBoxController.differenceAmount}"/></b>
+                                            <b><h:outputText id="lblDifference" value="#{closeBoxController.differenceAmount}"/></b>
                                         </td>
                                     </tr>                                    
                                 </table>
@@ -215,7 +263,31 @@
                         </div>                        
                     </div>                    
                 </p:fieldset>
-            </h:form>        
+            </h:form>
+            <script type="text/javascript">
+                //<![CDATA[
+                $(function() {
+                    var allInputs = $(":input");
+                    allInputs[6].focus();
+                    allInputs.each(function()
+                    {
+                        //Si presiona enter, funciona como tab.
+                        $(this).keypress(function(event) {
+                            if (event.keyCode == 13) {
+                                var currentIndex = allInputs.index($(this));
+                                //Si es el ultimo input, los ubicamos en el primero
+                                if (currentIndex == 16) {
+                                    allInputs[6].focus();
+                                }
+                                else {
+                                    allInputs[currentIndex + 1].focus();
+                                }
+                            }
+                        });
+                    });
+                });
+                //]]>
+            </script>
         </h:body>
     </ui:define>
 </ui:composition>

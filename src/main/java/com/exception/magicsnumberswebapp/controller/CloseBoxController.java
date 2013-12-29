@@ -1,5 +1,14 @@
 package com.exception.magicsnumberswebapp.controller;
 
+import com.exception.magicsnumberswebapp.service.TicketService;
+import com.exception.magicsnumbersws.entities.Ticket;
+import com.exception.magicsnumbersws.exception.FindTicketException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.faces.event.ActionEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
@@ -12,86 +21,150 @@ import org.springframework.stereotype.Controller;
 @Scope("view")
 public class CloseBoxController {
 
-    private int twoThousandQty= 0;
-    private int oneThousandQty= 0;
-    private int fiveHundredQty= 0;
-    private int twoHundredQty= 0;
-    private int oneHundredQty= 0;    
-    private int fiftyQty= 0;
-    private int twentyFiveQty=0;
-    private int twentyQty=0;
-    private int tenQty=0;
-    private int fiveQty=0;
-    private int oneQty=0;
-    private float twoThousandLabelAmount= 0.0f;
-    private float oneThousandLabelAmount= 0.0f;
-    private float fiveHundredLabelAmount= 0.0f;
-    private float twoHundredLabelAmount= 0.0f;
-    private float oneHundredLabelAmount= 0.0f;
-    private float fiftyLabelAmount= 0.0f;
-    private float twentyFiveLabelAmount= 0.0f;
-    private float twentyLabelAmount= 0.0f;
-    private float tenLabelAmount= 0.0f;
-    private float fiveLabelAmount= 0.0f;
-    private float oneLabelAmount= 0.0f;
-    private float totalSellTicketAmount=0.0f;
-    private float totalPayedTicket=0.0f;
-    private float totalInBoxAmountt=0.0f;
-    private float totalInCashAmountt=0.0f;
-    private float differenceAmount=0.0f;
-    private float totalAmount=0.0f;
-    
-    
+    @Autowired
+    private TicketService ticketService;
+    @Autowired
+    private LoginController loginController;
+    private int twoThousandQty = 0;
+    private int oneThousandQty = 0;
+    private int fiveHundredQty = 0;
+    private int twoHundredQty = 0;
+    private int oneHundredQty = 0;
+    private int fiftyQty = 0;
+    private int twentyFiveQty = 0;
+    private int twentyQty = 0;
+    private int tenQty = 0;
+    private int fiveQty = 0;
+    private int oneQty = 0;
+    private float twoThousandLabelAmount = 0.0f;
+    private float oneThousandLabelAmount = 0.0f;
+    private float fiveHundredLabelAmount = 0.0f;
+    private float twoHundredLabelAmount = 0.0f;
+    private float oneHundredLabelAmount = 0.0f;
+    private float fiftyLabelAmount = 0.0f;
+    private float twentyFiveLabelAmount = 0.0f;
+    private float twentyLabelAmount = 0.0f;
+    private float tenLabelAmount = 0.0f;
+    private float fiveLabelAmount = 0.0f;
+    private float oneLabelAmount = 0.0f;
+    private float totalSellTicketAmount = 0.0f;
+    private float totalPayedTicket = 0.0f;
+    private float totalInBoxAmountt = 0.0f;
+    private float totalInCashAmountt = 0.0f;
+    private float differenceAmount = 0.0f;
+    private float totalAmount = 0.0f;
+    private List<Ticket> tickets;
+    private String userName;
+
     public CloseBoxController() {
-    
+    }
+
+    @PostConstruct
+    private void findResumeData() {
+        userName = loginController.getUser().getUserName();
+        try {
+            tickets = ticketService.findTodayTicketByUserName(userName);
+            if (tickets != null) {
+                for (Ticket currTicket : tickets) {
+                    totalSellTicketAmount += currTicket.getTotalBetAmount();
+                }
+            }
+        } catch (FindTicketException ex) {
+            Logger.getLogger(CloseBoxController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void sumTotal() {
+        this.totalAmount = (this.twoThousandLabelAmount
+                + this.oneThousandLabelAmount
+                + this.fiveHundredLabelAmount
+                + this.twoHundredLabelAmount
+                + this.oneHundredLabelAmount
+                + this.fiftyLabelAmount
+                + this.twentyFiveLabelAmount
+                + this.twentyLabelAmount
+                + this.tenLabelAmount
+                + this.fiveLabelAmount
+                + this.oneLabelAmount);
+    }
+
+    private void calculateDifferenceAmount() {
+        this.differenceAmount = (this.totalAmount - this.totalSellTicketAmount);
+    }
+
+    public void cancel(ActionEvent event) {
+        this.twoThousandLabelAmount = 0.0f;
+        this.oneThousandLabelAmount = 0.0f;
+        this.fiveHundredLabelAmount = 0.0f;
+        this.twoHundredLabelAmount = 0.0f;
+        this.oneHundredLabelAmount = 0.0f;
+        this.fiftyLabelAmount = 0.0f;
+        this.twentyFiveLabelAmount = 0.0f;
+        this.twentyLabelAmount = 0.0f;
+        this.tenLabelAmount = 0.0f;
+        this.fiveLabelAmount = 0.0f;
+        this.oneLabelAmount = 0.0f;
+        
+        this.twoThousandQty=0;
+        this.oneThousandQty=0;
+        this.fiveHundredQty=0;
+        this.twoHundredQty=0;
+        this.oneHundredQty=0;
+        this.fiftyQty=0;
+        this.twentyFiveQty=0;
+        this.twentyQty=0;
+        this.tenQty=0;
+        this.fiveQty=0;
+        this.oneQty=0;
     }
 
     public float getTwoThousandLabelAmount() {
+        this.twoThousandLabelAmount = (twoThousandQty * 2000);
         return twoThousandLabelAmount;
     }
 
     public void setTwoThousandLabelAmount(float twoThousandLabelAmount) {
         this.twoThousandLabelAmount = twoThousandLabelAmount;
     }
-    
 
     public float getOneThousandLabelAmount() {
+        this.oneThousandLabelAmount = (oneThousandQty * 1000);
         return oneThousandLabelAmount;
     }
 
     public void setOneThousandLabelAmount(float oneThousandLabelAmount) {
         this.oneThousandLabelAmount = oneThousandLabelAmount;
     }
-    
 
     public float getFiveHundredLabelAmount() {
+        this.fiveHundredLabelAmount = (fiveHundredQty * 500);
         return fiveHundredLabelAmount;
     }
 
     public void setFiveHundredLabelAmount(float fiveHundredLabelAmount) {
         this.fiveHundredLabelAmount = fiveHundredLabelAmount;
     }
-    
 
     public float getTwoHundredLabelAmount() {
+        this.twoHundredLabelAmount = (twoHundredQty * 200);
         return twoHundredLabelAmount;
     }
 
     public void setTwoHundredLabelAmount(float twoHundredLabelAmount) {
         this.twoHundredLabelAmount = twoHundredLabelAmount;
     }
-    
 
     public float getOneHundredLabelAmount() {
+        this.oneHundredLabelAmount = (oneHundredQty * 100);
         return oneHundredLabelAmount;
     }
 
     public void setOneHundredLabelAmount(float oneHundredLabelAmount) {
         this.oneHundredLabelAmount = oneHundredLabelAmount;
     }
-    
 
     public float getFiftyLabelAmount() {
+        this.fiftyLabelAmount = (fiftyQty * 50);
         return fiftyLabelAmount;
     }
 
@@ -100,6 +173,7 @@ public class CloseBoxController {
     }
 
     public float getTwentyFiveLabelAmount() {
+        this.twentyFiveLabelAmount = (twentyFiveQty * 25);
         return twentyFiveLabelAmount;
     }
 
@@ -107,16 +181,17 @@ public class CloseBoxController {
         this.twentyFiveLabelAmount = twentyFiveLabelAmount;
     }
 
-
     public float getTwentyLabelAmount() {
+        this.twentyLabelAmount = (twentyQty * 20);
         return twentyLabelAmount;
     }
 
     public void setTwentyLabelAmount(float twentyLabelAmount) {
         this.twentyLabelAmount = twentyLabelAmount;
-    }    
+    }
 
     public float getTenLabelAmount() {
+        this.tenLabelAmount = (tenQty * 10);
         return tenLabelAmount;
     }
 
@@ -125,6 +200,7 @@ public class CloseBoxController {
     }
 
     public float getFiveLabelAmount() {
+        this.fiveLabelAmount = (fiveQty * 5);
         return fiveLabelAmount;
     }
 
@@ -133,12 +209,13 @@ public class CloseBoxController {
     }
 
     public float getOneLabelAmount() {
+        this.oneLabelAmount = (oneQty * 1);
         return oneLabelAmount;
     }
 
     public void setOneLabelAmount(float oneLabelAmount) {
         this.oneLabelAmount = oneLabelAmount;
-    }  
+    }
 
     public int getTwoThousandQty() {
         return twoThousandQty;
@@ -261,6 +338,7 @@ public class CloseBoxController {
     }
 
     public float getDifferenceAmount() {
+        calculateDifferenceAmount();
         return differenceAmount;
     }
 
@@ -269,12 +347,11 @@ public class CloseBoxController {
     }
 
     public float getTotalAmount() {
+        sumTotal();
         return totalAmount;
     }
 
     public void setTotalAmount(float totalAmount) {
         this.totalAmount = totalAmount;
     }
-    
-    
 }

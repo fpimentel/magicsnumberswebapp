@@ -41,4 +41,9 @@ public class TicketServiceImpl implements TicketService {
     public List<Ticket> findTickets(int betBankingId, String fromDate, String toDate) throws FindTicketException {
         return this.ticketDao.findTickets(betBankingId, fromDate, toDate);        
     }
+
+    @Override
+    public List<Ticket> findTodayTicketByUserName(String userName) throws FindTicketException {
+        return this.ticketDao.findTodayTicketByUserName(userName);
+    }
 }

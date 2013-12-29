@@ -19,4 +19,5 @@ public interface TicketService {
     public String getNumbersBlocks(int bankingId, String numbers) throws FindBlockingNumberException;
     public String findBetBankingBetLimitAmount(int betBankingId, int lotteryId, int betId ) throws FindBetLimitException;
     public List<Ticket> findTickets(int betBankingId, String fromDate, String toDate) throws FindTicketException;
+    public List<Ticket> findTodayTicketByUserName(String userName)throws FindTicketException;
 }
