@@ -1,0 +1,161 @@
+<ui:composition  template="../masterpage.xhtml" xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:h="http://xmlns.jcp.org/jsf/html"
+                 xmlns:ui="http://java.sun.com/jsf/facelets" 
+                 xmlns:f="http://java.sun.com/jsf/core"
+                 xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title">
+        #{labels.betbankings}
+    </ui:define>
+    <ui:define name="center">
+        <h:form id="form" >  
+            <p:growl id="messages" showDetail="true"/>  
+            <p:fieldset legend="Parámetros de búsqueda" style="width:45%">
+                <table >
+                    <tr>
+                        <td>
+                            <h:outputText value="#{labels.starting_date}"/> 
+                        </td>
+                        <td>
+                            <p:calendar value="#{winningNumberController.startingDate}" pattern="dd/MM/yyyy" />
+                        </td>
+                        <td>
+                            <h:outputText value="#{labels.finish_date}"  /> 
+                        </td>
+                        <td>
+                            <p:calendar value="#{winningNumberController.finishDate}" pattern="dd/MM/yyyy" />
+                        </td>
+                        <td>
+                            <p:commandButton id="btnSearchWinningNumbers" 
+                                             value="#{labels.search}"                             
+                                             actionListener="#{winningNumberController.findWinningNumbers}" 
+                                             update="dtWinningNumber :form:messages"
+                                             />                            
+                        </td>                         
+                    </tr>                                        
+                </table>    
+            </p:fieldset>
+            <p:dataTable  id="dtWinningNumber" style="width:63%"  var="winningNumber" value="#{winningNumberController.winningDataModel}" 
+                          paginator="true" rows="10" selection="#{winningNumberController.selectedWinningNumber}" selectionMode="single" >          
+                <f:facet name="header"  >  
+                    #{labels.winnigNumber}
+                </f:facet> 
+                <p:ajax event="rowSelect" listener="#{winningNumberController.onRowSelect}"   
+                        update=":form:dialog :form:messages" oncomplete="winningNumberDialog.show()"  />  
+                <p:ajax event="rowUnselect" listener="#{winningNumberController.onRowUnselect}" update=":form:messages"/>  
+                <p:column headerText="#{labels.upper_date}"  style="width:6%" sortBy="#{winningNumber.creationDate}" filterBy="#{winningNumber.creationDate}"  filterMatchMode="contains">                                          
+                    <h:outputText value="#{winningNumber.drawingDate}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" type="date" dateStyle="short" />
+                    </h:outputText>                    
+                </p:column>
+                <p:column headerText="#{labels.lottery}" style="width:2%" sortBy="#{winningNumber.lottery.name}" filterBy="#{winningNumber.lottery.name}"  filterMatchMode="contains">  
+                    #{winningNumber.lottery.name}  
+                </p:column>
+                <p:column headerText="#{labels.turn}" style="width:6%" sortBy="#{winningNumber.time.name}" filterBy="#{winningNumber.time.name}"  filterMatchMode="contains">  
+                    #{winningNumber.time.name}  
+                </p:column>
+                <p:column headerText="#{labels.number}" style="width:6%" sortBy="#{winningNumber.numbers}" filterBy="#{winningNumber.numbers}"  filterMatchMode="contains">  
+                    #{winningNumber.numbers}  
+                </p:column>
+            </p:dataTable>  
+            <p:commandButton process="@this" id="btnNewWinningNumber" value="#{labels.add_WinningNumbers}" 
+                             actionListener="#{winningNumberController.addNewWinningNumber}"
+                             oncomplete="winningNumberDialog.show()"
+                             update=":form:dialog " immediate="true" />
+
+            <p:dialog id="dialog" header="#{labels.winnigNumber}" widgetVar="winningNumberDialog" resizable="false"  
+                      showEffect="fade" hideEffect="explode" closable="false" position="top" >  
+                <p:fieldset legend="Parámetros de búsqueda" style="width:45%">
+                    <div></div>
+                    <table>
+                        <tr>
+                            <td>
+
+                            </td>
+                            <td>
+                                #{labels.lottery} 
+                                <p:selectOneMenu id="cbLottery" value="#{winningNumberController.selectedWinningNumber.lottery}" 
+                                                 valueChangeListener="#{winningNumberController.getTimesByLotteryOnChange}" widgetVar="cbLotterySelectMenu"
+                                                 effect="fade" converter="#{lotteryConverter}">  
+                                    <f:selectItem itemLabel="Seleccione" itemValue=""/>
+                                    <f:selectItems value="#{winningNumberController.lotteries}" var="lottery" itemLabel="#{lottery.name}" itemValue="#{lottery}"/>  
+                                    <p:ajax event="change" update="cbTime"/>
+                                </p:selectOneMenu>
+                            </td>                    
+                            <td >
+
+                            </td>
+                            <td>
+                                #{labels.turn}
+                                <p:selectOneMenu id="cbTime" value="#{winningNumberController.selectedWinningNumber.time}" widgetVar="cbTimeSelectMenu"  effect="fade" 
+                                                 converter="#{timeConverter}" >                                    
+                                    <f:selectItem itemLabel="Seleccione" itemValue=""/>
+                                    <f:selectItems value="#{winningNumberController.times}" var="time" itemLabel="#{time.name}" itemValue="#{time}"/>  
+                                </p:selectOneMenu>
+                            </td>
+                            <td>
+                                <div>
+                                    <table>
+                                        <td>
+                                            <div>
+                                                1ra
+                                            </div>
+                                            <div>
+                                                <p:inputText id="txtFirstNumber1" style="width:70%;" value="#{winningNumberController.firstNumber}" />   
+                                            </div>
+
+                                        </td>
+                                        <td>
+                                            <div>
+                                                2ra
+                                            </div>
+                                            <div>
+                                                <p:inputText id="txtFirstNumber2" style="width:70%;" value="#{winningNumberController.secondNumber}"/>   
+                                            </div>
+
+                                        </td>
+                                        <td>
+                                            <div>
+                                                3ra
+                                            </div>
+                                            <div>
+                                                <p:inputText id="txtFirstNumber3" style="width:70%;" value="#{winningNumberController.threeNumber}" />   
+                                            </div>
+
+                                        </td>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </p:fieldset>
+                <f:facet name="footer">  
+                    <p:outputPanel style="float:right;">
+                        <p:commandButton  id="btnaddUpdateBetBanking" value="#{labels.register}" 
+                                          actionListener="#{betBankingController.addOrUpdateInfo}"  
+
+                                          oncomplete="handleAddOrUpdateWinningNumber(xhr, status, args)" update=":form:dtWinningNumber :form:messages" icon="ui-icon-check"/>
+
+                        <p:commandButton value="#{labels.cancel}"  id="btnCancel"  styleClass="ui-priority-primary" 
+                                         oncomplete=" winningNumberDialog.hide()" immediate="true" icon="ui-icon-closethick"/>  
+                    </p:outputPanel>                            
+                </f:facet>
+            </p:dialog> 
+        </h:form>
+        <script type="text/javascript">
+            function handleAddOrUpdateWinningNumber(xhr, status, args) {
+                if (args.validationFailed || !args.success) {
+                    betBankingDialog.jq.effect("shake", {times: 5}, 100);
+                }
+                else {
+                    betBankingDialog.hide();
+                }
+            }
+            function clearComponent() {
+                cbLotterySelectMenu.setLabel("Seleccionar");
+                cbBetSelectMenu.setLabel("Seleccionar");
+
+            }
+        </script>
+    </ui:define>
+
+</ui:composition>
