@@ -202,7 +202,11 @@
 
                                         </td>
                                         <td>
-                                            <p:commandButton process="@this" id="btnOK" value="#{labels.ok}" />
+                                            <p:commandButton process="@this" id="btnOK" 
+                                                             value="#{labels.ok}"
+                                                             ajax="false"
+                                                             actionListener="#{closeBoxController.downloadFile}"
+                                                             />
                                         </td>
                                         <td align="right" style="border-top:solid 1px">
                                             <p:commandButton id="btnCancel" 

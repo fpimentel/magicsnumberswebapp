@@ -3,11 +3,25 @@ package com.exception.magicsnumberswebapp.controller;
 import com.exception.magicsnumberswebapp.service.TicketService;
 import com.exception.magicsnumbersws.entities.Ticket;
 import com.exception.magicsnumbersws.exception.FindTicketException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -92,6 +106,25 @@ public class CloseBoxController {
         this.differenceAmount = (this.totalAmount - this.totalSellTicketAmount);
     }
 
+    public void downloadFile(ActionEvent event) throws JRException, IOException {
+       // String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+        
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+        ArrayList<Ticket> tickeList = new ArrayList<Ticket>();
+        Ticket tic = new Ticket();
+        tic.setId(111);
+        tickeList.add(tic);
+        JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(tickeList);        
+        ec.responseReset();
+        JasperPrint jasperPrint = JasperFillManager.fillReport("C:\\Personal\\Proyectos\\2013\\LOTERIA\\Source\\magicsnumberswebapp\\src\\main\\resources\\CloseBox.jasper", new HashMap(), beanCollectionDataSource);
+        HttpServletResponse httpServletResponse = (HttpServletResponse) ec.getResponse();        
+        httpServletResponse.addHeader("Content-disposition","attachment; filename=cuadre.pdf" );
+        ServletOutputStream servletOuputStream = httpServletResponse.getOutputStream();        
+        JasperExportManager.exportReportToPdfStream(jasperPrint, servletOuputStream);
+        fc.responseComplete();
+    }
+
     public void cancel(ActionEvent event) {
         this.twoThousandLabelAmount = 0.0f;
         this.oneThousandLabelAmount = 0.0f;
@@ -104,18 +137,18 @@ public class CloseBoxController {
         this.tenLabelAmount = 0.0f;
         this.fiveLabelAmount = 0.0f;
         this.oneLabelAmount = 0.0f;
-        
-        this.twoThousandQty=0;
-        this.oneThousandQty=0;
-        this.fiveHundredQty=0;
-        this.twoHundredQty=0;
-        this.oneHundredQty=0;
-        this.fiftyQty=0;
-        this.twentyFiveQty=0;
-        this.twentyQty=0;
-        this.tenQty=0;
-        this.fiveQty=0;
-        this.oneQty=0;
+
+        this.twoThousandQty = 0;
+        this.oneThousandQty = 0;
+        this.fiveHundredQty = 0;
+        this.twoHundredQty = 0;
+        this.oneHundredQty = 0;
+        this.fiftyQty = 0;
+        this.twentyFiveQty = 0;
+        this.twentyQty = 0;
+        this.tenQty = 0;
+        this.fiveQty = 0;
+        this.oneQty = 0;
     }
 
     public float getTwoThousandLabelAmount() {
