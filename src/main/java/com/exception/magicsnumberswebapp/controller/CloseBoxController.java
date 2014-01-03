@@ -1,6 +1,8 @@
 package com.exception.magicsnumberswebapp.controller;
 
+import com.exception.magicsnumberswebapp.reports.beans.CloseBoxData;
 import com.exception.magicsnumberswebapp.service.TicketService;
+import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Ticket;
 import com.exception.magicsnumbersws.exception.FindTicketException;
 import java.io.IOException;
@@ -16,11 +18,9 @@ import javax.faces.event.ActionEvent;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -69,13 +69,18 @@ public class CloseBoxController {
     private float totalAmount = 0.0f;
     private List<Ticket> tickets;
     private String userName;
-
+    private String betBankingName;
+    
     public CloseBoxController() {
     }
 
     @PostConstruct
-    private void findResumeData() {
+    private void initData() {
         userName = loginController.getUser().getUserName();
+        if(loginController.getUser().getBetBankings()!= null){
+            BetBanking betBanking = (BetBanking) this.loginController.getUser().getBetBankings().toArray()[0];
+            this.betBankingName = betBanking.getName();
+        }
         try {
             tickets = ticketService.findTodayTicketByUserName(userName);
             if (tickets != null) {
@@ -106,20 +111,48 @@ public class CloseBoxController {
         this.differenceAmount = (this.totalAmount - this.totalSellTicketAmount);
     }
 
-    public void downloadFile(ActionEvent event) throws JRException, IOException {
-       // String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+    private void initReportData(List<CloseBoxData> closeBoxDataList){
+        CloseBoxData closeBoxData = new CloseBoxData();
+        closeBoxData.setTwoThousandQty(this.twoThousandQty);
+        closeBoxData.setOneThousandQty(this.oneThousandQty);
+        closeBoxData.setFiveHundredQty(this.fiveHundredQty);
+        closeBoxData.setTwoHundredQty(this.twoHundredQty);
+        closeBoxData.setOneHundredQty(this.oneHundredQty);
+        closeBoxData.setFiftyQty(this.fiftyQty);
+        closeBoxData.setTwentyFiveQty(this.twentyFiveQty);
+        closeBoxData.setTwentyQty(this.twentyQty);
+        closeBoxData.setTenQty(this.tenQty);
+        closeBoxData.setFiveQty(this.fiveQty);
+        closeBoxData.setOneQty(this.oneQty);
         
+        closeBoxData.setTwoThousandAmount(this.twoThousandLabelAmount);
+        closeBoxData.setOneThousandAmount(this.oneThousandLabelAmount);
+        closeBoxData.setFiveHundredAmount(this.fiveHundredLabelAmount);
+        closeBoxData.setTwoHundredAmount(this.twoHundredLabelAmount);
+        closeBoxData.setOneHundredAmount(this.oneHundredLabelAmount);
+        closeBoxData.setFiftyAmount(this.fiftyLabelAmount);
+        closeBoxData.setTwentyFiveAmount(this.twentyFiveLabelAmount);
+        closeBoxData.setTwentyAmount(this.twentyLabelAmount);
+        closeBoxData.setTenAmount(this.tenLabelAmount);
+        closeBoxData.setFiveAmount(this.fiveLabelAmount);
+        closeBoxData.setOneAmount(this.oneLabelAmount);
+        closeBoxData.setTotalAmount(this.totalAmount);
+        closeBoxData.setDifferenceAmount(this.differenceAmount);
+        
+        closeBoxData.setBetBankingName(this.betBankingName);
+        
+        closeBoxDataList.add(closeBoxData);
+    }
+    public void downloadFile(ActionEvent event) throws JRException, IOException {               
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
-        ArrayList<Ticket> tickeList = new ArrayList<Ticket>();
-        Ticket tic = new Ticket();
-        tic.setId(111);
-        tickeList.add(tic);
-        JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(tickeList);        
+        ArrayList<CloseBoxData> closeBoxDataList = new ArrayList<CloseBoxData>();
+        initReportData(closeBoxDataList);
+        JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(closeBoxDataList);        
         ec.responseReset();
         JasperPrint jasperPrint = JasperFillManager.fillReport("C:\\Personal\\Proyectos\\2013\\LOTERIA\\Source\\magicsnumberswebapp\\src\\main\\resources\\CloseBox.jasper", new HashMap(), beanCollectionDataSource);
         HttpServletResponse httpServletResponse = (HttpServletResponse) ec.getResponse();        
-        httpServletResponse.addHeader("Content-disposition","attachment; filename=cuadre.pdf" );
+        httpServletResponse.addHeader("Content-disposition","attachment; filename=cuadre_caja.pdf" );
         ServletOutputStream servletOuputStream = httpServletResponse.getOutputStream();        
         JasperExportManager.exportReportToPdfStream(jasperPrint, servletOuputStream);
         fc.responseComplete();

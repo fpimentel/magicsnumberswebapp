@@ -8,7 +8,7 @@
     </ui:define>
     <ui:define name="center"> 
         <h:body>              
-            <h:form id="form" >  
+            <h:form id="form" onkeypress="if (event.keyCode == 13) { event.preventDefault();return false;}">  
                 <p:fieldset legend="#{labels.close_box}">
                     <table width="100%">
                         <tr>
@@ -38,7 +38,7 @@
                                         </td>
                                         <td align="right">
                                             <p:inputText id="txtTwoThousand" tabindex="1" style="width:30px" value="#{closeBoxController.twoThousandQty}">  
-                                                <p:ajax event="blur" update=":form:lbltwoThousand :form:lblTotalAmount :form:lblDifference"/> 
+                                                <p:ajax event="blur" update=":form:lbltwoThousand :form:lblTotalAmount :form:lblDifference :form:lblDifference2"/> 
                                             </p:inputText>    
                                         </td>
                                         <td align="right">
@@ -51,7 +51,7 @@
                                         </td>
                                         <td align="right">
                                             <p:inputText id="txtOneThousand" tabindex="2" style="width:30px" value="#{closeBoxController.oneThousandQty}">  
-                                                <p:ajax event="blur" update=":form:lblOneThousand :form:lblTotalAmount :form:lblDifference"/> 
+                                                <p:ajax event="blur" update=":form:lblOneThousand :form:lblTotalAmount :form:lblDifference :form:lblDifference2"/> 
                                             </p:inputText>
                                         </td>
                                         <td align="right">
@@ -64,7 +64,7 @@
                                         </td>
                                         <td align="right">
                                             <p:inputText id="txtFiveThousand" tabindex="3" style="width:30px" value="#{closeBoxController.fiveHundredQty}">  
-                                                <p:ajax event="blur" update=":form:lblFiveHundred :form:lblTotalAmount :form:lblDifference"/> 
+                                                <p:ajax event="blur" update=":form:lblFiveHundred :form:lblTotalAmount :form:lblDifference :form:lblDifference2"/> 
                                             </p:inputText>
                                         </td>
                                         <td align="right">
@@ -77,7 +77,7 @@
                                         </td>
                                         <td align="right">
                                             <p:inputText id="txtTwoHundred" tabindex="4" style="width:30px" value="#{closeBoxController.twoHundredQty}">
-                                                <p:ajax event="blur" update=":form:lblTwoHundred :form:lblTotalAmount :form:lblDifference"/>
+                                                <p:ajax event="blur" update=":form:lblTwoHundred :form:lblTotalAmount :form:lblDifference :form:lblDifference2"/>
                                             </p:inputText>    
                                         </td>
                                         <td align="right">
@@ -90,7 +90,7 @@
                                         </td>
                                         <td align="right">
                                             <p:inputText id="txtOneHundred" tabindex="5" style="width:30px" value="#{closeBoxController.oneHundredQty}">  
-                                                <p:ajax event="blur" update=":form:lblOneHundred :form:lblTotalAmount :form:lblDifference"/>
+                                                <p:ajax event="blur" update=":form:lblOneHundred :form:lblTotalAmount :form:lblDifference :form:lblDifference2"/>
                                             </p:inputText>
                                         </td>
                                         <td align="right">
@@ -103,7 +103,7 @@
                                         </td>
                                         <td align="right">
                                             <p:inputText id="txtFifty" tabindex="6" style="width:30px" value="#{closeBoxController.fiftyQty}">
-                                                <p:ajax event="blur" update=":form:lblFifty :form:lblTotalAmount :form:lblDifference"/>
+                                                <p:ajax event="blur" update=":form:lblFifty :form:lblTotalAmount :form:lblDifference :form:lblDifference2"/>
                                             </p:inputText>    
                                         </td>
                                         <td align="right">
@@ -116,7 +116,7 @@
                                         </td>
                                         <td align="right">
                                             <p:inputText id="txtTwentyFive" tabindex="7" style="width:30px" value="#{closeBoxController.twentyFiveQty}">  
-                                                <p:ajax event="blur" update=":form:lblTwentyFive :form:lblTotalAmount :form:lblDifference"/>
+                                                <p:ajax event="blur" update=":form:lblTwentyFive :form:lblTotalAmount :form:lblDifference :form:lblDifference2"/>
                                             </p:inputText>    
                                         </td>
                                         <td align="right">
@@ -129,7 +129,7 @@
                                         </td>
                                         <td align="right">
                                             <p:inputText id="txtTwenty" tabindex="8" style="width:30px" value="#{closeBoxController.twentyQty}">
-                                                <p:ajax event="blur" update=":form:lblTwenty :form:lblTotalAmount :form:lblDifference"/>
+                                                <p:ajax event="blur" update=":form:lblTwenty :form:lblTotalAmount :form:lblDifference :form:lblDifference2"/>
                                             </p:inputText>
                                         </td>
                                         <td align="right">
@@ -142,7 +142,7 @@
                                         </td>
                                         <td align="right">
                                             <p:inputText id="txtTen" tabindex="9" style="width:30px" value="#{closeBoxController.tenQty}">
-                                                <p:ajax event="blur" update=":form:lblTen :form:lblTotalAmount :form:lblDifference"/>
+                                                <p:ajax event="blur" update=":form:lblTen :form:lblTotalAmount :form:lblDifference :form:lblDifference2"/>
                                             </p:inputText>                                                    
                                         </td>
                                         <td align="right">
@@ -155,7 +155,7 @@
                                         </td>
                                         <td align="right">
                                             <p:inputText id="txtFive" tabindex="10" style="width:30px" value="#{closeBoxController.fiveQty}">
-                                                <p:ajax event="blur" update=":form:lblFive :form:lblTotalAmount :form:lblDifference"/>
+                                                <p:ajax event="blur" update=":form:lblFive :form:lblTotalAmount :form:lblDifference :form:lblDifference2"/>
                                             </p:inputText>    
                                         </td>
                                         <td align="right">
@@ -168,7 +168,7 @@
                                         </td>
                                         <td align="right">
                                             <p:inputText id="txtOne" tabindex="11" style="width:30px" value="#{closeBoxController.oneQty}">
-                                                <p:ajax event="blur" update=":form:lblOne :form:lblTotalAmount :form:lblDifference"/>
+                                                <p:ajax event="blur" update=":form:lblOne :form:lblTotalAmount :form:lblDifference :form:lblDifference2"/>
                                             </p:inputText>    
                                         </td>
                                         <td align="right">

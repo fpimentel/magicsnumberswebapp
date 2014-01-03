@@ -1,22 +1,341 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="200" pageHeight="842" columnWidth="160" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2e6fa2f4-10d8-43e7-9cd7-4cc5dcfc40e5">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<field name="twoThousandQty" class="java.lang.Integer"/>
+	<field name="oneThousandQty" class="java.lang.Integer"/>
+	<field name="fiveHundredQty" class="java.lang.Integer"/>
+	<field name="twoHundredQty" class="java.lang.Integer"/>
+	<field name="oneHundredQty" class="java.lang.Integer"/>
+	<field name="fiftyQty" class="java.lang.Integer"/>
+	<field name="twentyFiveQty" class="java.lang.Integer"/>
+	<field name="twentyQty" class="java.lang.Integer"/>
+	<field name="tenQty" class="java.lang.Integer"/>
+	<field name="fiveQty" class="java.lang.Integer"/>
+	<field name="oneQty" class="java.lang.Integer"/>
+	<field name="twoThousandAmount" class="java.lang.Float"/>
+	<field name="oneThousandAmount" class="java.lang.Float"/>
+	<field name="fiveHundredAmount" class="java.lang.Float"/>
+	<field name="twoHundredAmount" class="java.lang.Float"/>
+	<field name="oneHundredAmount" class="java.lang.Float"/>
+	<field name="fiftyAmount" class="java.lang.Float"/>
+	<field name="twentyFiveAmount" class="java.lang.Float"/>
+	<field name="twentyAmount" class="java.lang.Float"/>
+	<field name="tenAmount" class="java.lang.Float"/>
+	<field name="fiveAmount" class="java.lang.Float"/>
+	<field name="oneAmount" class="java.lang.Float"/>
+	<field name="totalAmount" class="java.lang.Float"/>
+	<field name="differenceAmount" class="java.lang.Float"/>
+	<field name="betBankingName" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch"/>
+		<band height="51" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="5dcc04ec-c435-45b2-be2b-8adb39ed26c5" x="0" y="17" width="160" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cuadre de Caja]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement uuid="984b722b-f951-4337-8694-01f50577e99d" x="0" y="0" width="160" height="20"/>
+				<textElement textAlignment="Right">
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="154f7648-885b-449b-b431-51939d4e67b5" x="0" y="43" width="160" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement uuid="f2f767c1-ac20-42f8-8fc2-554afd1bc308" x="0" y="30" width="160" height="20"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{betBankingName}.toUpperCase()]]></textFieldExpression>
+			</textField>
+		</band>
 	</title>
-	<pageHeader>
-		<band height="35" splitType="Stretch"/>
-	</pageHeader>
-	<columnHeader>
-		<band height="61" splitType="Stretch"/>
-	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch"/>
+		<band height="158" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="340d21e2-aafa-482f-ab94-c5a1a08828fc" x="0" y="0" width="80" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<text><![CDATA[Billetes de RD$ 2000]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8cc6ad7f-3dc4-4be1-af33-e513cc85b49c" x="0" y="11" width="80" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<text><![CDATA[Billetes de RD$ 1000]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a51ed8e1-0df0-4e38-b652-5fca9d748f82" x="0" y="22" width="80" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<text><![CDATA[Billetes de RD$ 500]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ed46383e-c4d9-418e-bac7-b1360cb92b29" x="0" y="55" width="80" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<text><![CDATA[Billetes de RD$ 50]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8a85eccb-8655-40f9-9330-74d5f0742286" x="0" y="66" width="80" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<text><![CDATA[Billetes de RD$ 20]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1640768e-40ec-47b3-800c-273db3dae127" x="0" y="88" width="80" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<text><![CDATA[Monedas de RD$ 10]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ffefbf12-20ca-4199-b911-a9b92805930a" x="0" y="99" width="80" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<text><![CDATA[Monedas de RD$ 5]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b4358cc5-47e1-4f6b-a385-a7f4c291bf1a" x="0" y="110" width="80" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<text><![CDATA[Monedas de RD$ 1]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="7ae0affb-e083-4fed-ac82-ef0f61e7ed9f" x="79" y="0" width="40" height="12"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{twoThousandQty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="97981ccb-0699-4652-8655-88c9d8c57686" x="79" y="11" width="40" height="12"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{oneThousandQty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6d109800-1127-4a29-b68e-115574868776" x="79" y="22" width="40" height="12"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fiveHundredQty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="de681767-c022-4e47-aa60-4be8f6bed20e" x="79" y="33" width="40" height="12"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{twoHundredQty}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f8c75804-1938-48f6-b0ab-80500a40af59" x="0" y="33" width="80" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<text><![CDATA[Billetes de RD$ 200]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b1a0def6-dc60-462c-820b-37ffdf3b4952" x="0" y="44" width="80" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<text><![CDATA[Billetes de RD$ 100]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="b4012ca5-cb0d-44fb-b9cf-3de201093b3a" x="79" y="44" width="40" height="12"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{oneHundredQty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="139e01ef-a77b-4456-9a15-f24b1d5dfa1f" x="79" y="55" width="40" height="12"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fiftyQty}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="261d9b9b-573a-46ef-a2ac-ffa391da8b53" x="0" y="77" width="80" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<text><![CDATA[Monedas de RD$ 25]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="c222d644-a513-429f-b97c-40806ab84c5e" x="79" y="77" width="40" height="12"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{twentyFiveQty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="47cf1fc7-8440-4706-8789-5c102b35beda" x="79" y="66" width="40" height="12"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{twentyQty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="664deb9a-14e2-4bb4-a188-560ef506803b" x="79" y="88" width="40" height="12"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tenQty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1e8e89c9-b50a-44b2-b520-883635ee426c" x="79" y="99" width="40" height="12"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fiveQty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a4986b35-c2b9-4179-815f-f6c0ea798f11" x="79" y="110" width="40" height="12"/>
+				<textElement textAlignment="Center">
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{oneQty}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c00df574-29cf-4042-8993-ea0900439724" x="118" y="0" width="32" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{twoThousandAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="70f9faec-c0a2-47cd-8d6c-f95bd20aa1cb" x="118" y="11" width="32" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{oneThousandAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a7dc6f14-8359-4665-9f64-29f9516f3cf5" x="119" y="22" width="31" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fiveHundredAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="508cba74-3d37-40a2-9c3d-bbe849a483ee" x="118" y="33" width="32" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{twoHundredAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d1b8c713-664b-4a55-9b15-1aaa962a9abb" x="118" y="44" width="32" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{oneHundredAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e5fc35f3-5504-402d-9e15-8539990487bd" x="118" y="55" width="32" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fiftyAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c960b513-7cb2-4f13-b889-aaab329286b7" x="118" y="66" width="32" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{twentyFiveAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d313e5ce-677a-48aa-878b-b901c5e5cfc6" x="118" y="77" width="32" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{twentyAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5448bad1-6d25-4535-94b5-4b4d9e2882e1" x="118" y="88" width="32" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tenAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b349248f-722b-44b7-ae25-7c15e73d9456" x="118" y="99" width="32" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fiveAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f3cebe9f-7cf6-497b-937d-f40773f7891e" x="118" y="110" width="32" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{oneAmount}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4b9a9f38-a990-45f7-962e-300fe9c9abc0" x="79" y="131" width="40" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<text><![CDATA[Total caja]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="a7321647-2448-46ee-9d85-b81b83760b47" x="119" y="125" width="30" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement uuid="9a13a9e6-f648-4f1b-a34f-babcb3dee942" x="79" y="142" width="40" height="13"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<text><![CDATA[Diferencia]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="c14339dc-31d2-4377-a881-1ffced257547" x="119" y="131" width="31" height="12"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2aa86645-e04b-4b2e-b8c6-3f7f64d0b527" x="119" y="142" width="31" height="13"/>
+				<textElement>
+					<font fontName="Calibri Light" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{differenceAmount}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="3cc050ba-af86-439b-99a6-5e2eef794ebb" x="119" y="128" width="30" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
 	</detail>
 	<columnFooter>
 		<band height="45" splitType="Stretch"/>
