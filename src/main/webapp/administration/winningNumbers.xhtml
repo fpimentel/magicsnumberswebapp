@@ -30,7 +30,15 @@
                                              actionListener="#{winningNumberController.findWinningNumbers}" 
                                              update="dtWinningNumber :form:messages"
                                              />                            
-                        </td>                         
+                        </td>
+                        <td>
+                            <p:commandButton process="@this" id="btnNewWinningNumber" 
+                                             icon="ui-icon-plusthick"    
+                                             actionListener="#{winningNumberController.addNewWinningNumber}"
+                                             oncomplete="winningNumberDialog.show()"
+                                             update=":form:dialog " 
+                                             immediate="true" />
+                        </td>
                     </tr>                                        
                 </table>    
             </p:fieldset>
@@ -56,14 +64,15 @@
                 <p:column headerText="#{labels.number}" style="width:6%" sortBy="#{winningNumber.numbers}" filterBy="#{winningNumber.numbers}"  filterMatchMode="contains">  
                     #{winningNumber.numbers}  
                 </p:column>
-            </p:dataTable>  
-            <p:commandButton process="@this" id="btnNewWinningNumber" value="#{labels.add_WinningNumbers}" 
-                             actionListener="#{winningNumberController.addNewWinningNumber}"
-                             oncomplete="winningNumberDialog.show()"
-                             update=":form:dialog " immediate="true" />
+            </p:dataTable>             
 
-            <p:dialog id="dialog" header="#{labels.winnigNumber}" widgetVar="winningNumberDialog" resizable="false"  
-                      showEffect="fade" hideEffect="explode" closable="false" position="top" >  
+            <p:dialog id="dialog" header="#{labels.winnigNumber}" 
+                      widgetVar="winningNumberDialog" resizable="false"  
+                      showEffect="fade" hideEffect="explode" 
+                      closable="false" 
+                      position="center" 
+                      width="25%"
+                      >  
                 <p:fieldset legend="Parámetros de búsqueda" style="width:45%">
                     <div></div>
                     <table>
@@ -86,8 +95,8 @@
                             </td>
                             <td>
                                 #{labels.turn}
-                                <p:selectOneMenu id="cbTime" value="#{winningNumberController.selectedWinningNumber.time}" widgetVar="cbTimeSelectMenu"  effect="fade" 
-                                                 converter="#{timeConverter}" >                                    
+                                <p:selectOneMenu id="cbTime" value="#{winningNumberController.selectedTime}" widgetVar="cbTimeSelectMenu"  effect="fade" 
+                                                 converter="#{timeConverterUniversal}" >                                    
                                     <f:selectItem itemLabel="Seleccione" itemValue=""/>
                                     <f:selectItems value="#{winningNumberController.times}" var="time" itemLabel="#{time.name}" itemValue="#{time}"/>  
                                 </p:selectOneMenu>
@@ -100,7 +109,7 @@
                                                 1ra
                                             </div>
                                             <div>
-                                                <p:inputText id="txtFirstNumber1" style="width:70%;" value="#{winningNumberController.firstNumber}" />   
+                                                <p:inputText id="txtFirstNumber1" style="width:75%;" value="#{winningNumberController.firstNumber}" />   
                                             </div>
 
                                         </td>
@@ -109,7 +118,7 @@
                                                 2ra
                                             </div>
                                             <div>
-                                                <p:inputText id="txtFirstNumber2" style="width:70%;" value="#{winningNumberController.secondNumber}"/>   
+                                                <p:inputText id="txtFirstNumber2" style="width:75%;" value="#{winningNumberController.secondNumber}"/>   
                                             </div>
 
                                         </td>
@@ -118,7 +127,7 @@
                                                 3ra
                                             </div>
                                             <div>
-                                                <p:inputText id="txtFirstNumber3" style="width:70%;" value="#{winningNumberController.threeNumber}" />   
+                                                <p:inputText id="txtFirstNumber3" style="width:75%;" value="#{winningNumberController.thirdNumber}" />   
                                             </div>
 
                                         </td>
@@ -128,15 +137,19 @@
                         </tr>
                     </table>
                 </p:fieldset>
-                <f:facet name="footer">  
+                <f:facet name="footer" >  
                     <p:outputPanel style="float:right;">
-                        <p:commandButton  id="btnaddUpdateBetBanking" value="#{labels.register}" 
-                                          actionListener="#{betBankingController.addOrUpdateInfo}"  
+                        <p:commandButton  id="btnaddUpdateWinningNumber" value="#{labels.register}" 
+                                          actionListener="#{winningNumberController.addOrUpdateInfo}"                                           
+                                          oncomplete="handleAddOrUpdateWinningNumber(xhr, status, args)" 
+                                          update=":form:dtWinningNumber :form:messages" 
+                                          icon="ui-icon-check"/>
 
-                                          oncomplete="handleAddOrUpdateWinningNumber(xhr, status, args)" update=":form:dtWinningNumber :form:messages" icon="ui-icon-check"/>
-
-                        <p:commandButton value="#{labels.cancel}"  id="btnCancel"  styleClass="ui-priority-primary" 
-                                         oncomplete=" winningNumberDialog.hide()" immediate="true" icon="ui-icon-closethick"/>  
+                        <p:commandButton value="#{labels.cancel}"  id="btnCancel"  
+                                         styleClass="ui-priority-primary" 
+                                         oncomplete="winningNumberDialog.hide()" 
+                                         immediate="true" 
+                                         icon="ui-icon-closethick"/>  
                     </p:outputPanel>                            
                 </f:facet>
             </p:dialog> 
@@ -144,16 +157,15 @@
         <script type="text/javascript">
             function handleAddOrUpdateWinningNumber(xhr, status, args) {
                 if (args.validationFailed || !args.success) {
-                    betBankingDialog.jq.effect("shake", {times: 5}, 100);
+                    winningNumberDialog.jq.effect("shake", {times: 5}, 100);
                 }
                 else {
-                    betBankingDialog.hide();
+                    winningNumberDialog.hide();
                 }
             }
             function clearComponent() {
                 cbLotterySelectMenu.setLabel("Seleccionar");
                 cbBetSelectMenu.setLabel("Seleccionar");
-
             }
         </script>
     </ui:define>

@@ -4,10 +4,12 @@ import com.exception.magicsnumberswebapp.datamodel.WinningNumberDataModel;
 import com.exception.magicsnumberswebapp.service.LotteryService;
 import com.exception.magicsnumberswebapp.service.WinningNumberService;
 import com.exception.magicsnumbersws.entities.Lottery;
+import com.exception.magicsnumbersws.entities.LotteryCloseHour;
 import com.exception.magicsnumbersws.entities.Time;
 import com.exception.magicsnumbersws.entities.WinningNumber;
 import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.FindLotteryException;
+import com.exception.magicsnumbersws.exception.SaveWinningNumberDataException;
 import com.exception.magicsnumbersws.exception.SearchWinningNumbersException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,7 +20,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -37,20 +42,21 @@ public class WinningNumberController {
     private LoginController loginController;
     @Autowired
     private LotteryService lotteryService;
+    @Autowired
+    private WinningNumberService winningNumberService;
     private Lottery selectedLottery;
     private List<Time> times;
     private Set<Lottery> lotteries;
     private Time selectedTime;
     private Date startingDate;
     private Date finishDate;
-    @Autowired
-    private WinningNumberService winningNumberService;
     private WinningNumberDataModel winningDataModel;
     private WinningNumber selectedWinningNumber;
     private Boolean winningNumberEditMode = false;
     private String FirstNumber;
     private String SecondNumber;
-    private String ThreeNumber;
+    private String thirdNumber;
+    private String userName;
 
     public WinningNumberController() {
         winningDataModel = new WinningNumberDataModel(new ArrayList<WinningNumber>());
@@ -72,14 +78,6 @@ public class WinningNumberController {
 
     public void setSecondNumber(String SecondNumber) {
         this.SecondNumber = SecondNumber;
-    }
-
-    public String getThreeNumber() {
-        return ThreeNumber;
-    }
-
-    public void setThreeNumber(String ThreeNumber) {
-        this.ThreeNumber = ThreeNumber;
     }
 
     public WinningNumber getSelectedWinningNumber() {
@@ -158,10 +156,17 @@ public class WinningNumberController {
         this.selectedLottery = selectedLottery;
     }
 
+    public String getThirdNumber() {
+        return thirdNumber;
+    }
+
+    public void setThirdNumber(String thirdNumber) {
+        this.thirdNumber = thirdNumber;
+    }
+
     public void loadTimesByLottery() {
         FacesMessage msg;
         try {
-            this.selectedLottery= this.selectedWinningNumber.getLottery();
             this.times = new ArrayList(this.lotteryService.findTimesByLottery(this.selectedLottery.getId()));
         } catch (FindLotteryCloseHourException ex) {
             Logger.getLogger(WinningNumberController.class.getName()).log(Level.SEVERE, null, ex);
@@ -172,23 +177,31 @@ public class WinningNumberController {
     }
 
     public void onRowSelect(SelectEvent event) {
-        
         winningNumberEditMode = true;
         String winningNumbers = this.selectedWinningNumber.getNumbers();
-        loadTimesByLottery();
-        String[] winningNumbersArray = winningNumbers.split("-");
-        for (int i = 0; i < winningNumbersArray.length; i++) {
-            if (i == 0) {
-                this.FirstNumber = winningNumbersArray[i];
+        try {
+            this.times = new ArrayList(this.lotteryService.findTimesByLottery(this.selectedWinningNumber.getLottery().getId()));
+            this.selectedTime = this.selectedWinningNumber.getTime();
+            this.selectedLottery = this.selectedWinningNumber.getLottery();
+            String[] winningNumbersArray = winningNumbers.split("-");
+            for (int i = 0; i < winningNumbersArray.length; i++) {
+                if (i == 0) {
+                    this.FirstNumber = winningNumbersArray[i];
+                }
+                if (i == 1) {
+                    this.SecondNumber = winningNumbersArray[i];
+                }
+                if (i == 2) {
+                    this.thirdNumber = winningNumbersArray[i];
+                }
             }
-            if (i == 1) {
-                this.SecondNumber = winningNumbersArray[i];
-            }
-            if (i == 2) {
-                this.ThreeNumber = winningNumbersArray[i];
-            }
+        } catch (FindLotteryCloseHourException ex) {
+            Logger.getLogger(WinningNumberController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(WinningNumberController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     public void getTimesByLotteryOnChange(ValueChangeEvent event) {
         this.selectedLottery = (Lottery) event.getNewValue();
         loadTimesByLottery();
@@ -207,5 +220,58 @@ public class WinningNumberController {
     }
 
     public void addNewWinningNumber() {
+        this.selectedWinningNumber = new WinningNumber();
+        cleanFields();
+        this.winningNumberEditMode = false;
+    }
+
+    private void cleanFields() {
+        this.selectedTime = null;
+        this.selectedLottery = null;
+        this.selectedWinningNumber = new WinningNumber();
+        this.FirstNumber = "";
+        this.SecondNumber = "";
+        this.thirdNumber = "";
+    }
+
+    public void addOrUpdateInfo(ActionEvent event) {
+        boolean success = true;
+        FacesMessage msg;
+        this.userName = this.loginController.getUser().getUserName();
+        RequestContext reqContext = RequestContext.getCurrentInstance();        
+        this.selectedWinningNumber.setLottery(this.selectedLottery);
+        this.selectedWinningNumber.setTime(this.selectedTime);
+        String numbers = this.FirstNumber + "-" + this.SecondNumber + "-" + this.thirdNumber;
+        this.selectedWinningNumber.setNumbers(numbers);
+
+        try {            
+            if (winningNumberEditMode) {
+                this.winningNumberService.saveWinningNumberInfo(selectedWinningNumber);
+                int indexToUpdate = this.winningDataModel.getWinningNumbers().indexOf(this.selectedWinningNumber);                
+                this.winningDataModel.getWinningNumbers().set(indexToUpdate, selectedWinningNumber);
+            } else {
+                this.selectedWinningNumber.setCreationDate(new Date());
+                this.selectedWinningNumber.setCreationUser(userName);
+                this.selectedWinningNumber.setDrawingDate(new Date());
+                this.winningNumberService.saveWinningNumberInfo(selectedWinningNumber);
+                findWinningNumbers();
+            }
+            this.winningNumberEditMode = false;
+            cleanFields();
+
+        } catch (SaveWinningNumberDataException ex) {
+            Logger.getLogger(WinningNumberController.class.getName()).log(Level.SEVERE, null, ex);
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Problema registrando la informacion", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            success = false;
+            return;
+        } catch (Exception ex) {
+            Logger.getLogger(WinningNumberController.class.getName()).log(Level.SEVERE, null, ex);
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Problema registrando la informacion", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            success = false;
+            return;
+        }
+        reqContext.addCallbackParam("success", success);
     }
 }

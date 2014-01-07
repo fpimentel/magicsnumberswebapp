@@ -19,14 +19,14 @@ public class WinningNumberDataModel extends ListDataModel<WinningNumber> impleme
         this.winningNumbers = data;
     }
 
-    public List<WinningNumber> getWinningNumberDao() {
-        return this.winningNumbers;
+    public List<WinningNumber> getWinningNumbers() {
+        return winningNumbers;
     }
 
-    public void setWinningNumberDao(List<WinningNumber> winningNumberDao) {
-        this.winningNumbers = winningNumberDao;
-    }
-
+    public void setWinningNumbers(List<WinningNumber> winningNumbers) {
+        this.winningNumbers = winningNumbers;
+    }        
+    
     public int nextWinningNumberId() {
         if (this.winningNumbers == null || this.winningNumbers.isEmpty()) {
             return 0;
