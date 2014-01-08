@@ -32,4 +32,9 @@ public class WinningNumberDaoImpl implements WinningNumberDao {
         this.bussinesEndpoint.saveWinningNumberInfo(winningNumber);
     }
 
+    @Override
+    public WinningNumber findWinningNumber(int lotteryId, int timeId, String drawingDate) throws SearchWinningNumbersException {
+        return this.bussinesEndpoint.findWinningNumbers(lotteryId, timeId, drawingDate);
+    }
+
 }

@@ -16,18 +16,19 @@
                             <h:outputText value="#{labels.starting_date}"/> 
                         </td>
                         <td>
-                            <p:calendar value="#{winningNumberController.startingDate}" pattern="dd/MM/yyyy" />
+                            <p:calendar id="cStatingDate" value="#{winningNumberController.startingDate}" pattern="dd/MM/yyyy" />
                         </td>
                         <td>
-                            <h:outputText value="#{labels.finish_date}"  /> 
+                            <h:outputText id="cFinishDate" value="#{labels.finish_date}"  /> 
                         </td>
                         <td>
                             <p:calendar value="#{winningNumberController.finishDate}" pattern="dd/MM/yyyy" />
                         </td>
                         <td>
                             <p:commandButton id="btnSearchWinningNumbers" 
-                                             value="#{labels.search}"                             
-                                             actionListener="#{winningNumberController.findWinningNumbers}" 
+                                             value="#{labels.search}" 
+                                             process="@this :form:cStatingDate :form:cFinishDate"                                            
+                                             actionListener="#{winningNumberController.findWinningNumbers}"                                               
                                              update="dtWinningNumber :form:messages"
                                              />                            
                         </td>
@@ -71,7 +72,7 @@
                       showEffect="fade" hideEffect="explode" 
                       closable="false" 
                       position="center" 
-                      width="25%"
+                      width="35%"
                       >  
                 <p:fieldset legend="Parámetros de búsqueda" style="width:45%">
                     <div></div>
@@ -82,7 +83,8 @@
                             </td>
                             <td>
                                 #{labels.lottery} 
-                                <p:selectOneMenu id="cbLottery" value="#{winningNumberController.selectedWinningNumber.lottery}" 
+                                <p:selectOneMenu id="cbLottery" value="#{winningNumberController.selectedWinningNumber.lottery}"  required="true" 
+                                                 requiredMessage="Loteria requerida" 
                                                  valueChangeListener="#{winningNumberController.getTimesByLotteryOnChange}" widgetVar="cbLotterySelectMenu"
                                                  effect="fade" converter="#{lotteryConverter}">  
                                     <f:selectItem itemLabel="Seleccione" itemValue=""/>
@@ -95,11 +97,18 @@
                             </td>
                             <td>
                                 #{labels.turn}
-                                <p:selectOneMenu id="cbTime" value="#{winningNumberController.selectedTime}" widgetVar="cbTimeSelectMenu"  effect="fade" 
+                                <p:selectOneMenu id="cbTime" value="#{winningNumberController.selectedTime}" 
+                                                 widgetVar="cbTimeSelectMenu"  required="true" 
+                                                 requiredMessage="Tanda requerida"
+                                                 effect="fade" 
                                                  converter="#{timeConverterUniversal}" >                                    
                                     <f:selectItem itemLabel="Seleccione" itemValue=""/>
                                     <f:selectItems value="#{winningNumberController.times}" var="time" itemLabel="#{time.name}" itemValue="#{time}"/>  
                                 </p:selectOneMenu>
+                            </td>
+                            <td>
+                                #{labels.drawing_date}
+                                <p:calendar id="cDrawingDate" value="#{winningNumberController.drawingDate}" pattern="dd/MM/yyyy" />
                             </td>
                             <td>
                                 <div>
@@ -109,7 +118,11 @@
                                                 1ra
                                             </div>
                                             <div>
-                                                <p:inputText id="txtFirstNumber1" style="width:75%;" value="#{winningNumberController.firstNumber}" />   
+                                                <p:inputText id="txtFirstNumber1" 
+                                                             required="true" 
+                                                             requiredMessage="Primer numero requerido"
+                                                             style="width:75%;" 
+                                                             value="#{winningNumberController.firstNumber}" />   
                                             </div>
 
                                         </td>
@@ -118,7 +131,9 @@
                                                 2ra
                                             </div>
                                             <div>
-                                                <p:inputText id="txtFirstNumber2" style="width:75%;" value="#{winningNumberController.secondNumber}"/>   
+                                                <p:inputText id="txtFirstNumber2" required="true" 
+                                                             requiredMessage="Segundo numero requerido"
+                                                             style="width:75%;" value="#{winningNumberController.secondNumber}"/>   
                                             </div>
 
                                         </td>
@@ -127,7 +142,8 @@
                                                 3ra
                                             </div>
                                             <div>
-                                                <p:inputText id="txtFirstNumber3" style="width:75%;" value="#{winningNumberController.thirdNumber}" />   
+                                                <p:inputText id="txtFirstNumber3" required="true" 
+                                                             requiredMessage="Tercer numero requerido" style="width:75%;" value="#{winningNumberController.thirdNumber}" />   
                                             </div>
 
                                         </td>

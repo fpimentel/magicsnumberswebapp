@@ -14,5 +14,7 @@ public interface WinningNumberDao {
 
     public List<WinningNumber> findWinningNumbers(String fromDate, String ToDate) throws SearchWinningNumbersException;
     
+    public WinningNumber findWinningNumber(int lotteryId, int timeId,String drawingDate) throws SearchWinningNumbersException;
+            
     public void saveWinningNumberInfo(WinningNumber winningNumber) throws SaveWinningNumberDataException;
 }

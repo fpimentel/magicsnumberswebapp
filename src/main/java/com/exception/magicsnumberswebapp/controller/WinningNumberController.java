@@ -4,7 +4,6 @@ import com.exception.magicsnumberswebapp.datamodel.WinningNumberDataModel;
 import com.exception.magicsnumberswebapp.service.LotteryService;
 import com.exception.magicsnumberswebapp.service.WinningNumberService;
 import com.exception.magicsnumbersws.entities.Lottery;
-import com.exception.magicsnumbersws.entities.LotteryCloseHour;
 import com.exception.magicsnumbersws.entities.Time;
 import com.exception.magicsnumbersws.entities.WinningNumber;
 import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
@@ -50,6 +49,7 @@ public class WinningNumberController {
     private Time selectedTime;
     private Date startingDate;
     private Date finishDate;
+    private Date drawingDate;
     private WinningNumberDataModel winningDataModel;
     private WinningNumber selectedWinningNumber;
     private Boolean winningNumberEditMode = false;
@@ -62,6 +62,7 @@ public class WinningNumberController {
         winningDataModel = new WinningNumberDataModel(new ArrayList<WinningNumber>());
         this.startingDate = new Date();
         this.finishDate = new Date();
+        this.drawingDate = new Date();
     }
 
     public String getFirstNumber() {
@@ -176,6 +177,14 @@ public class WinningNumberController {
 
     }
 
+    public Date getDrawingDate() {
+        return drawingDate;
+    }
+
+    public void setDrawingDate(Date drawingDate) {
+        this.drawingDate = drawingDate;
+    }
+
     public void onRowSelect(SelectEvent event) {
         winningNumberEditMode = true;
         String winningNumbers = this.selectedWinningNumber.getNumbers();
@@ -183,6 +192,10 @@ public class WinningNumberController {
             this.times = new ArrayList(this.lotteryService.findTimesByLottery(this.selectedWinningNumber.getLottery().getId()));
             this.selectedTime = this.selectedWinningNumber.getTime();
             this.selectedLottery = this.selectedWinningNumber.getLottery();
+            final SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            final String drawingDateString = formatter.format(this.selectedWinningNumber.getCreationDate());
+            this.drawingDate = formatter.parse(drawingDateString);
+
             String[] winningNumbersArray = winningNumbers.split("-");
             for (int i = 0; i < winningNumbersArray.length; i++) {
                 if (i == 0) {
@@ -234,25 +247,66 @@ public class WinningNumberController {
         this.thirdNumber = "";
     }
 
+    public boolean existWinningNumber() {
+        FacesMessage msg;
+        boolean success = true;
+        boolean exist = false;
+        try {
+            RequestContext reqContext = RequestContext.getCurrentInstance();
+            int lotteryId = this.selectedLottery.getId();
+            int timeId = this.selectedTime.getId();
+            WinningNumber winningNumberTmp;
+            String drawingDateStr = new SimpleDateFormat("dd-MM-yyyy").format(this.drawingDate);
+            winningNumberTmp = this.winningNumberService.findWinningNumber(lotteryId, timeId, drawingDateStr);
+            if (winningNumberEditMode) {
+                if (winningNumberTmp.getId() != this.selectedWinningNumber.getId()) {
+                    exist = true;
+                }
+            } else {
+                if (winningNumberTmp != null) {
+                    exist = true;
+                }
+            }            
+
+        } catch (SearchWinningNumbersException ex) {
+            Logger.getLogger(WinningNumberController.class.getName()).log(Level.SEVERE, null, ex);
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Problema validando la informacion", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            success = false;
+        } catch (Exception ex) {
+            Logger.getLogger(WinningNumberController.class.getName()).log(Level.SEVERE, null, ex);
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Problema validando la informacion", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            success = false;
+        }
+        return exist;
+    }
+
     public void addOrUpdateInfo(ActionEvent event) {
         boolean success = true;
         FacesMessage msg;
         this.userName = this.loginController.getUser().getUserName();
-        RequestContext reqContext = RequestContext.getCurrentInstance();        
+        RequestContext reqContext = RequestContext.getCurrentInstance();
         this.selectedWinningNumber.setLottery(this.selectedLottery);
         this.selectedWinningNumber.setTime(this.selectedTime);
+        this.selectedWinningNumber.setDrawingDate(this.drawingDate);
         String numbers = this.FirstNumber + "-" + this.SecondNumber + "-" + this.thirdNumber;
         this.selectedWinningNumber.setNumbers(numbers);
-
-        try {            
+        if (existWinningNumber()) {
+            msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ya este sorteo fue insertado.", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+            success = false;
+            reqContext.addCallbackParam("success", success);           
+            return;
+        }
+        try {
             if (winningNumberEditMode) {
                 this.winningNumberService.saveWinningNumberInfo(selectedWinningNumber);
-                int indexToUpdate = this.winningDataModel.getWinningNumbers().indexOf(this.selectedWinningNumber);                
+                int indexToUpdate = this.winningDataModel.getWinningNumbers().indexOf(this.selectedWinningNumber);
                 this.winningDataModel.getWinningNumbers().set(indexToUpdate, selectedWinningNumber);
             } else {
                 this.selectedWinningNumber.setCreationDate(new Date());
                 this.selectedWinningNumber.setCreationUser(userName);
-                this.selectedWinningNumber.setDrawingDate(new Date());
                 this.winningNumberService.saveWinningNumberInfo(selectedWinningNumber);
                 findWinningNumbers();
             }

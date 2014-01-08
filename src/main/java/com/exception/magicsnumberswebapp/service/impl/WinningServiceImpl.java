@@ -28,4 +28,9 @@ public class WinningServiceImpl implements WinningNumberService {
     public void saveWinningNumberInfo(WinningNumber winningNumber) throws SaveWinningNumberDataException {
         this.winningNumberDao.saveWinningNumberInfo(winningNumber);
     }
+
+    @Override
+    public WinningNumber findWinningNumber(int lotteryId, int timeId, String drawingDate) throws SearchWinningNumbersException {
+        return this.winningNumberDao.findWinningNumber(lotteryId, timeId, drawingDate);
+    }
 }

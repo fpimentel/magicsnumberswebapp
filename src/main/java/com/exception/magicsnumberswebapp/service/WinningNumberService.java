@@ -14,4 +14,5 @@ import org.springframework.stereotype.Service;
 public interface WinningNumberService {
   public List<WinningNumber> findWinningNumbers(String fromDate, String ToDate) throws SearchWinningNumbersException;
   public void saveWinningNumberInfo(WinningNumber winningNumber) throws SaveWinningNumberDataException;
+  public WinningNumber findWinningNumber(int lotteryId, int timeId,String drawingDate) throws SearchWinningNumbersException;
 }
