@@ -4,7 +4,7 @@
                  xmlns:f="http://java.sun.com/jsf/core"
                  xmlns:p="http://primefaces.org/ui">
     <ui:define name="title">
-        #{labels.betbankings}
+        #{labels.winnigNumber}
     </ui:define>
     <ui:define name="center">
         <h:form id="form" >  
@@ -74,7 +74,7 @@
                       position="center" 
                       width="35%"
                       >  
-                <p:fieldset legend="Parámetros de búsqueda" style="width:45%">
+                <p:fieldset legend="Informacion" style="width:45%">
                     <div></div>
                     <table>
                         <tr>
@@ -113,27 +113,28 @@
                             <td>
                                 <div>
                                     <table>
-                                        <td>
+                                        <td >
                                             <div>
                                                 1ra
                                             </div>
                                             <div>
-                                                <p:inputText id="txtFirstNumber1" 
+
+                                                <p:inputText id="txtWinningNumber-1" 
                                                              required="true" 
                                                              requiredMessage="Primer numero requerido"
-                                                             style="width:75%;" 
+                                                             style="width:80%;" 
                                                              value="#{winningNumberController.firstNumber}" />   
                                             </div>
 
                                         </td>
-                                        <td>
+                                        <td >
                                             <div>
                                                 2ra
                                             </div>
                                             <div>
-                                                <p:inputText id="txtFirstNumber2" required="true" 
+                                                <p:inputText id="txtWinningNumber-2" required="true" 
                                                              requiredMessage="Segundo numero requerido"
-                                                             style="width:75%;" value="#{winningNumberController.secondNumber}"/>   
+                                                             style="width:80%;" value="#{winningNumberController.secondNumber}"/>   
                                             </div>
 
                                         </td>
@@ -142,8 +143,8 @@
                                                 3ra
                                             </div>
                                             <div>
-                                                <p:inputText id="txtFirstNumber3" required="true" 
-                                                             requiredMessage="Tercer numero requerido" style="width:75%;" value="#{winningNumberController.thirdNumber}" />   
+                                                <p:inputText id="txtWinningNumber-3" required="true" 
+                                                             requiredMessage="Tercer numero requerido" style="width:80%;" value="#{winningNumberController.thirdNumber}" />   
                                             </div>
 
                                         </td>
@@ -161,7 +162,8 @@
                                           update=":form:dtWinningNumber :form:messages" 
                                           icon="ui-icon-check"/>
 
-                        <p:commandButton value="#{labels.cancel}"  id="btnCancel"  
+                        <p:commandButton value="#{labels.cancel}"  id="btnCancel" 
+                                         actionListener="#{winningNumberController.cancel}"
                                          styleClass="ui-priority-primary" 
                                          oncomplete="winningNumberDialog.hide()" 
                                          immediate="true" 
@@ -171,11 +173,21 @@
             </p:dialog> 
         </h:form>
         <script type="text/javascript">
+            //<![CDATA[
+            $(function() {
+                var winningNumbersInput = $("input[id|='form:txtWinningNumber']");
+                winningNumbersInput.each(function()
+                {
+                    $(this).keypress(function(event) {
+                        //Si tiene espacio, no es un punto o no es numero lo rechaza
+                        if (event.which == 32 || event.which != 46 && isNaN(String.fromCharCode(event.which))) {
+                            event.preventDefault();
+                        }
+                    });
+                });
+            });
             function handleAddOrUpdateWinningNumber(xhr, status, args) {
-                if (args.validationFailed || !args.success) {
-                    winningNumberDialog.jq.effect("shake", {times: 5}, 100);
-                }
-                else {
+                if (args.success) {
                     winningNumberDialog.hide();
                 }
             }
@@ -183,6 +195,7 @@
                 cbLotterySelectMenu.setLabel("Seleccionar");
                 cbBetSelectMenu.setLabel("Seleccionar");
             }
+            //]]>
         </script>
     </ui:define>
 

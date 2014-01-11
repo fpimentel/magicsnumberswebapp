@@ -237,7 +237,11 @@ public class WinningNumberController {
         cleanFields();
         this.winningNumberEditMode = false;
     }
-
+    
+    private void cancel(ActionEvent event){
+        cleanFields();
+        winningNumberEditMode = false;
+    }
     private void cleanFields() {
         this.selectedTime = null;
         this.selectedLottery = null;
