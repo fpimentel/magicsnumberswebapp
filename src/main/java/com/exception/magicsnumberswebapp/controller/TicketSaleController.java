@@ -2,6 +2,7 @@ package com.exception.magicsnumberswebapp.controller;
 
 import com.exception.magicsnumberswebapp.controller.rules.TicketSaleRule;
 import com.exception.magicsnumberswebapp.datamodel.TicketDetailDataModel;
+import com.exception.magicsnumberswebapp.reports.beans.TicketSaleData;
 import com.exception.magicsnumberswebapp.service.BetBankingService;
 import com.exception.magicsnumberswebapp.service.LotteryService;
 import com.exception.magicsnumberswebapp.service.TicketService;
@@ -16,17 +17,28 @@ import com.exception.magicsnumbersws.exception.FindBetLimitException;
 import com.exception.magicsnumbersws.exception.FindBlockingNumberException;
 import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.SaveTicketException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.primefaces.event.SelectEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -128,11 +140,11 @@ public class TicketSaleController {
     }
 
     public Lottery getSelectedLottery() {
-     /*   if (this.selectedLottery != null) {
-            if (this.selectedLottery.getBets() != null) {
-               // this.bets = new ArrayList(this.selectedLottery.getBets());
-            }
-        }*/
+        /*   if (this.selectedLottery != null) {
+         if (this.selectedLottery.getBets() != null) {
+         // this.bets = new ArrayList(this.selectedLottery.getBets());
+         }
+         }*/
         return this.selectedLottery;
     }
 
@@ -267,26 +279,64 @@ public class TicketSaleController {
         }
     }
 
+    private void initReportData(Ticket ticket, List<TicketSaleData> ticketSaleDataList,Map parameters) {
+        TicketSaleData ticketSaleData;
+        parameters.put("BET_BANKING_NAME", this.betBankingName);
+        parameters.put("TICKET_TOTAL_AMOUNT", Float.valueOf(this.ticketTotalAmount.toString()));
+        if (ticket.getTicketDetails() != null) {
+            for (TicketDetail currTicketDetail : ticket.getTicketDetails()) {
+                ticketSaleData = new TicketSaleData();
+                ticketSaleData.setLottery(currTicketDetail.getLottery().getName());
+                ticketSaleData.setTime(currTicketDetail.getTime().getName());
+                ticketSaleData.setBet(currTicketDetail.getBet().getName());
+                ticketSaleData.setNumbers(currTicketDetail.getNumbersPlayed());
+                ticketSaleData.setBetAmount(Float.valueOf(currTicketDetail.getBetAmount().toString()));
+                ticketSaleDataList.add(ticketSaleData);
+            }
+        }
+    }
+
+    private void generateTicketReport(List<TicketSaleData> ticketSaleDataList,Map parameters) throws JRException, IOException {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+        JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(ticketSaleDataList);
+        ec.responseReset();
+        
+        JasperPrint jasperPrint = JasperFillManager.fillReport(
+                "C:\\Personal\\Proyectos\\2013\\LOTERIA\\Source\\magicsnumberswebapp\\src\\main\\webapp\\jasperReports\\ticketSale.jasper", 
+                parameters, 
+                beanCollectionDataSource);
+        HttpServletResponse httpServletResponse = (HttpServletResponse) ec.getResponse();        
+        httpServletResponse.setContentType("application/pdf");
+        httpServletResponse.setHeader("Content-Disposition","inline; filename=\"File.pdf\"");
+        ServletOutputStream servletOuputStream = httpServletResponse.getOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, servletOuputStream);
+        fc.responseComplete();
+    }
+
     public void saveTicket(ActionEvent event) {
         FacesMessage msg;
         this.editMode = false;
         try {
             this.ticket = new Ticket();
-            this.ticket.setCreationUser(this.loginController.getUser().getUserName());                        
+            this.ticket.setCreationUser(this.loginController.getUser().getUserName());
             this.ticket.setTicketDetails(new HashSet<TicketDetail>(this.ticketDetailsDataModel.getTicketDetails()));
             BetBanking betBankingBanker = (BetBanking) this.loginController.getUser().getBetBankings().toArray()[0];
             this.ticket.setBetBanking(betBankingBanker);
             if (ticketDetailsDataModel.getTicketDetails().size() < 1) {
                 setIsValidFields(false);
-                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe agregar al menos una jugada ",null);
+                msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Debe agregar al menos una jugada ", null);
                 FacesContext.getCurrentInstance().addMessage(null, msg);
                 return;
-            }           
-            this.ticketService.saveTicket(this.ticket);                      
-            this.ticketDetailsDataModel = new TicketDetailDataModel(new ArrayList<TicketDetail>());           
+            }
+            this.ticketService.saveTicket(this.ticket);
+            List<TicketSaleData> ticketSaleDataList = new ArrayList<TicketSaleData>();
+            this.ticketDetailsDataModel = new TicketDetailDataModel(new ArrayList<TicketDetail>());            
+            Map parameters = new HashMap();
+            initReportData(this.ticket, ticketSaleDataList,parameters);
+            generateTicketReport(ticketSaleDataList,parameters);           
             this.ticketTotalAmount = new BigDecimal(0);
             this.quantityToPlaySelectedBet = 0;
-
         } catch (SaveTicketException ex) {
             msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ha ocurrido un error salvando las jugadas de este ticket", "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -323,34 +373,37 @@ public class TicketSaleController {
         this.selectedLottery = (Lottery) event.getNewValue();
         loadTimesAndBetsByLottery();
     }
-    public void changeLottery(){
-        for(Lottery currentLottery: this.lotteries){
-            if(!currentLottery.equals(this.selectedLottery)){
+
+    public void changeLottery() {
+        for (Lottery currentLottery : this.lotteries) {
+            if (!currentLottery.equals(this.selectedLottery)) {
                 this.selectedLottery = currentLottery;
-                 loadTimesAndBetsByLottery();
+                loadTimesAndBetsByLottery();
                 return;
             }
         }
-        
+
     }
-    public void changeTurn(){
-        for(Time currentTime: this.times){
-            if(!currentTime.equals(this.selectedTime)){
+
+    public void changeTurn() {
+        for (Time currentTime : this.times) {
+            if (!currentTime.equals(this.selectedTime)) {
                 this.selectedTime = currentTime;
                 return;
             }
-        }      
+        }
     }
-    public void changeBet(){
-        for(Bet currentBet: this.bets){
-            if(!currentBet.equals(this.selectedBet)){
-                this.selectedBet = currentBet;                 
+
+    public void changeBet() {
+        for (Bet currentBet : this.bets) {
+            if (!currentBet.equals(this.selectedBet)) {
+                this.selectedBet = currentBet;
                 this.quantityToPlaySelectedBet = currentBet.getNumberQtyToPlay();
                 return;
             }
-        }      
+        }
     }
- 
+
     public List<Bet> getBets() {
         return bets;
     }

@@ -90,7 +90,9 @@
                                 <p:tooltip for="btnPrintTicket" value="#{labels.print_ticket}" showEffect="fade" hideEffect="fade"  /> 
                                 <p:commandButton  id="btnPrintTicket"  icon="ui-icon-print" actionListener="#{ticketSaleController.saveTicket}" 
                                                   process="@this" update=":form:dtTicketDetail :form:cbLottery :form:cbTime :form:cbBet :form:lblTicketTotalAmount :form:messages" 
-                                                  oncomplete="clearComponent()"/>
+                                                  oncomplete="clearComponent()"
+                                                  ajax="false"
+                                                  onclick="form.target = '_blank'"/>
                                 <p:tooltip for="btnPrintTicket" value="#{labels.print_ticket}" showEffect="fade" hideEffect="fade"  /> 
                             </td>
                         </tr>                       

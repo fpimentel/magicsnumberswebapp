@@ -151,8 +151,9 @@ public class CloseBoxController {
         JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(closeBoxDataList);        
         ec.responseReset();
         JasperPrint jasperPrint = JasperFillManager.fillReport("C:\\Personal\\Proyectos\\2013\\LOTERIA\\Source\\magicsnumberswebapp\\src\\main\\resources\\CloseBox.jasper", new HashMap(), beanCollectionDataSource);
-        HttpServletResponse httpServletResponse = (HttpServletResponse) ec.getResponse();        
-        httpServletResponse.addHeader("Content-disposition","attachment; filename=cuadre_caja.pdf" );
+        HttpServletResponse httpServletResponse = (HttpServletResponse) ec.getResponse();                
+        httpServletResponse.setContentType("application/pdf");
+        httpServletResponse.setHeader("Content-Disposition","inline; filename=\"File.pdf\"");
         ServletOutputStream servletOuputStream = httpServletResponse.getOutputStream();        
         JasperExportManager.exportReportToPdfStream(jasperPrint, servletOuputStream);
         fc.responseComplete();
