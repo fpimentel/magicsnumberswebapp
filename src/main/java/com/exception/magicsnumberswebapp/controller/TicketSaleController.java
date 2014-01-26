@@ -18,6 +18,7 @@ import com.exception.magicsnumbersws.exception.FindBlockingNumberException;
 import com.exception.magicsnumbersws.exception.FindLotteryCloseHourException;
 import com.exception.magicsnumbersws.exception.SaveTicketException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -139,12 +140,7 @@ public class TicketSaleController {
         this.quantityToPlaySelectedBet = quantityToPlaySelectedBet;
     }
 
-    public Lottery getSelectedLottery() {
-        /*   if (this.selectedLottery != null) {
-         if (this.selectedLottery.getBets() != null) {
-         // this.bets = new ArrayList(this.selectedLottery.getBets());
-         }
-         }*/
+    public Lottery getSelectedLottery() {        
         return this.selectedLottery;
     }
 
@@ -301,11 +297,8 @@ public class TicketSaleController {
         ExternalContext ec = fc.getExternalContext();
         JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(ticketSaleDataList);
         ec.responseReset();
-        
-        JasperPrint jasperPrint = JasperFillManager.fillReport(
-                "C:\\Personal\\Proyectos\\2013\\LOTERIA\\Source\\magicsnumberswebapp\\src\\main\\webapp\\jasperReports\\ticketSale.jasper", 
-                parameters, 
-                beanCollectionDataSource);
+        InputStream jasperReportsIS = getClass().getResourceAsStream("/jasperreports/ticketSale.jasper");
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReportsIS,parameters,beanCollectionDataSource);
         HttpServletResponse httpServletResponse = (HttpServletResponse) ec.getResponse();        
         httpServletResponse.setContentType("application/pdf");
         httpServletResponse.setHeader("Content-Disposition","inline; filename=\"File.pdf\"");

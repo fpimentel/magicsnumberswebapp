@@ -6,6 +6,7 @@ import com.exception.magicsnumbersws.entities.BetBanking;
 import com.exception.magicsnumbersws.entities.Ticket;
 import com.exception.magicsnumbersws.exception.FindTicketException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -146,11 +147,12 @@ public class CloseBoxController {
     public void downloadFile(ActionEvent event) throws JRException, IOException {               
         FacesContext fc = FacesContext.getCurrentInstance();
         ExternalContext ec = fc.getExternalContext();
+        InputStream jasperReportsIS = getClass().getResourceAsStream("/jasperreports/CloseBox.jasper");
         ArrayList<CloseBoxData> closeBoxDataList = new ArrayList<CloseBoxData>();
         initReportData(closeBoxDataList);
         JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(closeBoxDataList);        
         ec.responseReset();
-        JasperPrint jasperPrint = JasperFillManager.fillReport("C:\\Personal\\Proyectos\\2013\\LOTERIA\\Source\\magicsnumberswebapp\\src\\main\\resources\\CloseBox.jasper", new HashMap(), beanCollectionDataSource);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReportsIS, new HashMap(), beanCollectionDataSource);
         HttpServletResponse httpServletResponse = (HttpServletResponse) ec.getResponse();                
         httpServletResponse.setContentType("application/pdf");
         httpServletResponse.setHeader("Content-Disposition","inline; filename=\"File.pdf\"");
