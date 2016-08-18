@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="260" pageHeight="700" columnWidth="220" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0713d0c5-a821-461f-8948-4ac20df1c2dd">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="BET_BANKING_NAME" class="java.lang.String"/>
@@ -21,14 +21,14 @@
 			<textField pattern="dd/MM/yyyy h.mm a">
 				<reportElement uuid="984b722b-f951-4337-8694-01f50577e99d" x="60" y="0" width="160" height="20"/>
 				<textElement textAlignment="Right">
-					<font fontName="Calibri Light" size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="6c4f81d4-6d6e-4ae2-99a7-a747c4959a10" x="2" y="29" width="218" height="20"/>
 				<textElement textAlignment="Center">
-					<font size="12" isBold="true"/>
+					<font fontName="Serif" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{BET_BANKING_NAME}.toUpperCase()]]></textFieldExpression>
 			</textField>
@@ -44,27 +44,37 @@
 		<band height="22" splitType="Stretch">
 			<textField>
 				<reportElement uuid="1dbb918c-4f30-4960-8953-16a2983306a3" x="0" y="2" width="39" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA["Loteria"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="349d071e-4d0b-48fa-a028-de0376503db2" x="38" y="2" width="41" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif"/>
+				</textElement>
 				<text><![CDATA[Tanda]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="e058e5b2-fe69-4560-a3e5-bdd1e77425b9" x="78" y="2" width="37" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif"/>
+				</textElement>
 				<text><![CDATA[Jugada]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="f22bb8f8-8f2b-4ef2-8742-ed35cd2ea38f" x="114" y="2" width="58" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif"/>
+				</textElement>
 				<text><![CDATA[Numeros]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="5bd0c772-90fa-46eb-9d77-ed171016353f" x="172" y="2" width="48" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif"/>
+				</textElement>
 				<text><![CDATA[Monto]]></text>
 			</staticText>
 		</band>
@@ -73,27 +83,37 @@
 		<band height="20" splitType="Stretch">
 			<textField>
 				<reportElement uuid="240ffcbd-100f-4175-8fb8-31c1699a644b" x="38" y="0" width="41" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{time}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="dd516dd8-957d-477f-982d-105877ae1e30" x="78" y="0" width="37" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{bet}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="bcde2030-46f2-4d12-b57f-39f7e498b9cc" x="114" y="0" width="58" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{numbers}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="b82e2251-ba9b-43f5-9642-dc68dbbff9e3" x="172" y="0" width="48" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{betAmount}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="845742e0-9695-4b90-8600-c5943c67d6c7" x="2" y="0" width="37" height="20"/>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{lottery}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -105,12 +125,16 @@
 		<band height="24" splitType="Stretch">
 			<textField>
 				<reportElement uuid="ca5755d2-9c9a-4102-a4d7-2ea4d1e99c5a" x="164" y="4" width="52" height="20"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font fontName="Serif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{TICKET_TOTAL_AMOUNT}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement uuid="49959e60-8e77-438f-8957-177a3c8da0fe" x="133" y="4" width="32" height="20"/>
-				<textElement/>
+				<textElement>
+					<font fontName="Serif"/>
+				</textElement>
 				<text><![CDATA[Total RD$]]></text>
 			</staticText>
 			<line>
